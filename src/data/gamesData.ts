@@ -1,4 +1,8 @@
 import { GameCardProps } from "@/components/GameCard";
+import splendorImg from "@/assets/games/splendor.jpg";
+import kingdominoImg from "@/assets/games/kingdomino.jpg";
+import sushiGoImg from "@/assets/games/sushi-go.jpg";
+import dixitImg from "@/assets/games/dixit.jpg";
 
 // Real board game data with actual box art images from BoardGameGeek
 export const strategyGames: GameCardProps[] = [
@@ -16,7 +20,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "ticket-to-ride",
     title: "Ticket to Ride",
-    imageUrl: "https://cf.geekdo-images.com/ZWJg0dCdrWHxVnc0eFXK8w__imagepage/img/FcSGmWEDYMTXlY1NVKkm8QP0-20=/fit-in/900x600/filters:no_upscale():strip_icc()/pic38668.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/9/92/Ticket_to_Ride_Board_Game_Box_EN.jpg",
     players: "2-5",
     duration: "30-60",
     difficulty: "Easy",
@@ -74,7 +78,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "splendor",
     title: "Splendor",
-    imageUrl: "https://cf.geekdo-images.com/rwOMxx4q5yuElIvo-1-OFw__imagepage/img/0d-3SuVWpPAL24P1SWmL1jb-A-0=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1904079.jpg",
+    imageUrl: splendorImg,
     players: "2-4",
     duration: "30",
     difficulty: "Easy",
@@ -85,7 +89,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "kingdomino",
     title: "Kingdomino",
-    imageUrl: "https://cf.geekdo-images.com/3h9W8BfB_rltQ48EBmHliw__imagepage/img/0-VFzY8KFlDdT7B-utRvlzGM-OI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3132685.png",
+    imageUrl: kingdominoImg,
     players: "2-4",
     duration: "15-20",
     difficulty: "Easy",
@@ -96,7 +100,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "dixit",
     title: "Dixit",
-    imageUrl: "https://cf.geekdo-images.com/J0PlHHeJeuskhhEF4RFjIA__imagepage/img/cQGDrjoQdBysLvjLKGwZDdZ-jOE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic6738341.jpg",
+    imageUrl: dixitImg,
     players: "3-6",
     duration: "30",
     difficulty: "Easy",
@@ -107,7 +111,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "sushi-go",
     title: "Sushi Go!",
-    imageUrl: "https://cf.geekdo-images.com/Fn3PSPCqkJVaQx1mOSSnAQ__imagepage/img/V9MZ0xY3hXr3r3HnE3QwJjO2PnE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1900075.jpg",
+    imageUrl: sushiGoImg,
     players: "2-5",
     duration: "15",
     difficulty: "Easy",
