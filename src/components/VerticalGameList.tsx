@@ -1,5 +1,6 @@
 import { GameCardProps } from "./GameCard";
 import HorizontalGameCard from "./HorizontalGameCard";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 interface VerticalGameListProps {
   title: string;
@@ -7,6 +8,8 @@ interface VerticalGameListProps {
 }
 
 const VerticalGameList = ({ title, games }: VerticalGameListProps) => {
+  const { toggleFavorite, isFavorite } = useFavorites();
+
   return (
     <section className="flex flex-col gap-4 px-4 pb-24">
       <h2 className="font-display font-bold text-lg text-foreground">{title}</h2>
@@ -17,7 +20,11 @@ const VerticalGameList = ({ title, games }: VerticalGameListProps) => {
             className="animate-slide-up"
             style={{ animationDelay: `${index * 50}ms` }}
           >
-            <HorizontalGameCard {...game} />
+            <HorizontalGameCard
+              {...game}
+              isFavorite={isFavorite(game.id)}
+              onFavoriteToggle={toggleFavorite}
+            />
           </div>
         ))}
       </div>
