@@ -33,11 +33,24 @@ const difficultyLevels = [
   { id: "difficult", label: "Difficult" },
 ];
 
+const playerCounts = [
+  { id: "2", label: "2" },
+  { id: "3", label: "3" },
+  { id: "4", label: "4" },
+  { id: "5", label: "5" },
+  { id: "6", label: "6" },
+  { id: "7", label: "7" },
+  { id: "8", label: "8" },
+  { id: "9", label: "9" },
+  { id: "10+", label: "10+" },
+];
+
 const FiltersSection = () => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
+  const [selectedPlayers, setSelectedPlayers] = useState<string | null>(null);
 
   const handleAgeSelect = (ageId: string) => {
     setSelectedAge(selectedAge === ageId ? null : ageId);
@@ -54,11 +67,58 @@ const FiltersSection = () => {
     setActiveFilter(selectedDifficulty === difficultyId ? null : "difficulty");
   };
 
+  const handlePlayersSelect = (playersId: string) => {
+    setSelectedPlayers(selectedPlayers === playersId ? null : playersId);
+    setActiveFilter(selectedPlayers === playersId ? null : "players");
+  };
+
   return (
     <section className="px-4 py-3">
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-2">
           {filters.map((filter) => {
+            if (filter.id === "players") {
+              return (
+                <Popover key={filter.id}>
+                  <PopoverTrigger asChild>
+                    <button
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
+                        "font-medium text-sm whitespace-nowrap",
+                        "transition-all duration-200 ease-out",
+                        "border-2",
+                        selectedPlayers
+                          ? "bg-primary text-primary-foreground border-primary shadow-md"
+                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
+                      )}
+                    >
+                      <Users className="w-4 h-4" />
+                      <span>{selectedPlayers ? `${selectedPlayers} Players` : "Players"}</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-32 p-2" align="start">
+                    <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
+                      {playerCounts.map((count) => (
+                        <button
+                          key={count.id}
+                          onClick={() => handlePlayersSelect(count.id)}
+                          className={cn(
+                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
+                            selectedPlayers === count.id
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted"
+                          )}
+                        >
+                          {count.label}
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              );
+            }
+
             if (filter.id === "age") {
               return (
                 <Popover key={filter.id}>
