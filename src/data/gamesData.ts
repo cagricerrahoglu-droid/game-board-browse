@@ -237,7 +237,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "carcassonne",
     title: "Carcassonne",
-    imageUrl: "https://cf.geekdo-images.com/Z3upN53-fsVPUDimN9SpOA__imagepage/img/NAvsGmJWTuuWDRXYMJEbAoB_KPY=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2337577.jpg",
+    imageUrl: "https://upload.wikimedia.org/wikipedia/en/5/5e/Carcassonne-game.jpg",
     players: "2-5",
     duration: "30-45",
     difficulty: "Easy",
