@@ -18,15 +18,15 @@ export interface GameCardProps {
 }
 
 const difficultyConfig = {
-  Easy: { color: "text-available", bars: 1 },
-  Medium: { color: "text-limited", bars: 2 },
-  Hard: { color: "text-primary", bars: 3 },
+  Easy: { color: "text-available", bgColor: "bg-available", bars: 1 },
+  Medium: { color: "text-limited", bgColor: "bg-limited", bars: 2 },
+  Hard: { color: "text-primary", bgColor: "bg-primary", bars: 3 },
 };
 
 const availabilityConfig = {
-  available: { icon: Check, label: "Available", color: "text-available bg-available/10" },
-  limited: { icon: AlertCircle, label: "Limited", color: "text-limited bg-limited/10" },
-  unavailable: { icon: X, label: "Unavailable", color: "text-unavailable bg-unavailable/10" },
+  available: { icon: Check, label: "Available", color: "text-available bg-available/15" },
+  limited: { icon: AlertCircle, label: "Limited", color: "text-limited bg-limited/15" },
+  unavailable: { icon: X, label: "Unavailable", color: "text-unavailable bg-unavailable/15" },
 };
 
 const GameCard = ({
@@ -57,12 +57,12 @@ const GameCard = ({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn(
-        "flex flex-col bg-card rounded-xl overflow-hidden",
+        "flex flex-col bg-card rounded-2xl overflow-hidden",
         "shadow-card hover:shadow-card-hover",
         "transition-all duration-300 ease-out",
-        "hover:-translate-y-1",
-        "w-[160px] flex-shrink-0",
-        "text-left"
+        "hover:-translate-y-1.5 active:scale-[0.98]",
+        "w-[168px] flex-shrink-0",
+        "text-left group"
       )}
     >
       {/* Cover Image */}
@@ -70,34 +70,42 @@ const GameCard = ({
         <img
           src={imageUrl}
           alt={title}
-          className="w-full h-full object-cover"
+          className={cn(
+            "w-full h-full object-cover transition-transform duration-500",
+            "group-hover:scale-105"
+          )}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = `https://placehold.co/300x400/f5f0e8/e85d4c?text=${encodeURIComponent(title)}`;
           }}
         />
+        {/* Gradient overlay for better badge visibility */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none" />
+        
         {/* Favorite Button */}
         <div
           onClick={handleFavoriteClick}
           className={cn(
-            "absolute top-2 left-2 p-1.5 rounded-full",
-            "transition-all duration-200",
-            "bg-card/80 backdrop-blur-sm",
-            isHovered || isFavorite ? "opacity-100" : "opacity-0"
+            "absolute top-2.5 left-2.5 p-2 rounded-full",
+            "transition-all duration-300 ease-out",
+            "bg-card/90 backdrop-blur-sm shadow-soft",
+            "hover:scale-110 active:scale-90",
+            isHovered || isFavorite ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"
           )}
         >
           <Heart
             className={cn(
-              "w-4 h-4 transition-colors",
-              isFavorite ? "fill-primary text-primary" : "text-foreground hover:text-primary"
+              "w-4 h-4 transition-all duration-200",
+              isFavorite ? "fill-primary text-primary scale-110" : "text-foreground hover:text-primary"
             )}
           />
         </div>
+        
         {/* Availability Badge */}
         <div
           className={cn(
-            "absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full",
-            "text-xs font-semibold",
+            "absolute top-2.5 right-2.5 flex items-center gap-1 px-2 py-1 rounded-full",
+            "text-xs font-bold backdrop-blur-sm",
             availabilityConfig[availability].color
           )}
         >
@@ -106,9 +114,9 @@ const GameCard = ({
       </div>
 
       {/* Card Content */}
-      <div className="flex flex-col gap-2 p-3">
+      <div className="flex flex-col gap-2.5 p-3.5">
         {/* Title */}
-        <h3 className="font-display font-semibold text-sm text-foreground line-clamp-2 leading-tight">
+        <h3 className="font-display font-semibold text-sm text-foreground line-clamp-2 leading-snug">
           {title}
         </h3>
 
@@ -116,11 +124,11 @@ const GameCard = ({
         <div className="flex items-center gap-3 text-muted-foreground">
           <div className="flex items-center gap-1">
             <Users className="w-3.5 h-3.5" />
-            <span className="text-xs">{players}</span>
+            <span className="text-xs font-medium">{players}</span>
           </div>
           <div className="flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
-            <span className="text-xs">{duration}</span>
+            <span className="text-xs font-medium">{duration}</span>
           </div>
         </div>
 
@@ -133,26 +141,26 @@ const GameCard = ({
                 <div
                   key={bar}
                   className={cn(
-                    "w-1.5 h-3 rounded-full",
+                    "w-1.5 h-3.5 rounded-full transition-colors",
                     bar <= difficultyConfig[difficulty].bars
-                      ? difficultyConfig[difficulty].color.replace("text-", "bg-")
+                      ? difficultyConfig[difficulty].bgColor
                       : "bg-border"
                   )}
                 />
               ))}
             </div>
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 bg-star/10 px-1.5 py-0.5 rounded-full">
             <Star className="w-3.5 h-3.5 fill-star text-star" />
-            <span className="text-xs font-semibold text-foreground">{rating.toFixed(1)}</span>
+            <span className="text-xs font-bold text-foreground">{rating.toFixed(1)}</span>
           </div>
         </div>
 
         {/* Price */}
-        <div className="pt-1 border-t border-border">
-          <span className="text-primary font-bold text-sm">
+        <div className="pt-2 border-t border-border/50">
+          <span className="text-primary font-bold text-base">
             £{pricePerDay.toFixed(2)}
-            <span className="text-muted-foreground font-normal text-xs">/day</span>
+            <span className="text-muted-foreground font-medium text-xs ml-0.5">/day</span>
           </span>
         </div>
       </div>

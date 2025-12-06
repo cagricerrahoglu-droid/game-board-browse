@@ -15,7 +15,7 @@ import {
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-24">
       {/* Sticky Header */}
       <Header />
 
@@ -23,7 +23,7 @@ const Index = () => {
       <FiltersSection />
 
       {/* Carousels */}
-      <main className="flex flex-col gap-6 py-4">
+      <main className="flex flex-col gap-8 py-6">
         <GameCarousel title="🎯 Strategy" games={strategyGames} />
         <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" games={familyGames} />
         <GameCarousel title="🎲 2-Player Hits" games={twoPlayerGames} />
@@ -32,7 +32,7 @@ const Index = () => {
         <GameCarousel title="🤝 Cooperative Games" games={coopGames} />
 
         {/* Divider */}
-        <div className="h-px bg-border mx-4" />
+        <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
 
         {/* Vertical Recommended List */}
         <VerticalGameList title="✨ Recommended for You" games={recommendedGames} />
