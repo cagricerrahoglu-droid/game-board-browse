@@ -16,13 +16,9 @@ const filters = [
 ];
 
 const ageRanges = [
-  { id: "3+", label: "3+ years" },
-  { id: "6+", label: "6+ years" },
-  { id: "8+", label: "8+ years" },
-  { id: "10+", label: "10+ years" },
-  { id: "12+", label: "12+ years" },
-  { id: "14+", label: "14+ years" },
-  { id: "18+", label: "18+ years" },
+  { id: "under-8", label: "Under 8" },
+  { id: "8-12", label: "8-12" },
+  { id: "12+", label: "12+" },
 ];
 
 const FiltersSection = () => {
