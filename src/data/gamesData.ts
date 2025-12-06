@@ -1,20 +1,11 @@
 import { GameCardProps } from "@/components/GameCard";
 
-// Import generated images for games with broken URLs
-import catanImg from "@/assets/games/catan.jpg";
-import ticketToRideImg from "@/assets/games/ticket-to-ride.jpg";
-import azulImg from "@/assets/games/azul.jpg";
-import splendorImg from "@/assets/games/splendor.jpg";
-import kingdominoImg from "@/assets/games/kingdomino.jpg";
-import dixitImg from "@/assets/games/dixit.jpg";
-import sushiGoImg from "@/assets/games/sushi-go.jpg";
-
-// Real board game data with actual box art images
+// Real board game data with actual box art images from BoardGameGeek
 export const strategyGames: GameCardProps[] = [
   {
     id: "catan",
     title: "Catan",
-    imageUrl: catanImg,
+    imageUrl: "https://cf.geekdo-images.com/W3Bsga_uLP9kO91gZ7H8yw__imagepage/img/M_3Vg1j2HlNgkv7PL2xl2BJE2bw=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2419375.jpg",
     players: "3-4",
     duration: "60-120",
     difficulty: "Medium",
@@ -25,7 +16,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "ticket-to-ride",
     title: "Ticket to Ride",
-    imageUrl: ticketToRideImg,
+    imageUrl: "https://cf.geekdo-images.com/ZWJg0dCdrWHxVnc0eFXK8w__imagepage/img/FcSGmWEDYMTXlY1NVKkm8QP0-20=/fit-in/900x600/filters:no_upscale():strip_icc()/pic38668.jpg",
     players: "2-5",
     duration: "30-60",
     difficulty: "Easy",
@@ -72,7 +63,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "azul",
     title: "Azul",
-    imageUrl: azulImg,
+    imageUrl: "https://cf.geekdo-images.com/aPSHJO0d0XOpQR5X-wJonw__imagepage/img/q4uWd2nXGeEkKDR8Cc3NhXG9PEU=/fit-in/900x600/filters:no_upscale():strip_icc()/pic6973671.png",
     players: "2-4",
     duration: "30-45",
     difficulty: "Easy",
@@ -83,7 +74,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "splendor",
     title: "Splendor",
-    imageUrl: splendorImg,
+    imageUrl: "https://cf.geekdo-images.com/rwOMxx4q5yuElIvo-1-OFw__imagepage/img/0d-3SuVWpPAL24P1SWmL1jb-A-0=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1904079.jpg",
     players: "2-4",
     duration: "30",
     difficulty: "Easy",
@@ -94,7 +85,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "kingdomino",
     title: "Kingdomino",
-    imageUrl: kingdominoImg,
+    imageUrl: "https://cf.geekdo-images.com/3h9W8BfB_rltQ48EBmHliw__imagepage/img/0-VFzY8KFlDdT7B-utRvlzGM-OI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3132685.png",
     players: "2-4",
     duration: "15-20",
     difficulty: "Easy",
@@ -105,7 +96,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "dixit",
     title: "Dixit",
-    imageUrl: dixitImg,
+    imageUrl: "https://cf.geekdo-images.com/J0PlHHeJeuskhhEF4RFjIA__imagepage/img/cQGDrjoQdBysLvjLKGwZDdZ-jOE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic6738341.jpg",
     players: "3-6",
     duration: "30",
     difficulty: "Easy",
@@ -116,7 +107,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "sushi-go",
     title: "Sushi Go!",
-    imageUrl: sushiGoImg,
+    imageUrl: "https://cf.geekdo-images.com/Fn3PSPCqkJVaQx1mOSSnAQ__imagepage/img/V9MZ0xY3hXr3r3HnE3QwJjO2PnE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1900075.jpg",
     players: "2-5",
     duration: "15",
     difficulty: "Easy",
