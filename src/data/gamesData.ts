@@ -1,13 +1,11 @@
 import { GameCardProps } from "@/components/GameCard";
-import catanImage from "@/assets/games/catan.jpg";
-import ticketToRideImage from "@/assets/games/ticket-to-ride.jpg";
 
 // Real board game data with actual box art images
 export const strategyGames: GameCardProps[] = [
   {
     id: "catan",
     title: "Catan",
-    imageUrl: catanImage,
+    imageUrl: "https://cf.geekdo-images.com/W3Bsga_uLP9kO91gZ7H8yw__imagepage/img/M_7UvgSvYLf8qBqwPLdoY7YKLhc=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2419375.jpg",
     players: "3-4",
     duration: "60-120",
     difficulty: "Medium",
@@ -18,7 +16,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "ticket-to-ride",
     title: "Ticket to Ride",
-    imageUrl: ticketToRideImage,
+    imageUrl: "https://cf.geekdo-images.com/ZWJg0dCdrWHxVnc0eFXK8w__imagepage/img/FcSGmLeIStNxGpO1R-QVIwX-d-8=/fit-in/900x600/filters:no_upscale():strip_icc()/pic38668.jpg",
     players: "2-5",
     duration: "30-60",
     difficulty: "Easy",
