@@ -1,16 +1,16 @@
-import { LayoutGrid, Heart, ShoppingBag, User } from "lucide-react";
+import { Search, Heart, ShoppingCart, User } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface NavItem {
-  icon: typeof LayoutGrid;
+  icon: typeof Search;
   label: string;
   isActive?: boolean;
 }
 
 const navItems: NavItem[] = [
-  { icon: LayoutGrid, label: "Browse", isActive: true },
+  { icon: Search, label: "Browse", isActive: true },
   { icon: Heart, label: "Favourites" },
-  { icon: ShoppingBag, label: "Basket" },
+  { icon: ShoppingCart, label: "Basket" },
   { icon: User, label: "Profile" },
 ];
 
