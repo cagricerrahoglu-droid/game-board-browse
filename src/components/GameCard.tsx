@@ -66,7 +66,7 @@ const GameCard = ({
       )}
     >
       {/* Cover Image */}
-      <div className="relative w-full aspect-[3/4] overflow-hidden bg-muted">
+      <div className="relative w-full aspect-square overflow-hidden bg-muted">
         <img
           src={imageUrl}
           alt={title}
