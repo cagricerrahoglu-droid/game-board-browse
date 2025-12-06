@@ -27,10 +27,17 @@ const durationRanges = [
   { id: "60+", label: "60+ mins" },
 ];
 
+const difficultyLevels = [
+  { id: "easy", label: "Easy" },
+  { id: "medium", label: "Medium" },
+  { id: "difficult", label: "Difficult" },
+];
+
 const FiltersSection = () => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
 
   const handleAgeSelect = (ageId: string) => {
     setSelectedAge(selectedAge === ageId ? null : ageId);
@@ -40,6 +47,11 @@ const FiltersSection = () => {
   const handleDurationSelect = (durationId: string) => {
     setSelectedDuration(selectedDuration === durationId ? null : durationId);
     setActiveFilter(selectedDuration === durationId ? null : "duration");
+  };
+
+  const handleDifficultySelect = (difficultyId: string) => {
+    setSelectedDifficulty(selectedDifficulty === difficultyId ? null : difficultyId);
+    setActiveFilter(selectedDifficulty === difficultyId ? null : "difficulty");
   };
 
   return (
@@ -123,6 +135,48 @@ const FiltersSection = () => {
                           )}
                         >
                           {duration.label}
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              );
+            }
+
+            if (filter.id === "difficulty") {
+              return (
+                <Popover key={filter.id}>
+                  <PopoverTrigger asChild>
+                    <button
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
+                        "font-medium text-sm whitespace-nowrap",
+                        "transition-all duration-200 ease-out",
+                        "border-2",
+                        selectedDifficulty
+                          ? "bg-primary text-primary-foreground border-primary shadow-md"
+                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
+                      )}
+                    >
+                      <Gauge className="w-4 h-4" />
+                      <span>{selectedDifficulty ? difficultyLevels.find(d => d.id === selectedDifficulty)?.label : "Difficulty"}</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-40 p-2" align="start">
+                    <div className="flex flex-col gap-1">
+                      {difficultyLevels.map((difficulty) => (
+                        <button
+                          key={difficulty.id}
+                          onClick={() => handleDifficultySelect(difficulty.id)}
+                          className={cn(
+                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
+                            selectedDifficulty === difficulty.id
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted"
+                          )}
+                        >
+                          {difficulty.label}
                         </button>
                       ))}
                     </div>
