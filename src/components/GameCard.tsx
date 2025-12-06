@@ -57,6 +57,10 @@ const GameCard = ({
           src={imageUrl}
           alt={title}
           className="w-full h-full object-cover"
+          onError={(e) => {
+            const target = e.target as HTMLImageElement;
+            target.src = `https://placehold.co/300x400/f5f0e8/e85d4c?text=${encodeURIComponent(title)}`;
+          }}
         />
         {/* Availability Badge */}
         <div
