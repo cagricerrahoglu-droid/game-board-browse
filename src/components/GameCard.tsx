@@ -71,7 +71,7 @@ const GameCard = ({
           src={imageUrl}
           alt={title}
           className={cn(
-            "w-full h-full object-cover transition-transform duration-500",
+            "w-full h-full object-cover object-top transition-transform duration-500",
             "group-hover:scale-105"
           )}
           onError={(e) => {
