@@ -61,7 +61,7 @@ const GameCard = ({
         "shadow-card hover:shadow-card-hover",
         "transition-all duration-300 ease-out",
         "hover:-translate-y-1.5 active:scale-[0.98]",
-        "w-[168px] flex-shrink-0",
+        "w-[224px] flex-shrink-0",
         "text-left group"
       )}
     >
