@@ -1,4 +1,4 @@
-import { Search, Heart, ShoppingCart, User } from "lucide-react";
+import { Home, Search, Heart, ShoppingCart, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
@@ -9,7 +9,8 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { icon: Search, label: "Browse", path: "/" },
+  { icon: Home, label: "Home", path: "/" },
+  { icon: Search, label: "Browse", path: "/browse" },
   { icon: Heart, label: "Favourites", path: "/favourites" },
   { icon: ShoppingCart, label: "Basket", path: "/basket" },
   { icon: User, label: "Profile", path: "/profile" },
