@@ -21,8 +21,8 @@ const BottomNav = () => {
   const navigate = useNavigate();
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-nav-background shadow-nav safe-bottom">
-      <div className="flex items-center justify-around py-2 px-4 max-w-md mx-auto">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-nav-background/95 backdrop-blur-xl shadow-nav border-t border-border/30 safe-bottom">
+      <div className="flex items-center justify-around py-2 px-2 max-w-lg mx-auto">
         {navItems.map((item) => {
           const isActive = location.pathname === item.path;
           return (
@@ -30,8 +30,9 @@ const BottomNav = () => {
               key={item.label}
               onClick={() => navigate(item.path)}
               className={cn(
-                "flex flex-col items-center gap-1 py-2 px-4 rounded-xl",
-                "transition-all duration-200",
+                "flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-2xl",
+                "transition-all duration-300 ease-out",
+                "active:scale-90",
                 isActive
                   ? "text-nav-active"
                   : "text-nav-inactive hover:text-foreground"
@@ -39,20 +40,21 @@ const BottomNav = () => {
             >
               <div
                 className={cn(
-                  "p-2 rounded-xl transition-all duration-200",
-                  isActive && "bg-primary/10"
+                  "p-2 rounded-xl transition-all duration-300 ease-out",
+                  isActive && "bg-primary/12 shadow-glow"
                 )}
               >
                 <item.icon
                   className={cn(
-                    "w-5 h-5 transition-all duration-200",
+                    "w-5 h-5 transition-all duration-300",
                     isActive && "scale-110"
                   )}
                   strokeWidth={isActive ? 2.5 : 2}
+                  fill={isActive && item.icon === Heart ? "currentColor" : "none"}
                 />
               </div>
               <span className={cn(
-                "text-xs font-medium",
+                "text-[10px] font-semibold tracking-wide",
                 isActive && "font-bold"
               )}>
                 {item.label}

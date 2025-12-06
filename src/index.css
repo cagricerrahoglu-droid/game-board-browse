@@ -6,63 +6,63 @@
 
 @layer base {
   :root {
-    /* Playful warm palette for SwitchBoard */
-    --background: 35 30% 97%;
-    --foreground: 220 25% 18%;
+    /* Warm, friendly palette for SwitchBoard */
+    --background: 42 35% 97%;
+    --foreground: 220 20% 20%;
 
     --card: 0 0% 100%;
-    --card-foreground: 220 25% 18%;
+    --card-foreground: 220 20% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 18%;
+    --popover-foreground: 220 20% 20%;
 
-    /* Warm coral orange - playful and energetic */
-    --primary: 16 85% 58%;
+    /* Warm sunset orange - inviting and playful */
+    --primary: 24 95% 55%;
     --primary-foreground: 0 0% 100%;
 
-    /* Soft teal for secondary actions */
-    --secondary: 175 45% 45%;
+    /* Soft mint teal for balance */
+    --secondary: 168 50% 48%;
     --secondary-foreground: 0 0% 100%;
 
-    /* Warm cream for muted surfaces */
-    --muted: 35 25% 92%;
-    --muted-foreground: 220 15% 45%;
+    /* Creamy warm muted surfaces */
+    --muted: 40 30% 94%;
+    --muted-foreground: 220 12% 50%;
 
-    /* Playful purple accent */
-    --accent: 280 55% 60%;
+    /* Playful violet accent */
+    --accent: 265 60% 62%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 72% 55%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 35 20% 88%;
-    --input: 35 20% 88%;
-    --ring: 16 85% 58%;
+    --border: 40 20% 90%;
+    --input: 40 20% 90%;
+    --ring: 24 95% 55%;
 
-    --radius: 1rem;
+    --radius: 1.25rem;
 
-    /* Custom tokens for game cards */
-    --card-shadow: 0 4px 20px -4px hsl(220 25% 18% / 0.08);
-    --card-shadow-hover: 0 8px 30px -4px hsl(220 25% 18% / 0.12);
+    /* Enhanced shadows for depth */
+    --card-shadow: 0 4px 24px -6px hsl(24 40% 30% / 0.08), 0 2px 8px -2px hsl(24 40% 30% / 0.04);
+    --card-shadow-hover: 0 12px 32px -8px hsl(24 40% 30% / 0.15), 0 4px 12px -2px hsl(24 40% 30% / 0.06);
     
-    /* Status colors */
-    --available: 145 60% 45%;
-    --unavailable: 0 65% 55%;
-    --limited: 45 90% 50%;
+    /* Status colors - softer, friendlier */
+    --available: 158 55% 42%;
+    --unavailable: 0 60% 58%;
+    --limited: 42 100% 50%;
 
-    /* Rating star color */
-    --star: 45 95% 55%;
+    /* Warm golden star */
+    --star: 45 100% 52%;
 
     /* Navigation */
     --nav-background: 0 0% 100%;
-    --nav-active: 16 85% 58%;
-    --nav-inactive: 220 15% 55%;
+    --nav-active: 24 95% 55%;
+    --nav-inactive: 220 12% 55%;
 
-    /* Carousel backgrounds */
-    --carousel-strategy: 220 70% 96%;
-    --carousel-family: 35 80% 95%;
-    --carousel-party: 320 70% 96%;
-    --carousel-coop: 145 50% 95%;
+    /* Carousel category backgrounds - subtle pastels */
+    --carousel-strategy: 220 60% 97%;
+    --carousel-family: 42 70% 96%;
+    --carousel-party: 330 60% 97%;
+    --carousel-coop: 158 45% 96%;
 
     /* Sidebar defaults */
     --sidebar-background: 0 0% 98%;
@@ -72,46 +72,49 @@
     --sidebar-accent: 240 4.8% 95.9%;
     --sidebar-accent-foreground: 240 5.9% 10%;
     --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 16 85% 58%;
+    --sidebar-ring: 24 95% 55%;
   }
 
   .dark {
-    --background: 220 25% 10%;
-    --foreground: 35 20% 95%;
+    --background: 220 20% 8%;
+    --foreground: 42 25% 95%;
 
-    --card: 220 25% 14%;
-    --card-foreground: 35 20% 95%;
+    --card: 220 20% 12%;
+    --card-foreground: 42 25% 95%;
 
-    --popover: 220 25% 14%;
-    --popover-foreground: 35 20% 95%;
+    --popover: 220 20% 12%;
+    --popover-foreground: 42 25% 95%;
 
-    --primary: 16 85% 58%;
+    --primary: 24 90% 55%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 175 45% 40%;
+    --secondary: 168 45% 42%;
     --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 20% 18%;
-    --muted-foreground: 220 15% 65%;
+    --muted: 220 18% 16%;
+    --muted-foreground: 220 12% 60%;
 
-    --accent: 280 55% 55%;
+    --accent: 265 55% 58%;
     --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 62.8% 45%;
+    --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 220 20% 20%;
-    --input: 220 20% 20%;
-    --ring: 16 85% 58%;
+    --border: 220 18% 18%;
+    --input: 220 18% 18%;
+    --ring: 24 90% 55%;
 
-    --sidebar-background: 220 25% 12%;
-    --sidebar-foreground: 35 20% 90%;
-    --sidebar-primary: 16 85% 58%;
+    --card-shadow: 0 4px 24px -6px hsl(0 0% 0% / 0.3);
+    --card-shadow-hover: 0 12px 32px -8px hsl(0 0% 0% / 0.4);
+
+    --sidebar-background: 220 20% 10%;
+    --sidebar-foreground: 42 20% 90%;
+    --sidebar-primary: 24 90% 55%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 20% 18%;
-    --sidebar-accent-foreground: 35 20% 90%;
-    --sidebar-border: 220 20% 20%;
-    --sidebar-ring: 16 85% 58%;
+    --sidebar-accent: 220 18% 16%;
+    --sidebar-accent-foreground: 42 20% 90%;
+    --sidebar-border: 220 18% 18%;
+    --sidebar-ring: 24 90% 55%;
   }
 }
 
@@ -144,26 +147,37 @@
   }
 }
 
-/* Custom animations */
+/* Smooth micro-interactions */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-4px); }
+  50% { transform: translateY(-6px); }
 }
 
 @keyframes pulse-soft {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(0.98); }
 }
 
 @keyframes slide-up {
   from { 
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(16px);
   }
   to { 
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes bounce-gentle {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
 }
 
 .animate-float {
@@ -175,5 +189,20 @@
 }
 
 .animate-slide-up {
-  animation: slide-up 0.4s ease-out forwards;
+  animation: slide-up 0.5s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
+
+.animate-bounce-gentle {
+  animation: bounce-gentle 0.4s ease-out;
+}
+
+.animate-wiggle {
+  animation: wiggle 0.5s ease-in-out;
+}
+
+/* Staggered animation delays for lists */
+.stagger-1 { animation-delay: 0.05s; }
+.stagger-2 { animation-delay: 0.1s; }
+.stagger-3 { animation-delay: 0.15s; }
+.stagger-4 { animation-delay: 0.2s; }
+.stagger-5 { animation-delay: 0.25s; }

@@ -1,5 +1,4 @@
 import { Users, Calendar, Clock, Gauge, ChevronDown } from "lucide-react";
-import FilterChip from "./FilterChip";
 import { useState } from "react";
 import {
   Popover,
@@ -7,13 +6,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
-
-const filters = [
-  { id: "players", icon: Users, label: "Players" },
-  { id: "age", icon: Calendar, label: "Age" },
-  { id: "duration", icon: Clock, label: "Duration" },
-  { id: "difficulty", icon: Gauge, label: "Difficulty" },
-];
 
 const ageRanges = [
   { id: "under-8", label: "Under 8" },
@@ -46,7 +38,6 @@ const playerCounts = [
 ];
 
 const FiltersSection = () => {
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
   const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
   const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
@@ -54,209 +45,151 @@ const FiltersSection = () => {
 
   const handleAgeSelect = (ageId: string) => {
     setSelectedAge(selectedAge === ageId ? null : ageId);
-    setActiveFilter(selectedAge === ageId ? null : "age");
   };
 
   const handleDurationSelect = (durationId: string) => {
     setSelectedDuration(selectedDuration === durationId ? null : durationId);
-    setActiveFilter(selectedDuration === durationId ? null : "duration");
   };
 
   const handleDifficultySelect = (difficultyId: string) => {
     setSelectedDifficulty(selectedDifficulty === difficultyId ? null : difficultyId);
-    setActiveFilter(selectedDifficulty === difficultyId ? null : "difficulty");
   };
 
   const handlePlayersSelect = (playersId: string) => {
     setSelectedPlayers(selectedPlayers === playersId ? null : playersId);
-    setActiveFilter(selectedPlayers === playersId ? null : "players");
   };
 
+  const FilterButton = ({
+    icon: Icon,
+    label,
+    isActive,
+    children,
+  }: {
+    icon: typeof Users;
+    label: string;
+    isActive: boolean;
+    children: React.ReactNode;
+  }) => (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button
+          className={cn(
+            "flex items-center gap-2 px-4 py-2.5 rounded-full",
+            "font-semibold text-sm whitespace-nowrap",
+            "transition-all duration-300 ease-out",
+            "border-2 active:scale-95",
+            isActive
+              ? "bg-primary text-primary-foreground border-primary shadow-glow"
+              : "bg-card text-foreground border-border/60 hover:border-primary/40 hover:bg-muted/50 shadow-soft"
+          )}
+        >
+          <Icon className="w-4 h-4" />
+          <span>{label}</span>
+          <ChevronDown className={cn(
+            "w-3.5 h-3.5 transition-transform duration-200",
+            isActive && "rotate-180"
+          )} />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-40 p-2 rounded-xl shadow-card-hover border-border/60" align="start">
+        {children}
+      </PopoverContent>
+    </Popover>
+  );
+
+  const FilterOption = ({
+    isSelected,
+    onClick,
+    label,
+  }: {
+    isSelected: boolean;
+    onClick: () => void;
+    label: string;
+  }) => (
+    <button
+      onClick={onClick}
+      className={cn(
+        "w-full px-3 py-2.5 text-sm rounded-lg text-left font-medium transition-all duration-200",
+        isSelected
+          ? "bg-primary text-primary-foreground"
+          : "hover:bg-muted text-foreground"
+      )}
+    >
+      {label}
+    </button>
+  );
+
   return (
-    <section className="px-4 py-3">
+    <section className="px-5 py-4">
       <div className="overflow-x-auto scrollbar-hide">
-        <div className="flex gap-2">
-          {filters.map((filter) => {
-            if (filter.id === "players") {
-              return (
-                <Popover key={filter.id}>
-                  <PopoverTrigger asChild>
-                    <button
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
-                        "font-medium text-sm whitespace-nowrap",
-                        "transition-all duration-200 ease-out",
-                        "border-2",
-                        selectedPlayers
-                          ? "bg-primary text-primary-foreground border-primary shadow-md"
-                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
-                      )}
-                    >
-                      <Users className="w-4 h-4" />
-                      <span>{selectedPlayers ? `${selectedPlayers} Players` : "Players"}</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-32 p-2" align="start">
-                    <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
-                      {playerCounts.map((count) => (
-                        <button
-                          key={count.id}
-                          onClick={() => handlePlayersSelect(count.id)}
-                          className={cn(
-                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
-                            selectedPlayers === count.id
-                              ? "bg-primary text-primary-foreground"
-                              : "hover:bg-muted"
-                          )}
-                        >
-                          {count.label}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              );
-            }
+        <div className="flex gap-3">
+          <FilterButton
+            icon={Users}
+            label={selectedPlayers ? `${selectedPlayers} Players` : "Players"}
+            isActive={!!selectedPlayers}
+          >
+            <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
+              {playerCounts.map((count) => (
+                <FilterOption
+                  key={count.id}
+                  isSelected={selectedPlayers === count.id}
+                  onClick={() => handlePlayersSelect(count.id)}
+                  label={count.label}
+                />
+              ))}
+            </div>
+          </FilterButton>
 
-            if (filter.id === "age") {
-              return (
-                <Popover key={filter.id}>
-                  <PopoverTrigger asChild>
-                    <button
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
-                        "font-medium text-sm whitespace-nowrap",
-                        "transition-all duration-200 ease-out",
-                        "border-2",
-                        selectedAge
-                          ? "bg-primary text-primary-foreground border-primary shadow-md"
-                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
-                      )}
-                    >
-                      <Calendar className="w-4 h-4" />
-                      <span>{selectedAge ? ageRanges.find(a => a.id === selectedAge)?.label : "Age"}</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-40 p-2" align="start">
-                    <div className="flex flex-col gap-1">
-                      {ageRanges.map((age) => (
-                        <button
-                          key={age.id}
-                          onClick={() => handleAgeSelect(age.id)}
-                          className={cn(
-                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
-                            selectedAge === age.id
-                              ? "bg-primary text-primary-foreground"
-                              : "hover:bg-muted"
-                          )}
-                        >
-                          {age.label}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              );
-            }
+          <FilterButton
+            icon={Calendar}
+            label={selectedAge ? ageRanges.find(a => a.id === selectedAge)?.label || "Age" : "Age"}
+            isActive={!!selectedAge}
+          >
+            <div className="flex flex-col gap-1">
+              {ageRanges.map((age) => (
+                <FilterOption
+                  key={age.id}
+                  isSelected={selectedAge === age.id}
+                  onClick={() => handleAgeSelect(age.id)}
+                  label={age.label}
+                />
+              ))}
+            </div>
+          </FilterButton>
 
-            if (filter.id === "duration") {
-              return (
-                <Popover key={filter.id}>
-                  <PopoverTrigger asChild>
-                    <button
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
-                        "font-medium text-sm whitespace-nowrap",
-                        "transition-all duration-200 ease-out",
-                        "border-2",
-                        selectedDuration
-                          ? "bg-primary text-primary-foreground border-primary shadow-md"
-                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
-                      )}
-                    >
-                      <Clock className="w-4 h-4" />
-                      <span>{selectedDuration ? durationRanges.find(d => d.id === selectedDuration)?.label : "Duration"}</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-40 p-2" align="start">
-                    <div className="flex flex-col gap-1">
-                      {durationRanges.map((duration) => (
-                        <button
-                          key={duration.id}
-                          onClick={() => handleDurationSelect(duration.id)}
-                          className={cn(
-                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
-                            selectedDuration === duration.id
-                              ? "bg-primary text-primary-foreground"
-                              : "hover:bg-muted"
-                          )}
-                        >
-                          {duration.label}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              );
-            }
+          <FilterButton
+            icon={Clock}
+            label={selectedDuration ? durationRanges.find(d => d.id === selectedDuration)?.label || "Duration" : "Duration"}
+            isActive={!!selectedDuration}
+          >
+            <div className="flex flex-col gap-1">
+              {durationRanges.map((duration) => (
+                <FilterOption
+                  key={duration.id}
+                  isSelected={selectedDuration === duration.id}
+                  onClick={() => handleDurationSelect(duration.id)}
+                  label={duration.label}
+                />
+              ))}
+            </div>
+          </FilterButton>
 
-            if (filter.id === "difficulty") {
-              return (
-                <Popover key={filter.id}>
-                  <PopoverTrigger asChild>
-                    <button
-                      className={cn(
-                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
-                        "font-medium text-sm whitespace-nowrap",
-                        "transition-all duration-200 ease-out",
-                        "border-2",
-                        selectedDifficulty
-                          ? "bg-primary text-primary-foreground border-primary shadow-md"
-                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
-                      )}
-                    >
-                      <Gauge className="w-4 h-4" />
-                      <span>{selectedDifficulty ? difficultyLevels.find(d => d.id === selectedDifficulty)?.label : "Difficulty"}</span>
-                      <ChevronDown className="w-3 h-3" />
-                    </button>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-40 p-2" align="start">
-                    <div className="flex flex-col gap-1">
-                      {difficultyLevels.map((difficulty) => (
-                        <button
-                          key={difficulty.id}
-                          onClick={() => handleDifficultySelect(difficulty.id)}
-                          className={cn(
-                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
-                            selectedDifficulty === difficulty.id
-                              ? "bg-primary text-primary-foreground"
-                              : "hover:bg-muted"
-                          )}
-                        >
-                          {difficulty.label}
-                        </button>
-                      ))}
-                    </div>
-                  </PopoverContent>
-                </Popover>
-              );
-            }
-            
-            return (
-              <FilterChip
-                key={filter.id}
-                icon={filter.icon}
-                label={filter.label}
-                isActive={activeFilter === filter.id}
-                onClick={() =>
-                  setActiveFilter(activeFilter === filter.id ? null : filter.id)
-                }
-              />
-            );
-          })}
+          <FilterButton
+            icon={Gauge}
+            label={selectedDifficulty ? difficultyLevels.find(d => d.id === selectedDifficulty)?.label || "Difficulty" : "Difficulty"}
+            isActive={!!selectedDifficulty}
+          >
+            <div className="flex flex-col gap-1">
+              {difficultyLevels.map((difficulty) => (
+                <FilterOption
+                  key={difficulty.id}
+                  isSelected={selectedDifficulty === difficulty.id}
+                  onClick={() => handleDifficultySelect(difficulty.id)}
+                  label={difficulty.label}
+                />
+              ))}
+            </div>
+          </FilterButton>
         </div>
       </div>
     </section>
