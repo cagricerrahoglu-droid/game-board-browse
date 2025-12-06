@@ -1,6 +1,7 @@
 import { ChevronRight } from "lucide-react";
 import GameCard, { GameCardProps } from "./GameCard";
 import { cn } from "@/lib/utils";
+import { useFavorites } from "@/contexts/FavoritesContext";
 
 interface GameCarouselProps {
   title: string;
@@ -9,6 +10,8 @@ interface GameCarouselProps {
 }
 
 const GameCarousel = ({ title, games, className }: GameCarouselProps) => {
+  const { toggleFavorite, isFavorite } = useFavorites();
+
   return (
     <section className={cn("flex flex-col gap-3", className)}>
       {/* Header */}
@@ -24,7 +27,12 @@ const GameCarousel = ({ title, games, className }: GameCarouselProps) => {
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-3 px-4 pb-2">
           {games.map((game) => (
-            <GameCard key={game.id} {...game} />
+            <GameCard
+              key={game.id}
+              {...game}
+              isFavorite={isFavorite(game.id)}
+              onFavoriteToggle={toggleFavorite}
+            />
           ))}
         </div>
       </div>
