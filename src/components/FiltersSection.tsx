@@ -21,13 +21,25 @@ const ageRanges = [
   { id: "12+", label: "12+" },
 ];
 
+const durationRanges = [
+  { id: "under-30", label: "<30 mins" },
+  { id: "30-60", label: "30-60 mins" },
+  { id: "60+", label: "60+ mins" },
+];
+
 const FiltersSection = () => {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [selectedAge, setSelectedAge] = useState<string | null>(null);
+  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
 
   const handleAgeSelect = (ageId: string) => {
     setSelectedAge(selectedAge === ageId ? null : ageId);
     setActiveFilter(selectedAge === ageId ? null : "age");
+  };
+
+  const handleDurationSelect = (durationId: string) => {
+    setSelectedDuration(selectedDuration === durationId ? null : durationId);
+    setActiveFilter(selectedDuration === durationId ? null : "duration");
   };
 
   return (
@@ -69,6 +81,48 @@ const FiltersSection = () => {
                           )}
                         >
                           {age.label}
+                        </button>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              );
+            }
+
+            if (filter.id === "duration") {
+              return (
+                <Popover key={filter.id}>
+                  <PopoverTrigger asChild>
+                    <button
+                      className={cn(
+                        "flex items-center gap-2 px-4 py-2.5 rounded-full",
+                        "font-medium text-sm whitespace-nowrap",
+                        "transition-all duration-200 ease-out",
+                        "border-2",
+                        selectedDuration
+                          ? "bg-primary text-primary-foreground border-primary shadow-md"
+                          : "bg-card text-foreground border-border hover:border-primary/40 hover:bg-muted"
+                      )}
+                    >
+                      <Clock className="w-4 h-4" />
+                      <span>{selectedDuration ? durationRanges.find(d => d.id === selectedDuration)?.label : "Duration"}</span>
+                      <ChevronDown className="w-3 h-3" />
+                    </button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-40 p-2" align="start">
+                    <div className="flex flex-col gap-1">
+                      {durationRanges.map((duration) => (
+                        <button
+                          key={duration.id}
+                          onClick={() => handleDurationSelect(duration.id)}
+                          className={cn(
+                            "px-3 py-2 text-sm rounded-lg text-left transition-colors",
+                            selectedDuration === duration.id
+                              ? "bg-primary text-primary-foreground"
+                              : "hover:bg-muted"
+                          )}
+                        >
+                          {duration.label}
                         </button>
                       ))}
                     </div>
