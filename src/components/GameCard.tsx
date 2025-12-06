@@ -1,6 +1,5 @@
 import { Users, Clock, Gauge, Star, Check, X, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
-import gamePlaceholder from "@/assets/game-placeholder.png";
 
 export interface GameCardProps {
   id: string;
@@ -60,7 +59,7 @@ const GameCard = ({
           className="w-full h-full object-cover"
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = gamePlaceholder;
+            target.src = `https://placehold.co/300x400/f5f0e8/e85d4c?text=${encodeURIComponent(title)}`;
           }}
         />
         {/* Availability Badge */}
