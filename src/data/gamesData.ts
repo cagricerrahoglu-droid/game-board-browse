@@ -1,42 +1,11 @@
 import { GameCardProps } from "@/components/GameCard";
 
-// Import all game images
-import catanImg from "@/assets/games/catan.jpg";
-import ticketToRideImg from "@/assets/games/ticket-to-ride.jpg";
-import wingspanImg from "@/assets/games/wingspan.jpg";
-import terraformingMarsImg from "@/assets/games/terraforming-mars.jpg";
-import sevenWondersImg from "@/assets/games/7-wonders.jpg";
-import azulImg from "@/assets/games/azul.jpg";
-import splendorImg from "@/assets/games/splendor.jpg";
-import kingdominoImg from "@/assets/games/kingdomino.jpg";
-import dixitImg from "@/assets/games/dixit.jpg";
-import sushiGoImg from "@/assets/games/sushi-go.jpg";
-import sevenWondersDuelImg from "@/assets/games/7-wonders-duel.jpg";
-import patchworkImg from "@/assets/games/patchwork.jpg";
-import jaipurImg from "@/assets/games/jaipur.jpg";
-import codenamesDuetImg from "@/assets/games/codenames-duet.jpg";
-import starRealmsImg from "@/assets/games/star-realms.jpg";
-import codenamesImg from "@/assets/games/codenames.jpg";
-import wavelengthImg from "@/assets/games/wavelength.jpg";
-import justOneImg from "@/assets/games/just-one.jpg";
-import telestrationsImg from "@/assets/games/telestrations.jpg";
-import theResistanceImg from "@/assets/games/the-resistance.jpg";
-import carcassonneImg from "@/assets/games/carcassonne.jpg";
-import loveLetterImg from "@/assets/games/love-letter.jpg";
-import unoImg from "@/assets/games/uno.jpg";
-import dobbleImg from "@/assets/games/dobble.jpg";
-import explodingKittensImg from "@/assets/games/exploding-kittens.jpg";
-import pandemicImg from "@/assets/games/pandemic.jpg";
-import spiritIslandImg from "@/assets/games/spirit-island.jpg";
-import theCrewImg from "@/assets/games/the-crew.jpg";
-import hanabiImg from "@/assets/games/hanabi.jpg";
-import mysteriumImg from "@/assets/games/mysterium.jpg";
-
+// Real board game data with actual box art images
 export const strategyGames: GameCardProps[] = [
   {
     id: "catan",
     title: "Catan",
-    imageUrl: catanImg,
+    imageUrl: "https://cf.geekdo-images.com/W3Bsga_uLP9kO91gZ7H8yw__imagepage/img/M_7UvgSvYLf8qBqwPLdoY7YKLhc=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2419375.jpg",
     players: "3-4",
     duration: "60-120",
     difficulty: "Medium",
@@ -47,7 +16,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "ticket-to-ride",
     title: "Ticket to Ride",
-    imageUrl: ticketToRideImg,
+    imageUrl: "https://cf.geekdo-images.com/ZWJg0dCdrWHxVnc0eFXK8w__imagepage/img/FcSGmLeIStNxGpO1R-QVIwX-d-8=/fit-in/900x600/filters:no_upscale():strip_icc()/pic38668.jpg",
     players: "2-5",
     duration: "30-60",
     difficulty: "Easy",
@@ -58,7 +27,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "wingspan",
     title: "Wingspan",
-    imageUrl: wingspanImg,
+    imageUrl: "https://cf.geekdo-images.com/yLZJCVLlIx4c7eJEWUNJ7w__imagepage/img/uIjeoKgHMcRtzRSR4MoUYl3nXxs=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4458123.jpg",
     players: "1-5",
     duration: "40-70",
     difficulty: "Medium",
@@ -69,7 +38,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "terraforming-mars",
     title: "Terraforming Mars",
-    imageUrl: terraformingMarsImg,
+    imageUrl: "https://cf.geekdo-images.com/wg9oOLcsKvDesSUdZQ4rxw__imagepage/img/FS1RE8Ue6nk1pNbPI3l-OSapQGc=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3536616.jpg",
     players: "1-5",
     duration: "120+",
     difficulty: "Hard",
@@ -80,7 +49,7 @@ export const strategyGames: GameCardProps[] = [
   {
     id: "7-wonders",
     title: "7 Wonders",
-    imageUrl: sevenWondersImg,
+    imageUrl: "https://cf.geekdo-images.com/RvFVTEpnbb4NM7k0IF8V7A__imagepage/img/zruHYxY2_jx-796WgsDj7hitidQ=/fit-in/900x600/filters:no_upscale():strip_icc()/pic860217.jpg",
     players: "2-7",
     duration: "30-45",
     difficulty: "Medium",
@@ -94,7 +63,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "azul",
     title: "Azul",
-    imageUrl: azulImg,
+    imageUrl: "https://cf.geekdo-images.com/tz19PfklMdAdjxV9WArraA__imagepage/img/xSA1vR8wjtgL47GVKzylAE7v-JI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic6973671.jpg",
     players: "2-4",
     duration: "30-45",
     difficulty: "Easy",
@@ -105,7 +74,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "splendor",
     title: "Splendor",
-    imageUrl: splendorImg,
+    imageUrl: "https://cf.geekdo-images.com/rwOMxx4q5yuElIvo-1-OFw__imagepage/img/wEIfMUfCrGmo0TXi2Xuk_hKDYXs=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1904079.jpg",
     players: "2-4",
     duration: "30",
     difficulty: "Easy",
@@ -116,7 +85,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "kingdomino",
     title: "Kingdomino",
-    imageUrl: kingdominoImg,
+    imageUrl: "https://cf.geekdo-images.com/3h9W8BfB_rltQ48EBmHliw__imagepage/img/iL7bbm8d4meLUnnrEWJe9h-3WDA=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3132685.jpg",
     players: "2-4",
     duration: "15-20",
     difficulty: "Easy",
@@ -127,7 +96,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "dixit",
     title: "Dixit",
-    imageUrl: dixitImg,
+    imageUrl: "https://cf.geekdo-images.com/J-hPpcLxvYxymLSGijhRCA__imagepage/img/gPH5bVLdz09AsoWMDujh-2a8Ims=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3483909.jpg",
     players: "3-6",
     duration: "30",
     difficulty: "Easy",
@@ -138,7 +107,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "sushi-go",
     title: "Sushi Go!",
-    imageUrl: sushiGoImg,
+    imageUrl: "https://cf.geekdo-images.com/Fn3PSPdzNHv6d1wL15U0xg__imagepage/img/NxuxI7kGFWMDuJkN-P08E9T3E0E=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1900075.jpg",
     players: "2-5",
     duration: "15",
     difficulty: "Easy",
@@ -152,7 +121,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "7-wonders-duel",
     title: "7 Wonders Duel",
-    imageUrl: sevenWondersDuelImg,
+    imageUrl: "https://cf.geekdo-images.com/zdagMskTF7wJBPjX74XsRw__imagepage/img/HdJ4d4O1P89V4UIhZnL3zoYnjow=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2576399.jpg",
     players: "2",
     duration: "30",
     difficulty: "Medium",
@@ -163,7 +132,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "patchwork",
     title: "Patchwork",
-    imageUrl: patchworkImg,
+    imageUrl: "https://cf.geekdo-images.com/wLW7pFn0--20lEizEz5p3A__imagepage/img/qDuX2TRjK3utCghPRUfrG42fcFk=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2270442.jpg",
     players: "2",
     duration: "15-30",
     difficulty: "Easy",
@@ -174,7 +143,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "jaipur",
     title: "Jaipur",
-    imageUrl: jaipurImg,
+    imageUrl: "https://cf.geekdo-images.com/HxQvRs4YExprqGzCoqoTwQ__imagepage/img/TyHCnLOPH1RpjEJP6VQnYNfVrZg=/fit-in/900x600/filters:no_upscale():strip_icc()/pic5100947.jpg",
     players: "2",
     duration: "30",
     difficulty: "Easy",
@@ -185,7 +154,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "codenames-duet",
     title: "Codenames Duet",
-    imageUrl: codenamesDuetImg,
+    imageUrl: "https://cf.geekdo-images.com/4ECs_hJqvUDIqnv28VJ4nw__imagepage/img/kTbf1JJVe8xMl06xqSdnA1eosoI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3596681.jpg",
     players: "2",
     duration: "15-30",
     difficulty: "Easy",
@@ -196,7 +165,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "star-realms",
     title: "Star Realms",
-    imageUrl: starRealmsImg,
+    imageUrl: "https://cf.geekdo-images.com/Lku8dpHuWc_tHmKoLJ_EZA__imagepage/img/D5pIUVd09cLVnR_QqHZBujbvJrM=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4855700.jpg",
     players: "2",
     duration: "20",
     difficulty: "Medium",
@@ -210,7 +179,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "codenames",
     title: "Codenames",
-    imageUrl: codenamesImg,
+    imageUrl: "https://cf.geekdo-images.com/F_KDEu0GjdClml8N7c8Imw__imagepage/img/rc_Do8f5v41nWEGcwHE1eKAkIfI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2582929.jpg",
     players: "2-8",
     duration: "15-30",
     difficulty: "Easy",
@@ -221,7 +190,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "wavelength",
     title: "Wavelength",
-    imageUrl: wavelengthImg,
+    imageUrl: "https://cf.geekdo-images.com/HLCpXxVqe-T5TKLhijKqgQ__imagepage/img/eowLT_I7KZQYH5j6RNxrT4eLVtE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4552521.png",
     players: "2-12",
     duration: "30-45",
     difficulty: "Easy",
@@ -232,7 +201,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "just-one",
     title: "Just One",
-    imageUrl: justOneImg,
+    imageUrl: "https://cf.geekdo-images.com/ochDvnjLtPxWgQ-MILz4yg__imagepage/img/FQlAx1sDilTLHDqpf16uDpuzjZQ=/fit-in/900x600/filters:no_upscale():strip_icc()/pic4268499.jpg",
     players: "3-7",
     duration: "20",
     difficulty: "Easy",
@@ -243,7 +212,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "telestrations",
     title: "Telestrations",
-    imageUrl: telestrationsImg,
+    imageUrl: "https://cf.geekdo-images.com/CqfSBzQRrBio9ABbm5RuBQ__imagepage/img/dW2YzJb8d7Wx-qZwQK5sbsmVLuM=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2523100.jpg",
     players: "4-8",
     duration: "30",
     difficulty: "Easy",
@@ -254,7 +223,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "the-resistance",
     title: "The Resistance",
-    imageUrl: theResistanceImg,
+    imageUrl: "https://cf.geekdo-images.com/V9g4vBG_IhfLr4N1PzmMPA__imagepage/img/H-ynqBJM4f5vTFwm9RMnfV9BHXA=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2576459.jpg",
     players: "5-10",
     duration: "30",
     difficulty: "Easy",
@@ -268,7 +237,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "carcassonne",
     title: "Carcassonne",
-    imageUrl: carcassonneImg,
+    imageUrl: "https://cf.geekdo-images.com/Z3upN53-fsVPUDimN9SpOA__imagepage/img/NAvsGmJWTuuWDRXYMJEbAoB_KPY=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2337577.jpg",
     players: "2-5",
     duration: "30-45",
     difficulty: "Easy",
@@ -279,7 +248,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "love-letter",
     title: "Love Letter",
-    imageUrl: loveLetterImg,
+    imageUrl: "https://cf.geekdo-images.com/T1ltXwapFUtghS9A7_tf4g__imagepage/img/HUoSM3DEUB-CgAu-XdTxhmSMzEE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1401448.jpg",
     players: "2-4",
     duration: "20",
     difficulty: "Easy",
@@ -290,7 +259,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "uno",
     title: "UNO",
-    imageUrl: unoImg,
+    imageUrl: "https://cf.geekdo-images.com/JN1rDl7I_5TDAZlEbqP1AA__imagepage/img/h5_H2WhX5OMVwOMaFX01FfrHWJM=/fit-in/900x600/filters:no_upscale():strip_icc()/pic6335702.jpg",
     players: "2-10",
     duration: "30",
     difficulty: "Easy",
@@ -301,7 +270,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "dobble",
     title: "Dobble",
-    imageUrl: dobbleImg,
+    imageUrl: "https://cf.geekdo-images.com/ejfl7sSEdRKMW7MFSF2OjA__imagepage/img/S-fomDmCKUXoT1QnUo4vRwGv82Y=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3527054.jpg",
     players: "2-8",
     duration: "15",
     difficulty: "Easy",
@@ -312,7 +281,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "exploding-kittens",
     title: "Exploding Kittens",
-    imageUrl: explodingKittensImg,
+    imageUrl: "https://cf.geekdo-images.com/N8bL53-pRU7zaXDTrEaYrw__imagepage/img/2u-He6VgLw7CVxNg4scRGcmIuqU=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2691976.png",
     players: "2-5",
     duration: "15",
     difficulty: "Easy",
@@ -326,7 +295,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "pandemic",
     title: "Pandemic",
-    imageUrl: pandemicImg,
+    imageUrl: "https://cf.geekdo-images.com/S3ybV1LAp-8SnHIXLLjVqA__imagepage/img/kIBu-2Ljb_ml5n-S8uIbE6ehGFc=/fit-in/900x600/filters:no_upscale():strip_icc()/pic1534148.jpg",
     players: "2-4",
     duration: "45",
     difficulty: "Medium",
@@ -337,7 +306,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "spirit-island",
     title: "Spirit Island",
-    imageUrl: spiritIslandImg,
+    imageUrl: "https://cf.geekdo-images.com/kjCm4ZvPjIZxS-mYgSPy1g__imagepage/img/y-dL-gCOzfNdepQDZpMvBbqnwCg=/fit-in/900x600/filters:no_upscale():strip_icc()/pic3615739.png",
     players: "1-4",
     duration: "90-120",
     difficulty: "Hard",
@@ -348,7 +317,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "the-crew",
     title: "The Crew",
-    imageUrl: theCrewImg,
+    imageUrl: "https://cf.geekdo-images.com/98LnQShydr11OBKS46xY-Q__imagepage/img/zMKIubjD4_HrkAhmCqneqo8eoMo=/fit-in/900x600/filters:no_upscale():strip_icc()/pic5687013.jpg",
     players: "2-5",
     duration: "20",
     difficulty: "Medium",
@@ -359,7 +328,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "hanabi",
     title: "Hanabi",
-    imageUrl: hanabiImg,
+    imageUrl: "https://cf.geekdo-images.com/aKMpLsnO5ZMYU-1eKL8gXQ__imagepage/img/q-Rz8K2pG_bCGJCpJvNaQUNQ9bs=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2007286.jpg",
     players: "2-5",
     duration: "25",
     difficulty: "Medium",
@@ -370,7 +339,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "mysterium",
     title: "Mysterium",
-    imageUrl: mysteriumImg,
+    imageUrl: "https://cf.geekdo-images.com/wfeAiLnq6wfezKBjZSE33A__imagepage/img/HNNMNFqNFMUMmm4PLOLPMQXZsxE=/fit-in/900x600/filters:no_upscale():strip_icc()/pic2601683.jpg",
     players: "2-7",
     duration: "45",
     difficulty: "Medium",
