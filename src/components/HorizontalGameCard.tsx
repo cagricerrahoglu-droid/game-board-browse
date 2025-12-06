@@ -1,4 +1,5 @@
-import { Users, Clock, Gauge, Star, Check, X, AlertCircle } from "lucide-react";
+import { useState } from "react";
+import { Users, Clock, Gauge, Star, Check, X, AlertCircle, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GameCardProps } from "./GameCard";
 
@@ -15,6 +16,7 @@ const availabilityConfig = {
 };
 
 const HorizontalGameCard = ({
+  id,
   title,
   imageUrl,
   players,
@@ -23,13 +25,23 @@ const HorizontalGameCard = ({
   rating,
   availability,
   pricePerDay,
+  isFavorite = false,
+  onFavoriteToggle,
   onClick,
 }: GameCardProps) => {
   const StatusIcon = availabilityConfig[availability].icon;
+  const [isHovered, setIsHovered] = useState(false);
+
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onFavoriteToggle?.(id);
+  };
 
   return (
     <button
       onClick={onClick}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       className={cn(
         "flex flex-row bg-card rounded-xl overflow-hidden",
         "shadow-card hover:shadow-card-hover",
@@ -50,6 +62,23 @@ const HorizontalGameCard = ({
             target.src = `https://placehold.co/300x300/f5f0e8/e85d4c?text=${encodeURIComponent(title)}`;
           }}
         />
+        {/* Favorite Button */}
+        <div
+          onClick={handleFavoriteClick}
+          className={cn(
+            "absolute top-2 right-2 p-1.5 rounded-full",
+            "transition-all duration-200",
+            "bg-card/80 backdrop-blur-sm",
+            isHovered || isFavorite ? "opacity-100" : "opacity-0"
+          )}
+        >
+          <Heart
+            className={cn(
+              "w-4 h-4 transition-colors",
+              isFavorite ? "fill-primary text-primary" : "text-foreground hover:text-primary"
+            )}
+          />
+        </div>
         {/* Availability Badge */}
         <div
           className={cn(
