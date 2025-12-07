@@ -429,10 +429,7 @@ const Profile = () => {
             <SettingsRow icon={Shield} label="Privacy Policy" />
             <SettingsRow icon={FileText} label="Terms & Conditions" />
             <Separator className="my-3" />
-            <button 
-              onClick={() => navigate('/')}
-              className="w-full flex items-center gap-3 py-3 px-1 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
-            >
+            <button className="w-full flex items-center gap-3 py-3 px-1 text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
               <LogOut className="h-5 w-5" />
               <span>Log Out</span>
             </button>
