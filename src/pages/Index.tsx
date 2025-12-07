@@ -20,10 +20,10 @@ const Index = () => {
     players: null,
     age: null,
     duration: null,
-    difficulty: null,
+    difficulty: [],
   });
 
-  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty;
+  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty.length > 0;
 
   const allGames = useMemo(() => {
     const gamesMap = new Map<string, GameCardProps>();
@@ -70,12 +70,18 @@ const Index = () => {
         }
       }
 
-      // Filter by difficulty
-      if (filters.difficulty) {
+      // Filter by difficulty (multi-select)
+      if (filters.difficulty.length > 0) {
         const gameDifficulty = game.difficulty.toLowerCase();
-        if (filters.difficulty === "easy" && gameDifficulty !== "easy") return false;
-        if (filters.difficulty === "medium" && gameDifficulty !== "medium") return false;
-        if (filters.difficulty === "difficult" && gameDifficulty !== "hard") return false;
+        const difficultyMap: Record<string, string> = {
+          easy: "easy",
+          medium: "medium",
+          difficult: "hard",
+        };
+        const matchesDifficulty = filters.difficulty.some(
+          (d) => difficultyMap[d] === gameDifficulty
+        );
+        if (!matchesDifficulty) return false;
       }
 
       return true;
