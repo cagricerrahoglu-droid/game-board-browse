@@ -40,7 +40,7 @@ export interface FilterState {
   players: string | null;
   age: string | null;
   duration: string | null;
-  difficulty: string[];
+  difficulty: string | null;
 }
 
 interface FiltersSectionProps {
@@ -52,7 +52,7 @@ const emptyFilters: FilterState = {
   players: null,
   age: null,
   duration: null,
-  difficulty: [],
+  difficulty: null,
 };
 
 const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
@@ -78,15 +78,9 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
   };
 
   const handleDifficultySelect = (difficultyId: string) => {
-    const currentDifficulties = filters.difficulty;
-    const isSelected = currentDifficulties.includes(difficultyId);
-    const newDifficulties = isSelected
-      ? currentDifficulties.filter(d => d !== difficultyId)
-      : [...currentDifficulties, difficultyId];
-    
     onFiltersChange({
       ...filters,
-      difficulty: newDifficulties,
+      difficulty: filters.difficulty === difficultyId ? null : difficultyId,
     });
   };
 
@@ -150,7 +144,7 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
     </button>
   );
 
-  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty.length > 0;
+  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty;
 
   const handleClearFilters = () => {
     onFiltersChange(emptyFilters);
@@ -213,18 +207,14 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
 
           <FilterButton
             icon={Gauge}
-            label={filters.difficulty.length > 0 
-              ? filters.difficulty.length === 1 
-                ? difficultyLevels.find(d => d.id === filters.difficulty[0])?.label || "Difficulty"
-                : `${filters.difficulty.length} Difficulties`
-              : "Difficulty"}
-            isActive={filters.difficulty.length > 0}
+            label={filters.difficulty ? difficultyLevels.find(d => d.id === filters.difficulty)?.label || "Difficulty" : "Difficulty"}
+            isActive={!!filters.difficulty}
           >
             <div className="flex flex-col gap-1">
               {difficultyLevels.map((difficulty) => (
                 <FilterOption
                   key={difficulty.id}
-                  isSelected={filters.difficulty.includes(difficulty.id)}
+                  isSelected={filters.difficulty === difficulty.id}
                   onClick={() => handleDifficultySelect(difficulty.id)}
                   label={difficulty.label}
                 />
