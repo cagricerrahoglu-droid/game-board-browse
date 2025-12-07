@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus } from "lucide-react";
+import { useState, useRef } from "react";
+import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -33,10 +33,46 @@ const Profile = () => {
   });
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const [editedUser, setEditedUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
   });
+
+  // Default avatar options
+  const defaultAvatars = [
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=ffdfbf",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=c0aede",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=ffd5dc",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=d1f4d1",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie&backgroundColor=ffe4b5",
+  ];
+
+  const handleAvatarSelect = (avatarUrl: string) => {
+    setUser(prev => ({ ...prev, avatar: avatarUrl }));
+    setIsAvatarModalOpen(false);
+    toast.success("Avatar updated successfully");
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("File size must be less than 5MB");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setUser(prev => ({ ...prev, avatar: result }));
+        setIsAvatarModalOpen(false);
+        toast.success("Profile picture updated successfully");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSaveProfile = () => {
     if (!editedUser.name.trim() || !editedUser.email.trim()) {
@@ -93,7 +129,7 @@ const Profile = () => {
   const [user, setUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: null as string | null,
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4",
   });
 
   // Mock current rentals
@@ -176,7 +212,10 @@ const Profile = () => {
                     {user.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
-                <button className="absolute bottom-0 right-0 p-1.5 bg-primary rounded-full hover:bg-primary/90 transition-colors">
+                <button 
+                  onClick={() => setIsAvatarModalOpen(true)}
+                  className="absolute bottom-0 right-0 p-1.5 bg-primary rounded-full hover:bg-primary/90 transition-colors"
+                >
                   <Camera className="h-3.5 w-3.5 text-primary-foreground" />
                 </button>
               </div>
@@ -441,6 +480,63 @@ const Profile = () => {
               Save Changes
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Avatar Selection Modal */}
+      <Dialog open={isAvatarModalOpen} onOpenChange={setIsAvatarModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Change Profile Picture</DialogTitle>
+            <DialogDescription>
+              Choose an avatar or upload your own photo.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div>
+              <Label className="text-sm font-medium">Choose an Avatar</Label>
+              <div className="grid grid-cols-3 gap-3 mt-3">
+                {defaultAvatars.map((avatarUrl, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handleAvatarSelect(avatarUrl)}
+                    className={`p-1 rounded-full border-2 transition-all hover:scale-105 ${
+                      user.avatar === avatarUrl 
+                        ? 'border-primary ring-2 ring-primary/20' 
+                        : 'border-border hover:border-primary/50'
+                    }`}
+                  >
+                    <Avatar className="h-16 w-16">
+                      <AvatarImage src={avatarUrl} />
+                      <AvatarFallback>A{index + 1}</AvatarFallback>
+                    </Avatar>
+                  </button>
+                ))}
+              </div>
+            </div>
+            <Separator />
+            <div>
+              <Label className="text-sm font-medium">Or Upload Your Own</Label>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileUpload}
+                className="hidden"
+              />
+              <Button 
+                variant="outline" 
+                className="w-full mt-3"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                <Upload className="h-4 w-4 mr-2" />
+                Upload Photo
+              </Button>
+              <p className="text-xs text-muted-foreground mt-2">
+                Max file size: 5MB. Supported formats: JPG, PNG, GIF
+              </p>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
