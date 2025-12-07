@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
 const PaymentReceipts = () => {
@@ -15,6 +16,33 @@ const PaymentReceipts = () => {
     { id: 3, date: "Oct 15, 2025", game: "Catan", amount: "$14.99", status: "paid" },
     { id: 4, date: "Sep 28, 2025", game: "Ticket to Ride", amount: "$11.99", status: "paid" },
   ];
+
+  const handleDownload = (receipt: typeof receipts[0]) => {
+    const receiptContent = `
+PAYMENT RECEIPT
+=====================================
+
+Game Rental: ${receipt.game}
+Date: ${receipt.date}
+Amount: ${receipt.amount}
+Status: ${receipt.status.toUpperCase()}
+
+=====================================
+Thank you for your rental!
+    `.trim();
+
+    const blob = new Blob([receiptContent], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `receipt-${receipt.game.toLowerCase().replace(/\s+/g, "-")}-${receipt.id}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success("Receipt downloaded");
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -50,7 +78,12 @@ const PaymentReceipts = () => {
                         {receipt.status}
                       </Badge>
                     </div>
-                    <Button variant="ghost" size="icon" className="text-muted-foreground hover:text-foreground">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="text-muted-foreground hover:text-foreground"
+                      onClick={() => handleDownload(receipt)}
+                    >
                       <Download className="h-4 w-4" />
                     </Button>
                   </div>
