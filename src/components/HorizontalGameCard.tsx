@@ -52,7 +52,7 @@ const HorizontalGameCard = ({
       )}
     >
       {/* Cover Image */}
-      <div className="relative w-28 h-28 flex-shrink-0 overflow-hidden bg-muted">
+      <div className="relative w-36 h-36 flex-shrink-0 overflow-hidden bg-muted">
         <img
           src={imageUrl}
           alt={title}
