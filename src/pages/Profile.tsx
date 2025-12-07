@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle } from "lucide-react";
+import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
 const Profile = () => {
@@ -16,6 +20,58 @@ const Profile = () => {
     push: true,
     email: true,
   });
+
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentMethods, setPaymentMethods] = useState([
+    { id: 1, type: "Visa", last4: "4242", expiry: "12/26" },
+  ]);
+  const [newCard, setNewCard] = useState({
+    cardNumber: "",
+    expiry: "",
+    cvv: "",
+    name: "",
+  });
+
+  const handleAddPaymentMethod = () => {
+    if (!newCard.cardNumber || !newCard.expiry || !newCard.cvv || !newCard.name) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    
+    const last4 = newCard.cardNumber.replace(/\s/g, "").slice(-4);
+    const cardType = newCard.cardNumber.startsWith("4") ? "Visa" : 
+                     newCard.cardNumber.startsWith("5") ? "Mastercard" : "Card";
+    
+    setPaymentMethods(prev => [...prev, {
+      id: Date.now(),
+      type: cardType,
+      last4,
+      expiry: newCard.expiry,
+    }]);
+    
+    setNewCard({ cardNumber: "", expiry: "", cvv: "", name: "" });
+    setIsPaymentModalOpen(false);
+    toast.success("Payment method added successfully");
+  };
+
+  const formatCardNumber = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    const matches = v.match(/\d{4,16}/g);
+    const match = (matches && matches[0]) || "";
+    const parts = [];
+    for (let i = 0, len = match.length; i < len; i += 4) {
+      parts.push(match.substring(i, i + 4));
+    }
+    return parts.length ? parts.join(" ") : value;
+  };
+
+  const formatExpiry = (value: string) => {
+    const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
+    if (v.length >= 2) {
+      return v.substring(0, 2) + "/" + v.substring(2, 4);
+    }
+    return v;
+  };
 
   // Mock user data
   const user = {
@@ -37,10 +93,6 @@ const Profile = () => {
     { id: 3, name: "Azul", returnedDate: "Oct 28, 2025", status: "late" },
   ];
 
-  // Mock payment methods
-  const paymentMethods = [
-    { id: 1, type: "Visa", last4: "4242", expiry: "12/26" },
-  ];
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -198,7 +250,12 @@ const Profile = () => {
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
                   </div>
                 ))}
-                <Button variant="outline" className="w-full mt-2">
+                <Button 
+                  variant="outline" 
+                  className="w-full mt-2"
+                  onClick={() => setIsPaymentModalOpen(true)}
+                >
+                  <Plus className="h-4 w-4 mr-2" />
                   Add Payment Method
                 </Button>
               </div>
@@ -257,6 +314,70 @@ const Profile = () => {
       </div>
 
       <BottomNav />
+
+      {/* Add Payment Method Modal */}
+      <Dialog open={isPaymentModalOpen} onOpenChange={setIsPaymentModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Add Payment Method</DialogTitle>
+            <DialogDescription>
+              Enter your card details to add a new payment method.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="name">Cardholder Name</Label>
+              <Input
+                id="name"
+                placeholder="John Doe"
+                value={newCard.name}
+                onChange={(e) => setNewCard(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="cardNumber">Card Number</Label>
+              <Input
+                id="cardNumber"
+                placeholder="4242 4242 4242 4242"
+                value={newCard.cardNumber}
+                maxLength={19}
+                onChange={(e) => setNewCard(prev => ({ ...prev, cardNumber: formatCardNumber(e.target.value) }))}
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="expiry">Expiry Date</Label>
+                <Input
+                  id="expiry"
+                  placeholder="MM/YY"
+                  value={newCard.expiry}
+                  maxLength={5}
+                  onChange={(e) => setNewCard(prev => ({ ...prev, expiry: formatExpiry(e.target.value) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="cvv">CVV</Label>
+                <Input
+                  id="cvv"
+                  placeholder="123"
+                  type="password"
+                  value={newCard.cvv}
+                  maxLength={4}
+                  onChange={(e) => setNewCard(prev => ({ ...prev, cvv: e.target.value.replace(/[^0-9]/g, "") }))}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPaymentModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleAddPaymentMethod}>
+              Add Card
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
