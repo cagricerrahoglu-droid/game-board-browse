@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload } from "lucide-react";
+import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -60,6 +60,9 @@ const Profile = () => {
   });
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [isPaymentDetailModalOpen, setIsPaymentDetailModalOpen] = useState(false);
+  const [isEditingPayment, setIsEditingPayment] = useState(false);
+  const [selectedPayment, setSelectedPayment] = useState<{ id: number; type: string; last4: string; expiry: string } | null>(null);
   const [paymentMethods, setPaymentMethods] = useState([
     { id: 1, type: "Visa", last4: "4242", expiry: "12/26" },
   ]);
@@ -67,6 +70,10 @@ const Profile = () => {
     cardNumber: "",
     expiry: "",
     cvv: "",
+    name: "",
+  });
+  const [editCard, setEditCard] = useState({
+    expiry: "",
     name: "",
   });
 
@@ -133,6 +140,35 @@ const Profile = () => {
     setNewCard({ cardNumber: "", expiry: "", cvv: "", name: "" });
     setIsPaymentModalOpen(false);
     toast.success("Payment method added successfully");
+  };
+
+  const handleOpenPaymentDetail = (method: { id: number; type: string; last4: string; expiry: string }) => {
+    setSelectedPayment(method);
+    setEditCard({ expiry: method.expiry, name: "" });
+    setIsEditingPayment(false);
+    setIsPaymentDetailModalOpen(true);
+  };
+
+  const handleDeletePayment = () => {
+    if (selectedPayment) {
+      setPaymentMethods(prev => prev.filter(m => m.id !== selectedPayment.id));
+      setIsPaymentDetailModalOpen(false);
+      setSelectedPayment(null);
+      toast.success("Payment method deleted");
+    }
+  };
+
+  const handleUpdatePayment = () => {
+    if (selectedPayment && editCard.expiry) {
+      setPaymentMethods(prev => prev.map(m => 
+        m.id === selectedPayment.id 
+          ? { ...m, expiry: editCard.expiry }
+          : m
+      ));
+      setSelectedPayment(prev => prev ? { ...prev, expiry: editCard.expiry } : null);
+      setIsEditingPayment(false);
+      toast.success("Payment method updated");
+    }
   };
 
   const formatCardNumber = (value: string) => {
@@ -333,7 +369,7 @@ const Profile = () => {
                   <button 
                     key={method.id} 
                     className="w-full flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
-                    onClick={() => toast.info(`Managing ${method.type} •••• ${method.last4}`)}
+                    onClick={() => handleOpenPaymentDetail(method)}
                   >
                     <div className="flex items-center gap-3">
                       <CreditCard className="h-5 w-5 text-muted-foreground" />
@@ -470,6 +506,101 @@ const Profile = () => {
             <Button onClick={handleAddPaymentMethod}>
               Add Card
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Payment Method Detail Modal */}
+      <Dialog open={isPaymentDetailModalOpen} onOpenChange={setIsPaymentDetailModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Payment Method</DialogTitle>
+            <DialogDescription>
+              {isEditingPayment ? "Update your card details." : "View and manage your payment method."}
+            </DialogDescription>
+          </DialogHeader>
+          {selectedPayment && (
+            <div className="space-y-4 py-4">
+              {isEditingPayment ? (
+                <>
+                  <div className="p-4 bg-muted/30 rounded-lg">
+                    <div className="flex items-center gap-3 mb-4">
+                      <CreditCard className="h-8 w-8 text-primary" />
+                      <div>
+                        <p className="font-semibold text-foreground">{selectedPayment.type}</p>
+                        <p className="text-sm text-muted-foreground">•••• •••• •••• {selectedPayment.last4}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editExpiry">Expiry Date</Label>
+                    <Input
+                      id="editExpiry"
+                      placeholder="MM/YY"
+                      value={editCard.expiry}
+                      maxLength={5}
+                      onChange={(e) => setEditCard(prev => ({ ...prev, expiry: formatExpiry(e.target.value) }))}
+                    />
+                  </div>
+                </>
+              ) : (
+                <div className="p-4 bg-muted/30 rounded-lg">
+                  <div className="flex items-center gap-3 mb-4">
+                    <CreditCard className="h-8 w-8 text-primary" />
+                    <div>
+                      <p className="font-semibold text-foreground">{selectedPayment.type}</p>
+                      <p className="text-sm text-muted-foreground">•••• •••• •••• {selectedPayment.last4}</p>
+                    </div>
+                  </div>
+                  <Separator className="my-3" />
+                  <div className="space-y-2">
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Card Type</span>
+                      <span className="text-sm font-medium text-foreground">{selectedPayment.type}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Last 4 Digits</span>
+                      <span className="text-sm font-medium text-foreground">{selectedPayment.last4}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Expires</span>
+                      <span className="text-sm font-medium text-foreground">{selectedPayment.expiry}</span>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+          <DialogFooter className="flex-col sm:flex-row gap-2">
+            {isEditingPayment ? (
+              <>
+                <Button variant="outline" onClick={() => setIsEditingPayment(false)} className="w-full sm:w-auto">
+                  Cancel
+                </Button>
+                <Button onClick={handleUpdatePayment} className="w-full sm:w-auto">
+                  Save Changes
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button 
+                  variant="destructive" 
+                  onClick={handleDeletePayment}
+                  className="w-full sm:w-auto"
+                >
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+                <Button 
+                  variant="outline" 
+                  onClick={() => setIsEditingPayment(true)}
+                  className="w-full sm:w-auto"
+                >
+                  <Pencil className="h-4 w-4 mr-2" />
+                  Edit
+                </Button>
+              </>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>
