@@ -23,6 +23,7 @@ import theCrewImg from "@/assets/games/the-crew.jpg";
 import hanabiImg from "@/assets/games/hanabi.jpg";
 import mysteriumImg from "@/assets/games/mysterium.jpg";
 import monopolyImg from "@/assets/games/monopoly.png";
+import scrabbleImg from "@/assets/games/scrabble.png";
 
 // Real board game data with actual box art images from BoardGameGeek
 export const strategyGames: GameCardProps[] = [
@@ -388,7 +389,7 @@ export const classicGames: GameCardProps[] = [
   {
     id: "scrabble",
     title: "Scrabble",
-    imageUrl: "https://cf.geekdo-images.com/mVmmntn2oQd0PfFrWBvwIQ__imagepage/img/GBhpz1GhPNHaJU7AqLLUPW3jAlk=/fit-in/900x600/filters:no_upscale():strip_icc()/pic404651.jpg",
+    imageUrl: scrabbleImg,
     players: "2-4",
     duration: "90",
     difficulty: "Medium",
