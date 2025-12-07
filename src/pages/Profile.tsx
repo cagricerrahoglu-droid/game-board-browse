@@ -13,6 +13,44 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
 
+// Tabletop-themed avatar imports
+import pawnToken from "@/assets/avatars/pawn-token.png";
+import treasureChest from "@/assets/avatars/treasure-chest.png";
+import lantern from "@/assets/avatars/lantern.png";
+import castleTower from "@/assets/avatars/castle-tower.png";
+import magicPotion from "@/assets/avatars/magic-potion.png";
+import woodToken from "@/assets/avatars/wood-token.png";
+import stoneToken from "@/assets/avatars/stone-token.png";
+import foodToken from "@/assets/avatars/food-token.png";
+import strategist from "@/assets/avatars/strategist.png";
+import partyPlayer from "@/assets/avatars/party-player.png";
+import familyGamer from "@/assets/avatars/family-gamer.png";
+import adventurer from "@/assets/avatars/adventurer.png";
+import puzzleSolver from "@/assets/avatars/puzzle-solver.png";
+import hexTile from "@/assets/avatars/hex-tile.png";
+import cardDeck from "@/assets/avatars/card-deck.png";
+import hourglass from "@/assets/avatars/hourglass.png";
+import starBadge from "@/assets/avatars/star-badge.png";
+import trophy from "@/assets/avatars/trophy.png";
+
+// Avatar categories
+const avatarCategories = [
+  {
+    name: "Token Icons",
+    avatars: [pawnToken, treasureChest, lantern, castleTower, magicPotion, woodToken, stoneToken, foodToken]
+  },
+  {
+    name: "Player Archetypes",
+    avatars: [strategist, partyPlayer, familyGamer, adventurer, puzzleSolver]
+  },
+  {
+    name: "Game Badges",
+    avatars: [hexTile, cardDeck, hourglass, starBadge, trophy]
+  }
+];
+
+const defaultAvatars = avatarCategories.flatMap(cat => cat.avatars);
+
 const Profile = () => {
   const navigate = useNavigate();
   
@@ -40,15 +78,6 @@ const Profile = () => {
     email: "john.doe@example.com",
   });
 
-  // Default avatar options
-  const defaultAvatars = [
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=ffdfbf",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=c0aede",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=ffd5dc",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=d1f4d1",
-    "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie&backgroundColor=ffe4b5",
-  ];
 
   const handleAvatarSelect = (avatarUrl: string) => {
     setUser(prev => ({ ...prev, avatar: avatarUrl }));
@@ -129,7 +158,7 @@ const Profile = () => {
   const [user, setUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4",
+    avatar: pawnToken,
   });
 
   // Mock current rentals
@@ -492,28 +521,30 @@ const Profile = () => {
               Choose an avatar or upload your own photo.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div>
-              <Label className="text-sm font-medium">Choose an Avatar</Label>
-              <div className="grid grid-cols-3 gap-3 mt-3">
-                {defaultAvatars.map((avatarUrl, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handleAvatarSelect(avatarUrl)}
-                    className={`p-1 rounded-full border-2 transition-all hover:scale-105 ${
-                      user.avatar === avatarUrl 
-                        ? 'border-primary ring-2 ring-primary/20' 
-                        : 'border-border hover:border-primary/50'
-                    }`}
-                  >
-                    <Avatar className="h-16 w-16">
-                      <AvatarImage src={avatarUrl} />
-                      <AvatarFallback>A{index + 1}</AvatarFallback>
-                    </Avatar>
-                  </button>
-                ))}
+          <div className="space-y-4 py-4 max-h-[60vh] overflow-y-auto">
+            {avatarCategories.map((category, catIndex) => (
+              <div key={catIndex}>
+                <Label className="text-sm font-medium text-muted-foreground">{category.name}</Label>
+                <div className="grid grid-cols-4 gap-2 mt-2">
+                  {category.avatars.map((avatarUrl, index) => (
+                    <button
+                      key={index}
+                      onClick={() => handleAvatarSelect(avatarUrl)}
+                      className={`p-1 rounded-full border-2 transition-all hover:scale-105 ${
+                        user.avatar === avatarUrl 
+                          ? 'border-primary ring-2 ring-primary/20' 
+                          : 'border-border hover:border-primary/50'
+                      }`}
+                    >
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={avatarUrl} className="object-cover" />
+                        <AvatarFallback>A</AvatarFallback>
+                      </Avatar>
+                    </button>
+                  ))}
+                </div>
               </div>
-            </div>
+            ))}
             <Separator />
             <div>
               <Label className="text-sm font-medium">Or Upload Your Own</Label>
