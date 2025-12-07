@@ -1,4 +1,5 @@
 import { ChevronRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import GameCard, { GameCardProps } from "./GameCard";
 import { cn } from "@/lib/utils";
 import { useFavorites } from "@/contexts/FavoritesContext";
@@ -6,10 +7,11 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 interface GameCarouselProps {
   title: string;
   games: GameCardProps[];
+  categoryId: string;
   className?: string;
 }
 
-const GameCarousel = ({ title, games, className }: GameCarouselProps) => {
+const GameCarousel = ({ title, games, categoryId, className }: GameCarouselProps) => {
   const { toggleFavorite, isFavorite } = useFavorites();
 
   return (
@@ -17,10 +19,13 @@ const GameCarousel = ({ title, games, className }: GameCarouselProps) => {
       {/* Header */}
       <div className="flex items-center justify-between px-5">
         <h2 className="font-display font-bold text-xl text-foreground">{title}</h2>
-        <button className="flex items-center gap-1 text-primary font-semibold text-sm hover:opacity-80 transition-all duration-200 active:scale-95 px-2 py-1 -mr-2 rounded-lg hover:bg-primary/5">
+        <Link 
+          to={`/category/${categoryId}`}
+          className="flex items-center gap-1 text-primary font-semibold text-sm hover:opacity-80 transition-all duration-200 active:scale-95 px-2 py-1 -mr-2 rounded-lg hover:bg-primary/5"
+        >
           See all
           <ChevronRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
 
       {/* Scrollable Cards */}
