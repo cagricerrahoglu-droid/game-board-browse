@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -53,6 +54,12 @@ const defaultAvatars = avatarCategories.flatMap(cat => cat.avatars);
 
 const Profile = () => {
   const navigate = useNavigate();
+  const { setIsLoggedIn } = useAuth();
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    navigate("/");
+  };
   
   const [notifications, setNotifications] = useState({
     push: true,
@@ -429,7 +436,10 @@ const Profile = () => {
             <SettingsRow icon={Shield} label="Privacy Policy" />
             <SettingsRow icon={FileText} label="Terms & Conditions" />
             <Separator className="my-3" />
-            <button className="w-full flex items-center gap-3 py-3 px-1 text-destructive hover:bg-destructive/10 rounded-lg transition-colors">
+            <button 
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 py-3 px-1 text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
+            >
               <LogOut className="h-5 w-5" />
               <span>Log Out</span>
             </button>
