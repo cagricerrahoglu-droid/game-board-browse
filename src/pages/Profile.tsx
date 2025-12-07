@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -10,6 +11,12 @@ import BottomNav from "@/components/BottomNav";
 
 const Profile = () => {
   const navigate = useNavigate();
+  
+  const [notifications, setNotifications] = useState({
+    push: true,
+    email: true,
+    sms: false,
+  });
 
   // Mock user data
   const user = {
@@ -51,27 +58,31 @@ const Profile = () => {
     }
   };
 
-  const SettingsRow = ({ icon: Icon, label, onClick, showSwitch = false, switchChecked = false }: {
+  const SettingsRow = ({ icon: Icon, label, onClick, showSwitch = false, switchChecked = false, onSwitchChange }: {
     icon: React.ElementType;
     label: string;
     onClick?: () => void;
     showSwitch?: boolean;
     switchChecked?: boolean;
+    onSwitchChange?: (checked: boolean) => void;
   }) => (
-    <button
-      onClick={onClick}
-      className="w-full flex items-center justify-between py-3 px-1 hover:bg-muted/50 rounded-lg transition-colors"
+    <div
+      onClick={showSwitch ? undefined : onClick}
+      className={`w-full flex items-center justify-between py-3 px-1 rounded-lg transition-colors ${showSwitch ? '' : 'hover:bg-muted/50 cursor-pointer'}`}
     >
       <div className="flex items-center gap-3">
         <Icon className="h-5 w-5 text-muted-foreground" />
         <span className="text-foreground">{label}</span>
       </div>
       {showSwitch ? (
-        <Switch checked={switchChecked} />
+        <Switch 
+          checked={switchChecked} 
+          onCheckedChange={onSwitchChange}
+        />
       ) : (
         <ChevronRight className="h-5 w-5 text-muted-foreground" />
       )}
-    </button>
+    </div>
   );
 
   return (
@@ -207,9 +218,27 @@ const Profile = () => {
             <CardTitle className="text-base font-semibold">App & Account Settings</CardTitle>
           </CardHeader>
           <CardContent className="space-y-1">
-            <SettingsRow icon={Bell} label="Push Notifications" showSwitch switchChecked={true} />
-            <SettingsRow icon={Bell} label="Email Notifications" showSwitch switchChecked={true} />
-            <SettingsRow icon={Bell} label="SMS Notifications" showSwitch switchChecked={false} />
+            <SettingsRow 
+              icon={Bell} 
+              label="Push Notifications" 
+              showSwitch 
+              switchChecked={notifications.push} 
+              onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, push: checked }))}
+            />
+            <SettingsRow 
+              icon={Bell} 
+              label="Email Notifications" 
+              showSwitch 
+              switchChecked={notifications.email} 
+              onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, email: checked }))}
+            />
+            <SettingsRow 
+              icon={Bell} 
+              label="SMS Notifications" 
+              showSwitch 
+              switchChecked={notifications.sms} 
+              onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, sms: checked }))}
+            />
             <Separator className="my-3" />
             <SettingsRow icon={Globe} label="Language / Region" />
             <Separator className="my-3" />
