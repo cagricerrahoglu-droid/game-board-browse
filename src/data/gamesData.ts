@@ -22,6 +22,7 @@ import spiritIslandImg from "@/assets/games/spirit-island.jpg";
 import theCrewImg from "@/assets/games/the-crew.jpg";
 import hanabiImg from "@/assets/games/hanabi.jpg";
 import mysteriumImg from "@/assets/games/mysterium.jpg";
+import monopolyImg from "@/assets/games/monopoly.png";
 
 // Real board game data with actual box art images from BoardGameGeek
 export const strategyGames: GameCardProps[] = [
@@ -376,7 +377,7 @@ export const classicGames: GameCardProps[] = [
   {
     id: "monopoly",
     title: "Monopoly",
-    imageUrl: "https://cf.geekdo-images.com/9nGoBZ0MRbi6rdH47sj2Qg__imagepage/img/eOAv-HCXHBY5pU5WxetJAswUIXI=/fit-in/900x600/filters:no_upscale():strip_icc()/pic5786795.jpg",
+    imageUrl: monopolyImg,
     players: "2-8",
     duration: "60-180",
     difficulty: "Easy",
