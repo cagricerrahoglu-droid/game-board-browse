@@ -275,7 +275,7 @@ const Profile = () => {
           <CardContent className="pt-6">
             <div className="flex items-center gap-4">
               <div className="relative">
-                <Avatar className="h-10 w-10">
+                <Avatar className="h-16 w-16">
                   <AvatarImage src={user.avatar || undefined} />
                   <AvatarFallback className="bg-primary/20 text-primary text-2xl font-semibold">
                     {user.name.split(' ').map(n => n[0]).join('')}
