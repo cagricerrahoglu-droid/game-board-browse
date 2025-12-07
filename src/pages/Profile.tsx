@@ -15,7 +15,6 @@ const Profile = () => {
   const [notifications, setNotifications] = useState({
     push: true,
     email: true,
-    sms: false,
   });
 
   // Mock user data
@@ -231,13 +230,6 @@ const Profile = () => {
               showSwitch 
               switchChecked={notifications.email} 
               onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, email: checked }))}
-            />
-            <SettingsRow 
-              icon={Bell} 
-              label="SMS Notifications" 
-              showSwitch 
-              switchChecked={notifications.sms} 
-              onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, sms: checked }))}
             />
             <Separator className="my-3" />
             <SettingsRow icon={Globe} label="Language / Region" />
