@@ -262,7 +262,7 @@ const Profile = () => {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center gap-4 px-4 py-4">
-          <button onClick={() => navigate(-1)} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors">
+          <button onClick={() => navigate('/')} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors">
             <ArrowLeft className="h-5 w-5 text-foreground" />
           </button>
           <h1 className="text-xl font-semibold text-foreground">Profile</h1>
