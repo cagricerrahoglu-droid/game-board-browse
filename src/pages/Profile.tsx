@@ -32,6 +32,22 @@ const Profile = () => {
     name: "",
   });
 
+  const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
+  const [editedUser, setEditedUser] = useState({
+    name: "John Doe",
+    email: "john.doe@example.com",
+  });
+
+  const handleSaveProfile = () => {
+    if (!editedUser.name.trim() || !editedUser.email.trim()) {
+      toast.error("Please fill in all fields");
+      return;
+    }
+    setUser(prev => ({ ...prev, name: editedUser.name, email: editedUser.email }));
+    setIsEditProfileOpen(false);
+    toast.success("Profile updated successfully");
+  };
+
   const handleAddPaymentMethod = () => {
     if (!newCard.cardNumber || !newCard.expiry || !newCard.cvv || !newCard.name) {
       toast.error("Please fill in all fields");
@@ -74,11 +90,11 @@ const Profile = () => {
   };
 
   // Mock user data
-  const user = {
+  const [user, setUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: null,
-  };
+    avatar: null as string | null,
+  });
 
   // Mock current rentals
   const currentRentals = [
@@ -167,7 +183,15 @@ const Profile = () => {
               <div className="flex-1">
                 <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
-                <Button variant="outline" size="sm" className="mt-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="mt-2"
+                  onClick={() => {
+                    setEditedUser({ name: user.name, email: user.email });
+                    setIsEditProfileOpen(true);
+                  }}
+                >
                   Edit Profile
                 </Button>
               </div>
@@ -374,6 +398,47 @@ const Profile = () => {
             </Button>
             <Button onClick={handleAddPaymentMethod}>
               Add Card
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Profile Modal */}
+      <Dialog open={isEditProfileOpen} onOpenChange={setIsEditProfileOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Edit Profile</DialogTitle>
+            <DialogDescription>
+              Update your profile information.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label htmlFor="profileName">Name</Label>
+              <Input
+                id="profileName"
+                placeholder="John Doe"
+                value={editedUser.name}
+                onChange={(e) => setEditedUser(prev => ({ ...prev, name: e.target.value }))}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="profileEmail">Email</Label>
+              <Input
+                id="profileEmail"
+                type="email"
+                placeholder="john.doe@example.com"
+                value={editedUser.email}
+                onChange={(e) => setEditedUser(prev => ({ ...prev, email: e.target.value }))}
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsEditProfileOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handleSaveProfile}>
+              Save Changes
             </Button>
           </DialogFooter>
         </DialogContent>
