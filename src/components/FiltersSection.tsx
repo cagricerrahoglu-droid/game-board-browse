@@ -1,4 +1,4 @@
-import { Users, Calendar, Clock, Gauge, ChevronDown } from "lucide-react";
+import { Users, Calendar, Clock, Gauge, ChevronDown, X } from "lucide-react";
 import {
   Popover,
   PopoverContent,
@@ -47,6 +47,13 @@ interface FiltersSectionProps {
   filters: FilterState;
   onFiltersChange: (filters: FilterState) => void;
 }
+
+const emptyFilters: FilterState = {
+  players: null,
+  age: null,
+  duration: null,
+  difficulty: null,
+};
 
 const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
   const handlePlayersSelect = (playersId: string) => {
@@ -137,10 +144,31 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
     </button>
   );
 
+  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty;
+
+  const handleClearFilters = () => {
+    onFiltersChange(emptyFilters);
+  };
+
   return (
     <section className="px-5 py-4">
       <div className="overflow-x-auto scrollbar-hide">
         <div className="flex gap-3">
+          {hasActiveFilters && (
+            <button
+              onClick={handleClearFilters}
+              className={cn(
+                "flex items-center gap-1.5 px-3 py-2.5 rounded-full",
+                "font-semibold text-sm whitespace-nowrap",
+                "transition-all duration-300 ease-out",
+                "bg-destructive/10 text-destructive border-2 border-destructive/30",
+                "hover:bg-destructive/20 active:scale-95"
+              )}
+            >
+              <X className="w-4 h-4" />
+              <span>Clear</span>
+            </button>
+          )}
           <FilterButton
             icon={Users}
             label={filters.players ? `${filters.players} Players` : "Players"}
