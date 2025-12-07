@@ -399,7 +399,7 @@ const Profile = () => {
 
             <Separator />
 
-            <SettingsRow icon={FileText} label="Past Payment Receipts" />
+            <SettingsRow icon={FileText} label="Past Payment Receipts" onClick={() => navigate('/payment-receipts')} />
             <SettingsRow icon={FileText} label="Billing Address" />
           </CardContent>
         </Card>
