@@ -171,7 +171,6 @@ const Profile = () => {
   const pastRentals = [
     { id: 1, name: "Pandemic", returnedDate: "Nov 20, 2025", status: "returned" },
     { id: 2, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned" },
-    { id: 3, name: "Azul", returnedDate: "Oct 28, 2025", status: "late" },
   ];
 
 
