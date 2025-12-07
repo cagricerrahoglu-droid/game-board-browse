@@ -40,14 +40,14 @@ const Profile = () => {
     email: "john.doe@example.com",
   });
 
-  // Default avatar options - pixelated board game characters
+  // Default avatar options
   const defaultAvatars = [
-    "https://api.dicebear.com/7.x/pixel-art/svg?seed=Knight&backgroundColor=b6e3f4",
-    "https://api.dicebear.com/7.x/pixel-art/svg?seed=Wizard&backgroundColor=c0aede",
-    "https://api.dicebear.com/7.x/pixel-art/svg?seed=Warrior&backgroundColor=ffdfbf",
-    "https://api.dicebear.com/7.x/pixel-art/svg?seed=Rogue&backgroundColor=d1f4d1",
-    "https://api.dicebear.com/7.x/pixel-art/svg?seed=Mage&backgroundColor=ffd5dc",
-    "https://api.dicebear.com/7.x/pixel-art/svg?seed=Archer&backgroundColor=ffe4b5",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka&backgroundColor=ffdfbf",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Milo&backgroundColor=c0aede",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Luna&backgroundColor=ffd5dc",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Oliver&backgroundColor=d1f4d1",
+    "https://api.dicebear.com/7.x/avataaars/svg?seed=Sophie&backgroundColor=ffe4b5",
   ];
 
   const handleAvatarSelect = (avatarUrl: string) => {
@@ -129,7 +129,7 @@ const Profile = () => {
   const [user, setUser] = useState({
     name: "John Doe",
     email: "john.doe@example.com",
-    avatar: "https://api.dicebear.com/7.x/pixel-art/svg?seed=Knight&backgroundColor=b6e3f4",
+    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix&backgroundColor=b6e3f4",
   });
 
   // Mock current rentals
