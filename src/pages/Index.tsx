@@ -101,12 +101,12 @@ const Index = () => {
         ) : (
           // Show carousels
           <>
-            <GameCarousel title="🎯 Strategy" games={strategyGames} categoryId="strategy" />
-            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" games={familyGames} categoryId="family" />
-            <GameCarousel title="🎲 2-Player Hits" games={twoPlayerGames} categoryId="two-player" />
-            <GameCarousel title="🎉 Party Games" games={partyGames} categoryId="party" />
-            <GameCarousel title="🌱 Beginner-Friendly" games={beginnerGames} categoryId="beginner" />
-            <GameCarousel title="🤝 Cooperative Games" games={coopGames} categoryId="coop" />
+            <GameCarousel title="🎯 Strategy" games={strategyGames} />
+            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" games={familyGames} />
+            <GameCarousel title="🎲 2-Player Hits" games={twoPlayerGames} />
+            <GameCarousel title="🎉 Party Games" games={partyGames} />
+            <GameCarousel title="🌱 Beginner-Friendly" games={beginnerGames} />
+            <GameCarousel title="🤝 Cooperative Games" games={coopGames} />
 
             {/* Divider */}
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
