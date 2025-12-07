@@ -62,9 +62,9 @@ const Profile = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isPaymentDetailModalOpen, setIsPaymentDetailModalOpen] = useState(false);
   const [isEditingPayment, setIsEditingPayment] = useState(false);
-  const [selectedPayment, setSelectedPayment] = useState<{ id: number; type: string; last4: string; expiry: string } | null>(null);
+  const [selectedPayment, setSelectedPayment] = useState<{ id: number; type: string; last4: string; expiry: string; name: string; billingAddress: string } | null>(null);
   const [paymentMethods, setPaymentMethods] = useState([
-    { id: 1, type: "Visa", last4: "4242", expiry: "12/26" },
+    { id: 1, type: "Visa", last4: "4242", expiry: "12/26", name: "John Doe", billingAddress: "123 Main St, City" },
   ]);
   const [newCard, setNewCard] = useState({
     cardNumber: "",
@@ -75,6 +75,7 @@ const Profile = () => {
   const [editCard, setEditCard] = useState({
     expiry: "",
     name: "",
+    billingAddress: "",
   });
 
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
@@ -135,6 +136,8 @@ const Profile = () => {
       type: cardType,
       last4,
       expiry: newCard.expiry,
+      name: newCard.name,
+      billingAddress: "",
     }]);
     
     setNewCard({ cardNumber: "", expiry: "", cvv: "", name: "" });
@@ -142,9 +145,9 @@ const Profile = () => {
     toast.success("Payment method added successfully");
   };
 
-  const handleOpenPaymentDetail = (method: { id: number; type: string; last4: string; expiry: string }) => {
+  const handleOpenPaymentDetail = (method: { id: number; type: string; last4: string; expiry: string; name: string; billingAddress: string }) => {
     setSelectedPayment(method);
-    setEditCard({ expiry: method.expiry, name: "" });
+    setEditCard({ expiry: method.expiry, name: method.name, billingAddress: method.billingAddress });
     setIsEditingPayment(false);
     setIsPaymentDetailModalOpen(true);
   };
@@ -159,15 +162,17 @@ const Profile = () => {
   };
 
   const handleUpdatePayment = () => {
-    if (selectedPayment && editCard.expiry) {
+    if (selectedPayment && editCard.expiry && editCard.name) {
       setPaymentMethods(prev => prev.map(m => 
         m.id === selectedPayment.id 
-          ? { ...m, expiry: editCard.expiry }
+          ? { ...m, expiry: editCard.expiry, name: editCard.name, billingAddress: editCard.billingAddress }
           : m
       ));
-      setSelectedPayment(prev => prev ? { ...prev, expiry: editCard.expiry } : null);
+      setSelectedPayment(prev => prev ? { ...prev, expiry: editCard.expiry, name: editCard.name, billingAddress: editCard.billingAddress } : null);
       setIsEditingPayment(false);
       toast.success("Payment method updated");
+    } else {
+      toast.error("Please fill in all required fields");
     }
   };
 
@@ -524,13 +529,22 @@ const Profile = () => {
               {isEditingPayment ? (
                 <>
                   <div className="p-4 bg-muted/30 rounded-lg">
-                    <div className="flex items-center gap-3 mb-4">
+                    <div className="flex items-center gap-3">
                       <CreditCard className="h-8 w-8 text-primary" />
                       <div>
                         <p className="font-semibold text-foreground">{selectedPayment.type}</p>
                         <p className="text-sm text-muted-foreground">•••• •••• •••• {selectedPayment.last4}</p>
                       </div>
                     </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editName">Cardholder Name</Label>
+                    <Input
+                      id="editName"
+                      placeholder="John Doe"
+                      value={editCard.name}
+                      onChange={(e) => setEditCard(prev => ({ ...prev, name: e.target.value }))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="editExpiry">Expiry Date</Label>
@@ -540,6 +554,15 @@ const Profile = () => {
                       value={editCard.expiry}
                       maxLength={5}
                       onChange={(e) => setEditCard(prev => ({ ...prev, expiry: formatExpiry(e.target.value) }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="editBillingAddress">Billing Address</Label>
+                    <Input
+                      id="editBillingAddress"
+                      placeholder="123 Main St, City"
+                      value={editCard.billingAddress}
+                      onChange={(e) => setEditCard(prev => ({ ...prev, billingAddress: e.target.value }))}
                     />
                   </div>
                 </>
@@ -555,6 +578,10 @@ const Profile = () => {
                   <Separator className="my-3" />
                   <div className="space-y-2">
                     <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Cardholder</span>
+                      <span className="text-sm font-medium text-foreground">{selectedPayment.name}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">Card Type</span>
                       <span className="text-sm font-medium text-foreground">{selectedPayment.type}</span>
                     </div>
@@ -565,6 +592,10 @@ const Profile = () => {
                     <div className="flex justify-between">
                       <span className="text-sm text-muted-foreground">Expires</span>
                       <span className="text-sm font-medium text-foreground">{selectedPayment.expiry}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-sm text-muted-foreground">Billing Address</span>
+                      <span className="text-sm font-medium text-foreground text-right max-w-[60%]">{selectedPayment.billingAddress}</span>
                     </div>
                   </div>
                 </div>
