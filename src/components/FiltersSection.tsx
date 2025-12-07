@@ -1,5 +1,4 @@
 import { Users, Calendar, Clock, Gauge, ChevronDown } from "lucide-react";
-import { useState } from "react";
 import {
   Popover,
   PopoverContent,
@@ -7,25 +6,25 @@ import {
 } from "@/components/ui/popover";
 import { cn } from "@/lib/utils";
 
-const ageRanges = [
+export const ageRanges = [
   { id: "under-8", label: "Under 8" },
   { id: "8-12", label: "8-12" },
   { id: "12+", label: "12+" },
 ];
 
-const durationRanges = [
+export const durationRanges = [
   { id: "under-30", label: "<30 mins" },
   { id: "30-60", label: "30-60 mins" },
   { id: "60+", label: "60+ mins" },
 ];
 
-const difficultyLevels = [
+export const difficultyLevels = [
   { id: "easy", label: "Easy" },
   { id: "medium", label: "Medium" },
   { id: "difficult", label: "Difficult" },
 ];
 
-const playerCounts = [
+export const playerCounts = [
   { id: "2", label: "2" },
   { id: "3", label: "3" },
   { id: "4", label: "4" },
@@ -37,26 +36,45 @@ const playerCounts = [
   { id: "10+", label: "10+" },
 ];
 
-const FiltersSection = () => {
-  const [selectedAge, setSelectedAge] = useState<string | null>(null);
-  const [selectedDuration, setSelectedDuration] = useState<string | null>(null);
-  const [selectedDifficulty, setSelectedDifficulty] = useState<string | null>(null);
-  const [selectedPlayers, setSelectedPlayers] = useState<string | null>(null);
+export interface FilterState {
+  players: string | null;
+  age: string | null;
+  duration: string | null;
+  difficulty: string | null;
+}
+
+interface FiltersSectionProps {
+  filters: FilterState;
+  onFiltersChange: (filters: FilterState) => void;
+}
+
+const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
+  const handlePlayersSelect = (playersId: string) => {
+    onFiltersChange({
+      ...filters,
+      players: filters.players === playersId ? null : playersId,
+    });
+  };
 
   const handleAgeSelect = (ageId: string) => {
-    setSelectedAge(selectedAge === ageId ? null : ageId);
+    onFiltersChange({
+      ...filters,
+      age: filters.age === ageId ? null : ageId,
+    });
   };
 
   const handleDurationSelect = (durationId: string) => {
-    setSelectedDuration(selectedDuration === durationId ? null : durationId);
+    onFiltersChange({
+      ...filters,
+      duration: filters.duration === durationId ? null : durationId,
+    });
   };
 
   const handleDifficultySelect = (difficultyId: string) => {
-    setSelectedDifficulty(selectedDifficulty === difficultyId ? null : difficultyId);
-  };
-
-  const handlePlayersSelect = (playersId: string) => {
-    setSelectedPlayers(selectedPlayers === playersId ? null : playersId);
+    onFiltersChange({
+      ...filters,
+      difficulty: filters.difficulty === difficultyId ? null : difficultyId,
+    });
   };
 
   const FilterButton = ({
@@ -125,14 +143,14 @@ const FiltersSection = () => {
         <div className="flex gap-3">
           <FilterButton
             icon={Users}
-            label={selectedPlayers ? `${selectedPlayers} Players` : "Players"}
-            isActive={!!selectedPlayers}
+            label={filters.players ? `${filters.players} Players` : "Players"}
+            isActive={!!filters.players}
           >
             <div className="flex flex-col gap-1 max-h-48 overflow-y-auto">
               {playerCounts.map((count) => (
                 <FilterOption
                   key={count.id}
-                  isSelected={selectedPlayers === count.id}
+                  isSelected={filters.players === count.id}
                   onClick={() => handlePlayersSelect(count.id)}
                   label={count.label}
                 />
@@ -142,14 +160,14 @@ const FiltersSection = () => {
 
           <FilterButton
             icon={Calendar}
-            label={selectedAge ? ageRanges.find(a => a.id === selectedAge)?.label || "Age" : "Age"}
-            isActive={!!selectedAge}
+            label={filters.age ? ageRanges.find(a => a.id === filters.age)?.label || "Age" : "Age"}
+            isActive={!!filters.age}
           >
             <div className="flex flex-col gap-1">
               {ageRanges.map((age) => (
                 <FilterOption
                   key={age.id}
-                  isSelected={selectedAge === age.id}
+                  isSelected={filters.age === age.id}
                   onClick={() => handleAgeSelect(age.id)}
                   label={age.label}
                 />
@@ -159,14 +177,14 @@ const FiltersSection = () => {
 
           <FilterButton
             icon={Clock}
-            label={selectedDuration ? durationRanges.find(d => d.id === selectedDuration)?.label || "Duration" : "Duration"}
-            isActive={!!selectedDuration}
+            label={filters.duration ? durationRanges.find(d => d.id === filters.duration)?.label || "Duration" : "Duration"}
+            isActive={!!filters.duration}
           >
             <div className="flex flex-col gap-1">
               {durationRanges.map((duration) => (
                 <FilterOption
                   key={duration.id}
-                  isSelected={selectedDuration === duration.id}
+                  isSelected={filters.duration === duration.id}
                   onClick={() => handleDurationSelect(duration.id)}
                   label={duration.label}
                 />
@@ -176,14 +194,14 @@ const FiltersSection = () => {
 
           <FilterButton
             icon={Gauge}
-            label={selectedDifficulty ? difficultyLevels.find(d => d.id === selectedDifficulty)?.label || "Difficulty" : "Difficulty"}
-            isActive={!!selectedDifficulty}
+            label={filters.difficulty ? difficultyLevels.find(d => d.id === filters.difficulty)?.label || "Difficulty" : "Difficulty"}
+            isActive={!!filters.difficulty}
           >
             <div className="flex flex-col gap-1">
               {difficultyLevels.map((difficulty) => (
                 <FilterOption
                   key={difficulty.id}
-                  isSelected={selectedDifficulty === difficulty.id}
+                  isSelected={filters.difficulty === difficulty.id}
                   onClick={() => handleDifficultySelect(difficulty.id)}
                   label={difficulty.label}
                 />
