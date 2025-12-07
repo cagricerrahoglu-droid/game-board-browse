@@ -400,7 +400,7 @@ const Profile = () => {
             <Separator />
 
             <SettingsRow icon={FileText} label="Past Payment Receipts" onClick={() => navigate('/payment-receipts')} />
-            <SettingsRow icon={FileText} label="Billing Address" />
+            <SettingsRow icon={FileText} label="Billing Address" onClick={() => navigate('/billing-address')} />
           </CardContent>
         </Card>
 
