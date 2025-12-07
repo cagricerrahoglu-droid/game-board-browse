@@ -443,7 +443,7 @@ const Profile = () => {
           </CardHeader>
           <CardContent className="space-y-1">
             <SettingsRow icon={HelpCircle} label="FAQs" />
-            <SettingsRow icon={MessageCircle} label="Contact Support" />
+            <SettingsRow icon={MessageCircle} label="Contact Support" onClick={() => navigate('/contact-support')} />
             <SettingsRow icon={AlertTriangle} label="Report an Issue" />
           </CardContent>
         </Card>
