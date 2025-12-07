@@ -330,16 +330,20 @@ const Profile = () => {
               <h3 className="text-sm font-medium text-muted-foreground mb-3">Payment Methods</h3>
               <div className="space-y-2">
                 {paymentMethods.map((method) => (
-                  <div key={method.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                  <button 
+                    key={method.id} 
+                    className="w-full flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                    onClick={() => toast.info(`Managing ${method.type} •••• ${method.last4}`)}
+                  >
                     <div className="flex items-center gap-3">
                       <CreditCard className="h-5 w-5 text-muted-foreground" />
-                      <div>
+                      <div className="text-left">
                         <p className="font-medium text-foreground">{method.type} •••• {method.last4}</p>
                         <p className="text-sm text-muted-foreground">Expires {method.expiry}</p>
                       </div>
                     </div>
                     <ChevronRight className="h-5 w-5 text-muted-foreground" />
-                  </div>
+                  </button>
                 ))}
                 <Button 
                   variant="outline" 
