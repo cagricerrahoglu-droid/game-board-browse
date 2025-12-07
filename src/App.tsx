@@ -9,6 +9,7 @@ import Browse from "./pages/Browse";
 import Favourites from "./pages/Favourites";
 import CarouselGames from "./pages/CarouselGames";
 import Profile from "./pages/Profile";
+import ContactSupport from "./pages/ContactSupport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +27,7 @@ const App = () => (
             <Route path="/favourites" element={<Favourites />} />
             <Route path="/games/:categoryId" element={<CarouselGames />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/contact-support" element={<ContactSupport />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
