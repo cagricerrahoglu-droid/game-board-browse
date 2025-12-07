@@ -232,8 +232,6 @@ const Profile = () => {
               onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, email: checked }))}
             />
             <Separator className="my-3" />
-            <SettingsRow icon={Globe} label="Language / Region" />
-            <Separator className="my-3" />
             <SettingsRow icon={FileText} label="Rental Policy" />
             <SettingsRow icon={Shield} label="Privacy Policy" />
             <SettingsRow icon={FileText} label="Terms & Conditions" />
