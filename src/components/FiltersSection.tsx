@@ -40,7 +40,7 @@ export interface FilterState {
   players: string | null;
   age: string | null;
   duration: string | null;
-  difficulty: string | null;
+  difficulty: string[];
 }
 
 interface FiltersSectionProps {
@@ -52,7 +52,7 @@ const emptyFilters: FilterState = {
   players: null,
   age: null,
   duration: null,
-  difficulty: null,
+  difficulty: [],
 };
 
 const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
@@ -78,9 +78,15 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
   };
 
   const handleDifficultySelect = (difficultyId: string) => {
+    const currentDifficulties = filters.difficulty;
+    const isSelected = currentDifficulties.includes(difficultyId);
+    const newDifficulties = isSelected
+      ? currentDifficulties.filter(d => d !== difficultyId)
+      : [...currentDifficulties, difficultyId];
+    
     onFiltersChange({
       ...filters,
-      difficulty: filters.difficulty === difficultyId ? null : difficultyId,
+      difficulty: newDifficulties,
     });
   };
 
@@ -144,7 +150,7 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
     </button>
   );
 
-  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty;
+  const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty.length > 0;
 
   const handleClearFilters = () => {
     onFiltersChange(emptyFilters);
@@ -207,14 +213,18 @@ const FiltersSection = ({ filters, onFiltersChange }: FiltersSectionProps) => {
 
           <FilterButton
             icon={Gauge}
-            label={filters.difficulty ? difficultyLevels.find(d => d.id === filters.difficulty)?.label || "Difficulty" : "Difficulty"}
-            isActive={!!filters.difficulty}
+            label={filters.difficulty.length > 0 
+              ? filters.difficulty.length === 1 
+                ? difficultyLevels.find(d => d.id === filters.difficulty[0])?.label || "Difficulty"
+                : `${filters.difficulty.length} Difficulties`
+              : "Difficulty"}
+            isActive={filters.difficulty.length > 0}
           >
             <div className="flex flex-col gap-1">
               {difficultyLevels.map((difficulty) => (
                 <FilterOption
                   key={difficulty.id}
-                  isSelected={filters.difficulty === difficulty.id}
+                  isSelected={filters.difficulty.includes(difficulty.id)}
                   onClick={() => handleDifficultySelect(difficulty.id)}
                   label={difficulty.label}
                 />
