@@ -214,6 +214,30 @@ const Profile = () => {
     { id: 2, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned" },
   ];
 
+  // Mock payment receipts
+  const [isReceiptModalOpen, setIsReceiptModalOpen] = useState(false);
+  const [selectedReceipt, setSelectedReceipt] = useState<{
+    id: number;
+    date: string;
+    game: string;
+    rentalPeriod: string;
+    amount: number;
+    paymentMethod: string;
+    status: string;
+    transactionId: string;
+  } | null>(null);
+
+  const paymentReceipts = [
+    { id: 1, date: "Nov 25, 2025", game: "Pandemic", rentalPeriod: "Nov 10 - Nov 20, 2025", amount: 12.99, paymentMethod: "Visa •••• 4242", status: "Paid", transactionId: "TXN-2025-001234" },
+    { id: 2, date: "Nov 10, 2025", game: "Codenames", rentalPeriod: "Oct 25 - Nov 5, 2025", amount: 9.99, paymentMethod: "Visa •••• 4242", status: "Paid", transactionId: "TXN-2025-001198" },
+    { id: 3, date: "Oct 20, 2025", game: "Catan", rentalPeriod: "Oct 5 - Oct 15, 2025", amount: 14.99, paymentMethod: "Visa •••• 4242", status: "Paid", transactionId: "TXN-2025-001102" },
+  ];
+
+  const handleOpenReceipt = (receipt: typeof paymentReceipts[0]) => {
+    setSelectedReceipt(receipt);
+    setIsReceiptModalOpen(true);
+  };
+
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -399,7 +423,30 @@ const Profile = () => {
 
             <Separator />
 
-            <SettingsRow icon={FileText} label="Past Payment Receipts" />
+            {/* Past Payment Receipts */}
+            <div>
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 mt-2">Past Payment Receipts</h3>
+              <div className="space-y-2">
+                {paymentReceipts.map((receipt) => (
+                  <button
+                    key={receipt.id}
+                    className="w-full flex items-center justify-between p-3 bg-muted/30 rounded-lg hover:bg-muted/50 transition-colors cursor-pointer"
+                    onClick={() => handleOpenReceipt(receipt)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <FileText className="h-5 w-5 text-muted-foreground" />
+                      <div className="text-left">
+                        <p className="font-medium text-foreground">{receipt.game}</p>
+                        <p className="text-sm text-muted-foreground">{receipt.date} • ${receipt.amount.toFixed(2)}</p>
+                      </div>
+                    </div>
+                    <ChevronRight className="h-5 w-5 text-muted-foreground" />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <Separator />
             <SettingsRow icon={FileText} label="Billing Address" />
           </CardContent>
         </Card>
@@ -733,6 +780,62 @@ const Profile = () => {
               </p>
             </div>
           </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Receipt Detail Modal */}
+      <Dialog open={isReceiptModalOpen} onOpenChange={setIsReceiptModalOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Payment Receipt</DialogTitle>
+            <DialogDescription>
+              Receipt details for your rental
+            </DialogDescription>
+          </DialogHeader>
+          {selectedReceipt && (
+            <div className="space-y-4 py-4">
+              <div className="bg-muted/30 rounded-lg p-4 space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Transaction ID</span>
+                  <span className="text-sm font-mono text-foreground">{selectedReceipt.transactionId}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Game Rented</span>
+                  <span className="text-sm font-medium text-foreground">{selectedReceipt.game}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Rental Period</span>
+                  <span className="text-sm text-foreground">{selectedReceipt.rentalPeriod}</span>
+                </div>
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Payment Date</span>
+                  <span className="text-sm text-foreground">{selectedReceipt.date}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Payment Method</span>
+                  <span className="text-sm text-foreground">{selectedReceipt.paymentMethod}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-muted-foreground">Status</span>
+                  <Badge variant="outline" className="bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+                    {selectedReceipt.status}
+                  </Badge>
+                </div>
+                <Separator />
+                <div className="flex justify-between items-center">
+                  <span className="text-base font-medium text-foreground">Total Amount</span>
+                  <span className="text-lg font-semibold text-primary">${selectedReceipt.amount.toFixed(2)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsReceiptModalOpen(false)}>
+              Close
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
