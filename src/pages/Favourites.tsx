@@ -1,11 +1,21 @@
+import { useState } from "react";
 import { Heart } from "lucide-react";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import HorizontalGameCard from "@/components/HorizontalGameCard";
+import GameDetailSheet from "@/components/GameDetailSheet";
 import BottomNav from "@/components/BottomNav";
+import { GameCardProps } from "@/components/GameCard";
 
 const Favourites = () => {
   const { getFavoriteGames, toggleFavorite, isFavorite } = useFavorites();
   const favoriteGames = getFavoriteGames();
+  const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
+
+  const handleGameClick = (game: GameCardProps) => {
+    setSelectedGame(game);
+    setSheetOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -45,12 +55,20 @@ const Favourites = () => {
                   {...game}
                   isFavorite={isFavorite(game.id)}
                   onFavoriteToggle={toggleFavorite}
+                  onClick={() => handleGameClick(game)}
                 />
               </div>
             ))}
           </div>
         )}
       </main>
+
+      {/* Game Detail Sheet */}
+      <GameDetailSheet
+        game={selectedGame}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
 
       <BottomNav />
     </div>

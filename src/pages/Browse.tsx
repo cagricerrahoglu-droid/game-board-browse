@@ -3,7 +3,9 @@ import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import BottomNav from "@/components/BottomNav";
 import HorizontalGameCard from "@/components/HorizontalGameCard";
+import GameDetailSheet from "@/components/GameDetailSheet";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { GameCardProps } from "@/components/GameCard";
 import {
   strategyGames,
   familyGames,
@@ -15,6 +17,8 @@ import {
 
 const Browse = () => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
   const { toggleFavorite, isFavorite } = useFavorites();
 
   const allGames = useMemo(() => {
@@ -34,6 +38,11 @@ const Browse = () => {
       game.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, allGames]);
+
+  const handleGameClick = (game: GameCardProps) => {
+    setSelectedGame(game);
+    setSheetOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
@@ -64,6 +73,7 @@ const Browse = () => {
                 {...game}
                 isFavorite={isFavorite(game.id)}
                 onFavoriteToggle={toggleFavorite}
+                onClick={() => handleGameClick(game)}
               />
             </div>
           ))
@@ -73,6 +83,13 @@ const Browse = () => {
           </div>
         )}
       </div>
+
+      {/* Game Detail Sheet */}
+      <GameDetailSheet
+        game={selectedGame}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
 
       <BottomNav />
     </div>

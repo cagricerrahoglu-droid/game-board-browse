@@ -9,9 +9,10 @@ interface GameCarouselProps {
   games: GameCardProps[];
   className?: string;
   categoryId?: string;
+  onGameClick?: (game: GameCardProps) => void;
 }
 
-const GameCarousel = ({ title, games, className, categoryId }: GameCarouselProps) => {
+const GameCarousel = ({ title, games, className, categoryId, onGameClick }: GameCarouselProps) => {
   const { toggleFavorite, isFavorite } = useFavorites();
   const navigate = useNavigate();
 
@@ -44,6 +45,7 @@ const GameCarousel = ({ title, games, className, categoryId }: GameCarouselProps
               {...game}
               isFavorite={isFavorite(game.id)}
               onFavoriteToggle={toggleFavorite}
+              onClick={() => onGameClick?.(game)}
             />
           ))}
         </div>
