@@ -36,7 +36,7 @@ export const strategyGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.5,
     availability: "available",
-    pricePerDay: 3.50,
+    monthlyPrice: 8.99,
   },
   {
     id: "ticket-to-ride",
@@ -47,7 +47,7 @@ export const strategyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.7,
     availability: "available",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
   {
     id: "wingspan",
@@ -58,7 +58,7 @@ export const strategyGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.8,
     availability: "limited",
-    pricePerDay: 4.00,
+    monthlyPrice: 9.99,
   },
   {
     id: "terraforming-mars",
@@ -69,7 +69,7 @@ export const strategyGames: GameCardProps[] = [
     difficulty: "Hard",
     rating: 4.6,
     availability: "available",
-    pricePerDay: 4.50,
+    monthlyPrice: 10.99,
   },
   {
     id: "7-wonders",
@@ -80,7 +80,7 @@ export const strategyGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.4,
     availability: "available",
-    pricePerDay: 3.50,
+    monthlyPrice: 8.99,
   },
 ];
 
@@ -94,7 +94,7 @@ export const familyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.6,
     availability: "available",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
   {
     id: "splendor",
@@ -105,7 +105,7 @@ export const familyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.5,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "kingdomino",
@@ -116,7 +116,7 @@ export const familyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.3,
     availability: "limited",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
   {
     id: "dixit",
@@ -127,7 +127,7 @@ export const familyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.4,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "sushi-go",
@@ -138,7 +138,7 @@ export const familyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.2,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
 ];
 
@@ -152,7 +152,7 @@ export const twoPlayerGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.8,
     availability: "available",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
   {
     id: "patchwork",
@@ -163,7 +163,7 @@ export const twoPlayerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.5,
     availability: "available",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
   {
     id: "jaipur",
@@ -174,7 +174,7 @@ export const twoPlayerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.4,
     availability: "limited",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
   {
     id: "codenames-duet",
@@ -185,7 +185,7 @@ export const twoPlayerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.3,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "star-realms",
@@ -196,7 +196,7 @@ export const twoPlayerGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.3,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
 ];
 
@@ -210,7 +210,7 @@ export const partyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.6,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "wavelength",
@@ -221,7 +221,7 @@ export const partyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.5,
     availability: "available",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
   {
     id: "just-one",
@@ -232,7 +232,7 @@ export const partyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.4,
     availability: "limited",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "telestrations",
@@ -243,7 +243,7 @@ export const partyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.3,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "the-resistance",
@@ -254,7 +254,7 @@ export const partyGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.2,
     availability: "available",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
 ];
 
@@ -268,7 +268,7 @@ export const beginnerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.4,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "love-letter",
@@ -279,7 +279,7 @@ export const beginnerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.2,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
   {
     id: "uno",
@@ -290,7 +290,7 @@ export const beginnerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.0,
     availability: "available",
-    pricePerDay: 1.00,
+    monthlyPrice: 3.99,
   },
   {
     id: "dobble",
@@ -301,7 +301,7 @@ export const beginnerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.1,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
   {
     id: "exploding-kittens",
@@ -312,7 +312,7 @@ export const beginnerGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.0,
     availability: "limited",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
 ];
 
@@ -326,7 +326,7 @@ export const coopGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.5,
     availability: "available",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
   {
     id: "spirit-island",
@@ -337,7 +337,7 @@ export const coopGames: GameCardProps[] = [
     difficulty: "Hard",
     rating: 4.8,
     availability: "limited",
-    pricePerDay: 4.50,
+    monthlyPrice: 10.99,
   },
   {
     id: "the-crew",
@@ -348,7 +348,7 @@ export const coopGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.6,
     availability: "available",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
   {
     id: "hanabi",
@@ -359,7 +359,7 @@ export const coopGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.3,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
   {
     id: "mysterium",
@@ -370,7 +370,7 @@ export const coopGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.4,
     availability: "available",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
 ];
 
@@ -384,7 +384,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.1,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "scrabble",
@@ -395,7 +395,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.3,
     availability: "available",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
   {
     id: "battleship",
@@ -406,7 +406,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.0,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
   {
     id: "clue",
@@ -417,7 +417,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.2,
     availability: "limited",
-    pricePerDay: 2.00,
+    monthlyPrice: 5.99,
   },
   {
     id: "trivial-pursuit",
@@ -428,7 +428,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.1,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
   {
     id: "candy-land",
@@ -439,7 +439,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 3.8,
     availability: "available",
-    pricePerDay: 1.00,
+    monthlyPrice: 3.99,
   },
   {
     id: "othello",
@@ -450,7 +450,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.4,
     availability: "available",
-    pricePerDay: 1.50,
+    monthlyPrice: 4.99,
   },
   {
     id: "risk",
@@ -461,7 +461,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Medium",
     rating: 4.2,
     availability: "limited",
-    pricePerDay: 3.00,
+    monthlyPrice: 7.99,
   },
   {
     id: "cranium",
@@ -472,7 +472,7 @@ export const classicGames: GameCardProps[] = [
     difficulty: "Easy",
     rating: 4.3,
     availability: "available",
-    pricePerDay: 2.50,
+    monthlyPrice: 6.99,
   },
 ];
 

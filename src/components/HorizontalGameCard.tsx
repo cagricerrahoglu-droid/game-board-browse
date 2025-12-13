@@ -24,7 +24,7 @@ const HorizontalGameCard = ({
   difficulty,
   rating,
   availability,
-  pricePerDay,
+  monthlyPrice,
   isFavorite = false,
   onFavoriteToggle,
   onClick,
@@ -143,8 +143,8 @@ const HorizontalGameCard = ({
         {/* Price */}
         <div className="pt-1">
           <span className="text-primary font-bold text-sm">
-            £{pricePerDay.toFixed(2)}
-            <span className="text-muted-foreground font-medium text-xs ml-0.5">/day</span>
+            £{monthlyPrice.toFixed(2)}
+            <span className="text-muted-foreground font-medium text-xs ml-0.5">/mo</span>
           </span>
         </div>
       </div>

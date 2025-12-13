@@ -16,7 +16,6 @@ const availabilityConfig = {
 const BasketItemCard = ({ item, onRemove }: BasketItemCardProps) => {
   const availability = availabilityConfig[item.availability];
   const AvailabilityIcon = availability.icon;
-  const totalPrice = item.pricePerDay * item.rentalDuration;
 
   return (
     <div className="bg-card rounded-2xl p-4 shadow-soft border border-border/50">
@@ -48,10 +47,8 @@ const BasketItemCard = ({ item, onRemove }: BasketItemCardProps) => {
             </button>
           </div>
 
-          <div className="mt-1 flex items-center gap-2 text-sm text-muted-foreground">
-            <span>{item.rentalDuration} day{item.rentalDuration > 1 ? "s" : ""} rental</span>
-            <span>•</span>
-            <span>£{item.pricePerDay.toFixed(2)}/day</span>
+          <div className="mt-1 text-sm text-muted-foreground">
+            Monthly rental
           </div>
 
           <div className="mt-2 flex items-center justify-between">
@@ -60,7 +57,7 @@ const BasketItemCard = ({ item, onRemove }: BasketItemCardProps) => {
               <span>{availability.label}</span>
             </div>
             <p className="font-display font-bold text-foreground">
-              £{totalPrice.toFixed(2)}
+              £{item.monthlyPrice.toFixed(2)}/mo
             </p>
           </div>
         </div>

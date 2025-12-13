@@ -1,13 +1,11 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { GameCardProps } from "@/components/GameCard";
 
-export interface BasketItem extends GameCardProps {
-  rentalDuration: number; // days
-}
+export interface BasketItem extends GameCardProps {}
 
 interface BasketContextType {
   items: BasketItem[];
-  addToBasket: (game: GameCardProps, duration: number) => void;
+  addToBasket: (game: GameCardProps) => void;
   removeFromBasket: (gameId: string) => void;
   clearBasket: () => void;
   getItemCount: () => number;
@@ -19,11 +17,11 @@ const BasketContext = createContext<BasketContextType | undefined>(undefined);
 export const BasketProvider = ({ children }: { children: ReactNode }) => {
   const [items, setItems] = useState<BasketItem[]>([]);
 
-  const addToBasket = (game: GameCardProps, duration: number) => {
+  const addToBasket = (game: GameCardProps) => {
     setItems((prev) => {
       const exists = prev.find((item) => item.id === game.id);
       if (exists) return prev;
-      return [...prev, { ...game, rentalDuration: duration }];
+      return [...prev, { ...game }];
     });
   };
 
@@ -36,7 +34,7 @@ export const BasketProvider = ({ children }: { children: ReactNode }) => {
   const getItemCount = () => items.length;
 
   const getSubtotal = () => {
-    return items.reduce((total, item) => total + item.pricePerDay * item.rentalDuration, 0);
+    return items.reduce((total, item) => total + item.monthlyPrice, 0);
   };
 
   return (
