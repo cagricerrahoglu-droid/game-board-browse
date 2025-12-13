@@ -16,6 +16,7 @@ import PaymentReceipts from "./pages/PaymentReceipts";
 import BillingAddress from "./pages/BillingAddress";
 import Auth from "./pages/Auth";
 import Basket from "./pages/Basket";
+import Checkout from "./pages/Checkout";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -40,6 +41,7 @@ const App = () => (
                 <Route path="/billing-address" element={<BillingAddress />} />
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/basket" element={<Basket />} />
+                <Route path="/checkout" element={<Checkout />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
