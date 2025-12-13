@@ -5,9 +5,10 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 interface VerticalGameListProps {
   title: string;
   games: GameCardProps[];
+  onGameClick?: (game: GameCardProps) => void;
 }
 
-const VerticalGameList = ({ title, games }: VerticalGameListProps) => {
+const VerticalGameList = ({ title, games, onGameClick }: VerticalGameListProps) => {
   const { toggleFavorite, isFavorite } = useFavorites();
 
   return (
@@ -24,6 +25,7 @@ const VerticalGameList = ({ title, games }: VerticalGameListProps) => {
               {...game}
               isFavorite={isFavorite(game.id)}
               onFavoriteToggle={toggleFavorite}
+              onClick={() => onGameClick?.(game)}
             />
           </div>
         ))}

@@ -4,6 +4,7 @@ import FiltersSection, { FilterState, durationRanges } from "@/components/Filter
 import GameCarousel from "@/components/GameCarousel";
 import BottomNav from "@/components/BottomNav";
 import VerticalGameList from "@/components/VerticalGameList";
+import GameDetailSheet from "@/components/GameDetailSheet";
 import { GameCardProps } from "@/components/GameCard";
 import {
   strategyGames,
@@ -22,6 +23,8 @@ const Index = () => {
     duration: null,
     difficulty: null,
   });
+  const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const hasActiveFilters = filters.players || filters.age || filters.duration || filters.difficulty;
 
@@ -82,6 +85,11 @@ const Index = () => {
     });
   }, [allGames, filters, hasActiveFilters]);
 
+  const handleGameClick = (game: GameCardProps) => {
+    setSelectedGame(game);
+    setSheetOpen(true);
+  };
+
   return (
     <div className="min-h-screen bg-background pb-24">
       {/* Sticky Header */}
@@ -96,26 +104,34 @@ const Index = () => {
           // Show filtered vertical list
           <VerticalGameList 
             title={`${filteredGames.length} Games Found`} 
-            games={filteredGames} 
+            games={filteredGames}
+            onGameClick={handleGameClick}
           />
         ) : (
           // Show carousels
           <>
-            <GameCarousel title="🎯 Strategy" games={strategyGames} categoryId="strategy" />
-            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" games={familyGames} categoryId="family" />
-            <GameCarousel title="🎲 2-Player Hits" games={twoPlayerGames} categoryId="two-player" />
-            <GameCarousel title="🎉 Party Games" games={partyGames} categoryId="party" />
-            <GameCarousel title="🌱 Beginner-Friendly" games={beginnerGames} categoryId="beginner" />
-            <GameCarousel title="🤝 Cooperative Games" games={coopGames} categoryId="coop" />
+            <GameCarousel title="🎯 Strategy" games={strategyGames} categoryId="strategy" onGameClick={handleGameClick} />
+            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" games={familyGames} categoryId="family" onGameClick={handleGameClick} />
+            <GameCarousel title="🎲 2-Player Hits" games={twoPlayerGames} categoryId="two-player" onGameClick={handleGameClick} />
+            <GameCarousel title="🎉 Party Games" games={partyGames} categoryId="party" onGameClick={handleGameClick} />
+            <GameCarousel title="🌱 Beginner-Friendly" games={beginnerGames} categoryId="beginner" onGameClick={handleGameClick} />
+            <GameCarousel title="🤝 Cooperative Games" games={coopGames} categoryId="coop" onGameClick={handleGameClick} />
 
             {/* Divider */}
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
 
             {/* Vertical Recommended List */}
-            <VerticalGameList title="✨ Recommended for You" games={recommendedGames} />
+            <VerticalGameList title="✨ Recommended for You" games={recommendedGames} onGameClick={handleGameClick} />
           </>
         )}
       </main>
+
+      {/* Game Detail Sheet */}
+      <GameDetailSheet
+        game={selectedGame}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
 
       {/* Bottom Navigation */}
       <BottomNav />

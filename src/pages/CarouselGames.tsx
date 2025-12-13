@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import {
@@ -9,6 +10,7 @@ import {
   coopGames,
 } from "@/data/gamesData";
 import VerticalGameList from "@/components/VerticalGameList";
+import GameDetailSheet from "@/components/GameDetailSheet";
 import { GameCardProps } from "@/components/GameCard";
 
 const carouselCategories: Record<string, { title: string; games: GameCardProps[] }> = {
@@ -41,8 +43,15 @@ const carouselCategories: Record<string, { title: string; games: GameCardProps[]
 const CarouselGames = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
+  const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
+  const [sheetOpen, setSheetOpen] = useState(false);
 
   const category = categoryId ? carouselCategories[categoryId] : null;
+
+  const handleGameClick = (game: GameCardProps) => {
+    setSelectedGame(game);
+    setSheetOpen(true);
+  };
 
   if (!category) {
     return (
@@ -71,8 +80,15 @@ const CarouselGames = () => {
 
       {/* Games List */}
       <div className="pt-5">
-        <VerticalGameList title="" games={category.games} />
+        <VerticalGameList title="" games={category.games} onGameClick={handleGameClick} />
       </div>
+
+      {/* Game Detail Sheet */}
+      <GameDetailSheet
+        game={selectedGame}
+        open={sheetOpen}
+        onOpenChange={setSheetOpen}
+      />
     </div>
   );
 };
