@@ -12,8 +12,8 @@ import { cn } from "@/lib/utils";
 type Step = "delivery" | "payment" | "confirmation";
 
 const deliveryOptions = [
-  { id: "home", label: "Home Delivery", description: "Delivered to your door", icon: Truck, price: 2.99 },
-  { id: "pickup", label: "Pickup Point", description: "Collect from a local shop", icon: Package, price: 0 },
+  { id: "home", label: "Home Delivery", description: "Delivered to your door", icon: Truck, price: 3.99 },
+  { id: "pickup", label: "Pickup Point", description: "Collect from a local shop", icon: Package, price: 1.99 },
 ];
 
 const Checkout = () => {
@@ -32,7 +32,7 @@ const Checkout = () => {
   });
 
   const subtotal = getSubtotal();
-  const deliveryFee = deliveryMethod === "home" ? 2.99 : 0;
+  const deliveryFee = deliveryMethod === "home" ? 3.99 : 1.99;
   const total = subtotal + deliveryFee;
 
   const steps = [
@@ -275,7 +275,7 @@ const Checkout = () => {
                 </div>
                 <div className="flex justify-between">
                   <span className="text-muted-foreground">Delivery</span>
-                  <span className="text-foreground">{deliveryFee === 0 ? "Free" : `£${deliveryFee.toFixed(2)}`}</span>
+                  <span className="text-foreground">£{deliveryFee.toFixed(2)}</span>
                 </div>
                 <div className="pt-2 border-t border-border flex justify-between font-bold">
                   <span className="text-foreground">Total</span>
