@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { X, Users, Clock, Gauge, Star, Heart, Info, Check, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -36,14 +35,7 @@ const availabilityConfig = {
   unavailable: { icon: X, label: "Unavailable", color: "text-unavailable bg-unavailable/15" },
 };
 
-const rentalOptions = [
-  { days: 3, label: "3 days" },
-  { days: 7, label: "7 days" },
-  { days: 14, label: "14 days" },
-];
-
 const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => {
-  const [selectedDuration, setSelectedDuration] = useState<number | null>(null);
   const { addToBasket, items } = useBasket();
   const { toggleFavorite, isFavorite } = useFavorites();
 
@@ -53,17 +45,13 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
   const isInBasket = items.some((item) => item.id === game.id);
   const favorite = isFavorite(game.id);
 
-  const totalPrice = selectedDuration ? game.pricePerDay * selectedDuration : 0;
-
   const handleAddToBasket = () => {
-    if (!selectedDuration) return;
-    addToBasket(game, selectedDuration);
+    addToBasket(game);
     toast({
       title: "Added to basket!",
-      description: `${game.title} for ${selectedDuration} days`,
+      description: `${game.title} - Monthly rental`,
     });
     onOpenChange(false);
-    setSelectedDuration(null);
   };
 
   const handleFavoriteToggle = () => {
@@ -74,15 +62,8 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
     });
   };
 
-  const handleOpenChange = (isOpen: boolean) => {
-    if (!isOpen) {
-      setSelectedDuration(null);
-    }
-    onOpenChange(isOpen);
-  };
-
   return (
-    <Drawer open={open} onOpenChange={handleOpenChange}>
+    <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="max-h-[80vh] rounded-t-3xl">
         {/* Hero Image Section */}
         <div className="relative w-full h-32 overflow-hidden">
@@ -169,37 +150,11 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
             </div>
           </div>
 
-          {/* Rental Duration */}
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-foreground">Rental duration</label>
-            <div className="flex gap-2">
-              {rentalOptions.map((option) => (
-                <button
-                  key={option.days}
-                  onClick={() => setSelectedDuration(option.days)}
-                  className={cn(
-                    "flex-1 py-2 px-3 rounded-xl text-xs font-semibold transition-all duration-200",
-                    "border-2",
-                    selectedDuration === option.days
-                      ? "border-primary bg-primary/10 text-primary"
-                      : "border-border bg-card text-foreground hover:border-primary/50"
-                  )}
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           {/* Pricing */}
           <div className="flex items-center justify-between py-2">
             <div>
               <span className="text-lg font-bold text-foreground">
-                {selectedDuration ? (
-                  <>£{totalPrice.toFixed(2)} <span className="text-xs font-medium text-muted-foreground">for {selectedDuration} days</span></>
-                ) : (
-                  <>£{game.pricePerDay.toFixed(2)} <span className="text-xs font-medium text-muted-foreground">/day</span></>
-                )}
+                £{game.monthlyPrice.toFixed(2)} <span className="text-xs font-medium text-muted-foreground">/month</span>
               </span>
               <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                 <Check className="w-3 h-3 text-available" />
@@ -223,7 +178,7 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
           {/* CTA */}
           <Button
             onClick={handleAddToBasket}
-            disabled={!selectedDuration || isInBasket || game.availability === "unavailable"}
+            disabled={isInBasket || game.availability === "unavailable"}
             className="w-full h-12 text-sm font-bold rounded-xl"
           >
             {isInBasket ? "Already in basket" : game.availability === "unavailable" ? "Unavailable" : "Add to basket"}

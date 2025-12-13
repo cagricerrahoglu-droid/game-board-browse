@@ -11,7 +11,7 @@ export interface GameCardProps {
   difficulty: "Easy" | "Medium" | "Hard";
   rating: number;
   availability: "available" | "limited" | "unavailable";
-  pricePerDay: number;
+  monthlyPrice: number;
   isFavorite?: boolean;
   onFavoriteToggle?: (id: string) => void;
   onClick?: () => void;
@@ -38,7 +38,7 @@ const GameCard = ({
   difficulty,
   rating,
   availability,
-  pricePerDay,
+  monthlyPrice,
   isFavorite = false,
   onFavoriteToggle,
   onClick,
@@ -159,8 +159,8 @@ const GameCard = ({
         {/* Price */}
         <div className="pt-2 border-t border-border/50">
           <span className="text-primary font-bold text-base">
-            £{pricePerDay.toFixed(2)}
-            <span className="text-muted-foreground font-medium text-xs ml-0.5">/day</span>
+            £{monthlyPrice.toFixed(2)}
+            <span className="text-muted-foreground font-medium text-xs ml-0.5">/mo</span>
           </span>
         </div>
       </div>
