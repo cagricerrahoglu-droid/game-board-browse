@@ -150,7 +150,11 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
             </div>
           </div>
 
-          {/* Pricing */}
+          {/* Description */}
+          <p className="text-sm text-muted-foreground leading-relaxed">
+            {game.description}
+          </p>
+
           <div className="flex items-center justify-between py-2">
             <div>
               <span className="text-lg font-bold text-foreground">
