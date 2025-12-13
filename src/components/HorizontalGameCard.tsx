@@ -25,6 +25,7 @@ const HorizontalGameCard = ({
   rating,
   availability,
   monthlyPrice,
+  description,
   isFavorite = false,
   onFavoriteToggle,
   onClick,
@@ -97,14 +98,20 @@ const HorizontalGameCard = ({
 
       {/* Card Content */}
       <div className="flex flex-col justify-between flex-1 p-3.5">
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1">
           {/* Title */}
           <h3 className="font-display font-semibold text-sm text-foreground line-clamp-1 leading-tight">
             {title}
           </h3>
 
+          {/* Description */}
+          <p className="text-xs text-muted-foreground line-clamp-1">
+            {description.substring(0, 50)}...
+            <span className="text-primary font-medium ml-1">More</span>
+          </p>
+
           {/* Metadata Row */}
-          <div className="flex items-center gap-3 text-muted-foreground">
+          <div className="flex items-center gap-3 text-muted-foreground mt-1">
             <div className="flex items-center gap-1">
               <Users className="w-3.5 h-3.5" />
               <span className="text-xs font-medium">{players}</span>

@@ -12,6 +12,7 @@ export interface GameCardProps {
   rating: number;
   availability: "available" | "limited" | "unavailable";
   monthlyPrice: number;
+  description: string;
   isFavorite?: boolean;
   onFavoriteToggle?: (id: string) => void;
   onClick?: () => void;
@@ -39,6 +40,7 @@ const GameCard = ({
   rating,
   availability,
   monthlyPrice,
+  description,
   isFavorite = false,
   onFavoriteToggle,
   onClick,
@@ -114,11 +116,17 @@ const GameCard = ({
       </div>
 
       {/* Card Content */}
-      <div className="flex flex-col gap-2.5 p-3.5">
+      <div className="flex flex-col gap-2 p-3.5">
         {/* Title */}
-        <h3 className="font-display font-semibold text-sm text-foreground line-clamp-2 leading-snug">
+        <h3 className="font-display font-semibold text-sm text-foreground line-clamp-1 leading-snug">
           {title}
         </h3>
+
+        {/* Description */}
+        <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+          {description.substring(0, 60)}...
+          <span className="text-primary font-medium ml-1">More</span>
+        </p>
 
         {/* Metadata Row */}
         <div className="flex items-center gap-3 text-muted-foreground">

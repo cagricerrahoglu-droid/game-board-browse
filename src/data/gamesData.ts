@@ -25,7 +25,6 @@ import mysteriumImg from "@/assets/games/mysterium.jpg";
 import monopolyImg from "@/assets/games/monopoly.png";
 import scrabbleImg from "@/assets/games/scrabble.png";
 
-// Real board game data with actual box art images from BoardGameGeek
 export const strategyGames: GameCardProps[] = [
   {
     id: "catan",
@@ -37,6 +36,7 @@ export const strategyGames: GameCardProps[] = [
     rating: 4.5,
     availability: "available",
     monthlyPrice: 8.99,
+    description: "Trade, build, and settle the island of Catan in this classic resource management game. Collect and trade resources to build roads, settlements, and cities.",
   },
   {
     id: "ticket-to-ride",
@@ -48,6 +48,7 @@ export const strategyGames: GameCardProps[] = [
     rating: 4.7,
     availability: "available",
     monthlyPrice: 7.99,
+    description: "Build train routes across North America in this elegant and easy-to-learn game. Collect cards and claim railway routes connecting cities.",
   },
   {
     id: "wingspan",
@@ -59,6 +60,7 @@ export const strategyGames: GameCardProps[] = [
     rating: 4.8,
     availability: "limited",
     monthlyPrice: 9.99,
+    description: "Attract birds to your wildlife preserve in this beautifully illustrated engine-building game. Each bird you play extends a chain of powerful combinations.",
   },
   {
     id: "terraforming-mars",
@@ -70,6 +72,7 @@ export const strategyGames: GameCardProps[] = [
     rating: 4.6,
     availability: "available",
     monthlyPrice: 10.99,
+    description: "Compete as corporations to transform Mars into a habitable planet. Manage resources, complete projects, and race to terraform the red planet.",
   },
   {
     id: "7-wonders",
@@ -81,6 +84,7 @@ export const strategyGames: GameCardProps[] = [
     rating: 4.4,
     availability: "available",
     monthlyPrice: 8.99,
+    description: "Lead an ancient civilization and build one of the world's great wonders. Draft cards, develop your city, and outmaneuver your neighbors.",
   },
 ];
 
@@ -95,6 +99,7 @@ export const familyGames: GameCardProps[] = [
     rating: 4.6,
     availability: "available",
     monthlyPrice: 7.99,
+    description: "Create beautiful mosaic patterns with colorful tiles in this elegant abstract strategy game. Simple rules with deep tactical choices.",
   },
   {
     id: "splendor",
@@ -106,6 +111,7 @@ export const familyGames: GameCardProps[] = [
     rating: 4.5,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Become a wealthy Renaissance merchant by collecting gems and developing mines. Build your gem empire and attract noble patrons.",
   },
   {
     id: "kingdomino",
@@ -117,6 +123,7 @@ export const familyGames: GameCardProps[] = [
     rating: 4.3,
     availability: "limited",
     monthlyPrice: 5.99,
+    description: "Build your kingdom using domino-like tiles featuring different terrains. Connect matching landscapes to score big points.",
   },
   {
     id: "dixit",
@@ -128,6 +135,7 @@ export const familyGames: GameCardProps[] = [
     rating: 4.4,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Use beautiful dreamlike artwork to tell stories and guess what others are thinking. A game of creative expression and imagination.",
   },
   {
     id: "sushi-go",
@@ -139,6 +147,7 @@ export const familyGames: GameCardProps[] = [
     rating: 4.2,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Grab the best sushi dishes as they whiz by in this fast-playing card drafting game. Create the perfect meal combo to score points.",
   },
 ];
 
@@ -153,6 +162,7 @@ export const twoPlayerGames: GameCardProps[] = [
     rating: 4.8,
     availability: "available",
     monthlyPrice: 7.99,
+    description: "Lead your civilization to victory in this intense two-player adaptation. Build wonders, develop technology, and crush your opponent.",
   },
   {
     id: "patchwork",
@@ -164,6 +174,7 @@ export const twoPlayerGames: GameCardProps[] = [
     rating: 4.5,
     availability: "available",
     monthlyPrice: 5.99,
+    description: "Compete to build the most beautiful quilt while managing buttons and time. A cozy puzzle game perfect for two players.",
   },
   {
     id: "jaipur",
@@ -175,6 +186,7 @@ export const twoPlayerGames: GameCardProps[] = [
     rating: 4.4,
     availability: "limited",
     monthlyPrice: 5.99,
+    description: "Trade goods and camels in this fast-paced merchant game set in India. Outwit your opponent to become the Maharaja's personal trader.",
   },
   {
     id: "codenames-duet",
@@ -186,6 +198,7 @@ export const twoPlayerGames: GameCardProps[] = [
     rating: 4.3,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Work together to identify secret agents using one-word clues. A cooperative word game that tests your communication skills.",
   },
   {
     id: "star-realms",
@@ -197,6 +210,7 @@ export const twoPlayerGames: GameCardProps[] = [
     rating: 4.3,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Build a powerful space armada in this fast-paced deck-building game. Acquire ships and bases to blast your opponent.",
   },
 ];
 
@@ -211,6 +225,7 @@ export const partyGames: GameCardProps[] = [
     rating: 4.6,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Give one-word clues to help your team identify secret agents. A thrilling word association game for groups.",
   },
   {
     id: "wavelength",
@@ -222,6 +237,7 @@ export const partyGames: GameCardProps[] = [
     rating: 4.5,
     availability: "available",
     monthlyPrice: 7.99,
+    description: "Read minds and find the hidden target on a spectrum between two extremes. A social guessing game that sparks great discussions.",
   },
   {
     id: "just-one",
@@ -233,6 +249,7 @@ export const partyGames: GameCardProps[] = [
     rating: 4.4,
     availability: "limited",
     monthlyPrice: 6.99,
+    description: "Give one-word clues to help someone guess a secret word. But watch out - duplicate clues are eliminated!",
   },
   {
     id: "telestrations",
@@ -244,6 +261,7 @@ export const partyGames: GameCardProps[] = [
     rating: 4.3,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Draw, guess, and laugh in this hilarious party game combining drawing and telephone. Prepare for chaos and creativity.",
   },
   {
     id: "the-resistance",
@@ -255,6 +273,7 @@ export const partyGames: GameCardProps[] = [
     rating: 4.2,
     availability: "available",
     monthlyPrice: 5.99,
+    description: "Uncover the spies hidden among you in this game of deception and deduction. Trust no one, suspect everyone.",
   },
 ];
 
@@ -269,6 +288,7 @@ export const beginnerGames: GameCardProps[] = [
     rating: 4.4,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Build the medieval landscape of Carcassonne one tile at a time. Place your followers to score points from cities, roads, and fields.",
   },
   {
     id: "love-letter",
@@ -280,6 +300,7 @@ export const beginnerGames: GameCardProps[] = [
     rating: 4.2,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Deliver your love letter to the princess while sabotaging other suitors. A quick game of deduction with just 16 cards.",
   },
   {
     id: "uno",
@@ -291,6 +312,7 @@ export const beginnerGames: GameCardProps[] = [
     rating: 4.0,
     availability: "available",
     monthlyPrice: 3.99,
+    description: "Match colors and numbers to get rid of all your cards first. Watch out for Draw Fours and Reverses!",
   },
   {
     id: "dobble",
@@ -302,6 +324,7 @@ export const beginnerGames: GameCardProps[] = [
     rating: 4.1,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Spot the matching symbol between any two cards faster than everyone else. A frantic game of observation and speed.",
   },
   {
     id: "exploding-kittens",
@@ -313,6 +336,7 @@ export const beginnerGames: GameCardProps[] = [
     rating: 4.0,
     availability: "limited",
     monthlyPrice: 5.99,
+    description: "Draw cards and try not to explode in this highly strategic kitty-powered version of Russian Roulette.",
   },
 ];
 
@@ -327,6 +351,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.5,
     availability: "available",
     monthlyPrice: 7.99,
+    description: "Work together to cure four diseases threatening the world. Travel, treat infections, and find cures before time runs out.",
   },
   {
     id: "spirit-island",
@@ -338,6 +363,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.8,
     availability: "limited",
     monthlyPrice: 10.99,
+    description: "Play as powerful spirits defending your island from colonizing invaders. A complex and rewarding cooperative experience.",
   },
   {
     id: "the-crew",
@@ -349,6 +375,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.6,
     availability: "available",
     monthlyPrice: 5.99,
+    description: "Complete space missions together in this cooperative trick-taking card game. Communication is limited - can you succeed?",
   },
   {
     id: "hanabi",
@@ -360,6 +387,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.3,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Create a spectacular fireworks display together - but you can only see everyone else's cards, not your own!",
   },
   {
     id: "mysterium",
@@ -371,6 +399,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.4,
     availability: "available",
     monthlyPrice: 7.99,
+    description: "A ghost sends visions to psychics to help solve their murder mystery. Interpret abstract dreams to find the killer.",
   },
 ];
 
@@ -385,6 +414,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.1,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Buy, sell, and trade properties to become the wealthiest player. The classic real estate trading game for the whole family.",
   },
   {
     id: "scrabble",
@@ -396,6 +426,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.3,
     availability: "available",
     monthlyPrice: 5.99,
+    description: "Create words on the board using letter tiles to score points. Expand your vocabulary while competing with friends.",
   },
   {
     id: "battleship",
@@ -407,6 +438,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.0,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Hunt and sink your opponent's fleet in this classic naval combat game. Call out coordinates and blow ships out of the water.",
   },
   {
     id: "clue",
@@ -418,6 +450,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.2,
     availability: "limited",
     monthlyPrice: 5.99,
+    description: "Solve the murder mystery by figuring out who did it, where, and with what weapon. A classic deduction game.",
   },
   {
     id: "trivial-pursuit",
@@ -429,6 +462,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.1,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Test your knowledge across six categories and collect all the wedges. The ultimate trivia game for curious minds.",
   },
   {
     id: "candy-land",
@@ -440,6 +474,7 @@ export const classicGames: GameCardProps[] = [
     rating: 3.8,
     availability: "available",
     monthlyPrice: 3.99,
+    description: "Journey through a colorful candy kingdom in this sweet race to the finish. Perfect for young players learning to play games.",
   },
   {
     id: "othello",
@@ -451,6 +486,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.4,
     availability: "available",
     monthlyPrice: 4.99,
+    description: "Flip your opponent's discs to your color in this classic strategy game. A minute to learn, a lifetime to master.",
   },
   {
     id: "risk",
@@ -462,6 +498,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.2,
     availability: "limited",
     monthlyPrice: 7.99,
+    description: "Conquer the world through strategic warfare and diplomacy. Build armies, attack territories, and dominate the globe.",
   },
   {
     id: "cranium",
@@ -473,6 +510,7 @@ export const classicGames: GameCardProps[] = [
     rating: 4.3,
     availability: "available",
     monthlyPrice: 6.99,
+    description: "Sculpt, act, draw, and answer trivia in this outrageous party game. Something for everyone in your group.",
   },
 ];
 
