@@ -129,20 +129,18 @@ const GameCard = ({
         </p>
 
         {/* Metadata Row */}
-        <div className="flex items-center gap-3 text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <Users className="w-3.5 h-3.5" />
-            <span className="text-xs font-medium">{players}</span>
+        <div className="flex items-center justify-between text-muted-foreground">
+          <div className="flex items-center gap-3">
+            <div className="flex items-center gap-1">
+              <Users className="w-3.5 h-3.5" />
+              <span className="text-xs font-medium">{players}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5" />
+              <span className="text-xs font-medium">{duration}</span>
+            </div>
           </div>
-          <div className="flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5" />
-            <span className="text-xs font-medium">{duration}</span>
-          </div>
-        </div>
-
-        {/* Difficulty & Rating */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-3">
             <div className="flex gap-0.5">
               {[1, 2, 3].map((bar) => (
                 <div
@@ -156,10 +154,10 @@ const GameCard = ({
                 />
               ))}
             </div>
-          </div>
-          <div className="flex items-center gap-1 bg-star/10 px-1.5 py-0.5 rounded-full">
-            <Star className="w-3.5 h-3.5 fill-star text-star" />
-            <span className="text-xs font-bold text-foreground">{rating.toFixed(1)}</span>
+            <div className="flex items-center gap-1 bg-star/10 px-1.5 py-0.5 rounded-full">
+              <Star className="w-3.5 h-3.5 fill-star text-star" />
+              <span className="text-xs font-bold text-foreground">{rating.toFixed(1)}</span>
+            </div>
           </div>
         </div>
 
