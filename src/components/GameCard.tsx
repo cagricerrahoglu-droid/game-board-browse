@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Clock, GaugeCircle, Star, Check, X, AlertCircle, Heart } from "lucide-react";
+import { Users, Clock, Gauge, Star, Check, X, AlertCircle, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface GameCardProps {
@@ -143,7 +143,7 @@ const GameCard = ({
         {/* Difficulty & Rating */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <GaugeCircle className={cn("w-3.5 h-3.5", difficultyConfig[difficulty].color)} />
+            <Gauge className={cn("w-3.5 h-3.5", difficultyConfig[difficulty].color)} />
             <div className="flex gap-0.5">
               {[1, 2, 3].map((bar) => (
                 <div
