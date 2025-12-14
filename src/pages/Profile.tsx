@@ -300,12 +300,12 @@ const Profile = () => {
                 <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
               <button
-                onClick={() => navigate('/lister')}
+                onClick={() => navigate('/lender')}
                 className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8"
               >
                 <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">
                   <span className="text-primary-foreground z-10">Renter</span>
-                  <span className="text-muted-foreground">Lister</span>
+                  <span className="text-muted-foreground">Lender</span>
                 </div>
                 <div className="absolute left-0.5 w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300" />
               </button>

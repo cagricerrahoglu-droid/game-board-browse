@@ -5,7 +5,7 @@ import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 
-export interface ListerGame {
+export interface LenderGame {
   id: number;
   title: string;
   image: string;
@@ -19,15 +19,15 @@ export interface ListerGame {
   sellPrice?: number;
 }
 
-interface ListerGameCardProps {
-  game: ListerGame;
+interface LenderGameCardProps {
+  game: LenderGame;
   onToggleAvailability: (id: number, available: boolean) => void;
   onToggleSellAfterRent: (id: number, enabled: boolean) => void;
   onPause: (id: number) => void;
   onDelete: (id: number) => void;
 }
 
-const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onPause, onDelete }: ListerGameCardProps) => {
+const LenderGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onPause, onDelete }: LenderGameCardProps) => {
   const getStatusBadge = () => {
     switch (game.status) {
       case "available":
@@ -140,4 +140,4 @@ const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onP
   );
 };
 
-export default ListerGameCard;
+export default LenderGameCard;
