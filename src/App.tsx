@@ -20,6 +20,7 @@ import Checkout from "./pages/Checkout";
 import LenderProfile from "./pages/LenderProfile";
 import AddGame from "./pages/AddGame";
 import PayoutSettings from "./pages/PayoutSettings";
+import AvailabilityPreferences from "./pages/AvailabilityPreferences";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/lender" element={<LenderProfile />} />
                 <Route path="/add-game" element={<AddGame />} />
                 <Route path="/payout-settings" element={<PayoutSettings />} />
+                <Route path="/availability-preferences" element={<AvailabilityPreferences />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
