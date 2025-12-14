@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil } from "lucide-react";
+import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil, Users, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -13,7 +13,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
-import ModeSwitcher from "@/components/ModeSwitcher";
 
 // Tabletop-themed avatar imports
 import pawnToken from "@/assets/avatars/pawn-token.png";
@@ -297,7 +296,10 @@ const Profile = () => {
                 </button>
               </div>
               <div className="flex-1">
-                <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
+                <div className="flex items-center gap-2 mb-1">
+                  <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
+                  <Badge className="bg-primary/20 text-primary border-primary/30">Renter</Badge>
+                </div>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
                 <Button 
                   variant="outline" 
@@ -310,6 +312,28 @@ const Profile = () => {
                 >
                   Edit Profile
                 </Button>
+              </div>
+            </div>
+
+            {/* Mode Toggle */}
+            <div className="mt-4 pt-4 border-t border-border">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-primary" />
+                  <span className="text-sm font-medium text-foreground">Renter</span>
+                </div>
+                <Switch 
+                  checked={false} 
+                  onCheckedChange={(checked) => {
+                    if (checked) {
+                      navigate('/lister');
+                    }
+                  }}
+                />
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground">Lister</span>
+                  <Store className="h-4 w-4 text-muted-foreground" />
+                </div>
               </div>
             </div>
           </CardContent>
@@ -747,8 +771,6 @@ const Profile = () => {
         </DialogContent>
       </Dialog>
 
-      {/* Mode Switcher FAB */}
-      <ModeSwitcher mode="renter" onSwitch={() => navigate('/lister')} />
     </div>
   );
 };

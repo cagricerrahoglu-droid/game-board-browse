@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Plus, ChevronRight, Wallet, Clock, CreditCard, Calendar, Truck, Tag, Settings } from "lucide-react";
+import { ArrowLeft, Plus, ChevronRight, Wallet, Clock, CreditCard, Calendar, Truck, Tag, Settings, Users, Store } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +10,6 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
-import ModeSwitcher from "@/components/ModeSwitcher";
 import ListerOnboarding from "@/components/ListerOnboarding";
 import ListerGameCard, { ListerGame } from "@/components/ListerGameCard";
 import ListerStats from "@/components/ListerStats";
@@ -199,6 +198,28 @@ const ListerProfile = () => {
                     <p className="text-sm text-muted-foreground">Manage your games and earnings</p>
                   </div>
                 </div>
+
+                {/* Mode Toggle */}
+                <div className="mt-4 pt-4 border-t border-border">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4 text-muted-foreground" />
+                      <span className="text-sm text-muted-foreground">Renter</span>
+                    </div>
+                    <Switch 
+                      checked={mode === "lister"} 
+                      onCheckedChange={(checked) => {
+                        if (!checked) {
+                          handleModeSwitch();
+                        }
+                      }}
+                    />
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm font-medium text-foreground">Lister</span>
+                      <Store className="h-4 w-4 text-primary" />
+                    </div>
+                  </div>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -333,9 +354,6 @@ const ListerProfile = () => {
             </Card>
           </motion.div>
         </div>
-
-        {/* Mode Switcher FAB */}
-        <ModeSwitcher mode={mode} onSwitch={handleModeSwitch} />
 
         <BottomNav />
       </div>
