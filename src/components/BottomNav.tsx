@@ -1,6 +1,7 @@
 import { Home, Search, Heart, ShoppingCart, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
+import { useBasket } from "@/contexts/BasketContext";
 
 interface NavItem {
   icon: typeof Search;
@@ -19,6 +20,8 @@ const navItems: NavItem[] = [
 const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { getItemCount } = useBasket();
+  const basketCount = getItemCount();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-nav-background/95 backdrop-blur-xl shadow-nav border-t border-border/30 safe-bottom">
@@ -40,7 +43,7 @@ const BottomNav = () => {
             >
               <div
                 className={cn(
-                  "p-2 rounded-xl transition-all duration-300 ease-out",
+                  "relative p-2 rounded-xl transition-all duration-300 ease-out",
                   isActive && "bg-primary/12 shadow-glow"
                 )}
               >
@@ -52,6 +55,11 @@ const BottomNav = () => {
                   strokeWidth={isActive ? 2.5 : 2}
                   fill={isActive && item.icon === Heart ? "currentColor" : "none"}
                 />
+                {item.label === "Basket" && basketCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-primary text-primary-foreground text-[10px] font-bold rounded-full px-1">
+                    {basketCount > 99 ? "99+" : basketCount}
+                  </span>
+                )}
               </div>
               <span className={cn(
                 "text-[10px] font-semibold tracking-wide",
