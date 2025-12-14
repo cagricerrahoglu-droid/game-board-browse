@@ -236,7 +236,7 @@ const ListerProfile = () => {
             <Button 
               className="w-full h-14 text-lg font-semibold rounded-2xl shadow-lg hover:shadow-xl transition-all"
               size="lg"
-              onClick={() => toast.info("Add game functionality coming soon")}
+              onClick={() => navigate("/add-game")}
             >
               <Plus className="h-6 w-6 mr-2" />
               Add a game
