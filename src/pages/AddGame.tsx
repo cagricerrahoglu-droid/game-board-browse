@@ -54,7 +54,6 @@ const AddGame = () => {
   const [isComplete, setIsComplete] = useState(true);
   const [hasManual, setHasManual] = useState(true);
   const [sellAfterRent, setSellAfterRent] = useState(false);
-  const [sellPrice, setSellPrice] = useState("");
 
   // Filter games based on search query
   const filteredGames = useMemo(() => {
@@ -78,6 +77,14 @@ const AddGame = () => {
     return Math.round(adjustedPrice * 100) / 100;
   }, [selectedGame, condition, isComplete, hasManual]);
 
+  // Calculate sell price as half of average online retail price
+  // Retail price is estimated as ~5x the monthly rental (industry standard ratio)
+  const calculatedSellPrice = useMemo(() => {
+    if (!selectedGame) return 0;
+    const estimatedRetailPrice = selectedGame.monthlyPrice * 5;
+    return Math.round((estimatedRetailPrice / 2) * 100) / 100;
+  }, [selectedGame]);
+
   const handleSelectGame = (game: GameCardProps) => {
     setSelectedGame(game);
     setSearchQuery(game.title);
@@ -92,10 +99,6 @@ const AddGame = () => {
   const handleSubmit = () => {
     if (!selectedGame) {
       toast.error("Please select a game");
-      return;
-    }
-    if (sellAfterRent && (!sellPrice || parseFloat(sellPrice) <= 0)) {
-      toast.error("Please enter a valid sell price");
       return;
     }
     
@@ -307,20 +310,14 @@ const AddGame = () => {
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: "auto" }}
                   exit={{ opacity: 0, height: 0 }}
+                  className="pt-3 border-t border-border/50"
                 >
-                  <Label htmlFor="sellPrice" className="text-sm font-medium mb-2 block">Sell Price</Label>
-                  <div className="relative">
-                    <span className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground font-medium">£</span>
-                    <Input
-                      id="sellPrice"
-                      type="number"
-                      step="0.01"
-                      min="0"
-                      placeholder="0.00"
-                      value={sellPrice}
-                      onChange={(e) => setSellPrice(e.target.value)}
-                      className="h-12 pl-8"
-                    />
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-foreground">Sell Price</p>
+                      <p className="text-xs text-muted-foreground">50% of avg. retail price</p>
+                    </div>
+                    <span className="text-xl font-bold text-accent">£{calculatedSellPrice.toFixed(2)}</span>
                   </div>
                 </motion.div>
               )}
