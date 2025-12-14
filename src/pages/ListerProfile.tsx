@@ -135,6 +135,13 @@ const ListerProfile = () => {
     toast.success("Game paused");
   };
 
+  const handleToggleSellAfterRent = (id: number, enabled: boolean) => {
+    setGames(prev => prev.map(game => 
+      game.id === id ? { ...game, sellAfterRent: enabled } : game
+    ));
+    toast.success(enabled ? "Game is now open to sell" : "Game is no longer open to sell");
+  };
+
   const SettingsRow = ({ icon: Icon, label, showSwitch = false, switchChecked = false, onSwitchChange, onClick }: {
     icon: React.ElementType;
     label: string;
@@ -258,6 +265,7 @@ const ListerProfile = () => {
                   <ListerGameCard
                     game={game}
                     onToggleAvailability={handleToggleAvailability}
+                    onToggleSellAfterRent={handleToggleSellAfterRent}
                     onEdit={handleEditGame}
                     onPause={handlePauseGame}
                   />
