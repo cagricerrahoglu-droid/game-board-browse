@@ -79,7 +79,7 @@ const ListerGameCard = ({ game, onToggleAvailability, onEdit, onPause }: ListerG
 
           {/* Price */}
           <p className="text-sm text-foreground font-medium mb-3">
-            £{game.rentalPrice.toFixed(2)}<span className="text-muted-foreground font-normal">/week</span>
+            £{game.rentalPrice.toFixed(2)}<span className="text-muted-foreground font-normal">/mo</span>
           </p>
 
           {/* Actions Row */}
