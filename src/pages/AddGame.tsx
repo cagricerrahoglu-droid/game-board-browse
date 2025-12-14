@@ -337,10 +337,20 @@ const AddGame = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Button onClick={handleSubmit} className="w-full h-12" size="lg">
+            <Button 
+              onClick={handleSubmit} 
+              className="w-full h-12" 
+              size="lg"
+              disabled={!isComplete}
+            >
               <Check className="h-5 w-5 mr-2" />
               Add Game
             </Button>
+            {!isComplete && (
+              <p className="text-xs text-muted-foreground text-center mt-2">
+                Games must have all pieces included to be listed
+              </p>
+            )}
           </motion.div>
         )}
 
