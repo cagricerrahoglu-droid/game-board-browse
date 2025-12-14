@@ -199,26 +199,20 @@ const ListerProfile = () => {
                     </AvatarFallback>
                   </Avatar>
                 <div className="flex-1">
-                    <h2 className="text-lg font-semibold text-foreground mb-1">{user.name}</h2>
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
+                      <button
+                        onClick={() => navigate('/profile')}
+                        className="relative flex items-center bg-muted rounded-full p-0.5 w-32 h-7"
+                      >
+                        <div className="absolute inset-0 flex items-center justify-between px-3 text-xs font-medium">
+                          <span className="text-muted-foreground">Renter</span>
+                          <span className="text-primary-foreground z-10">Lister</span>
+                        </div>
+                        <div className="absolute right-0.5 w-[calc(50%-2px)] h-6 bg-primary rounded-full transition-all duration-300" />
+                      </button>
+                    </div>
                     <p className="text-sm text-muted-foreground">Manage your games and earnings</p>
-                  </div>
-                </div>
-
-                {/* Mode Toggle */}
-                <div className="mt-4 pt-4 border-t border-border">
-                  <div className="flex justify-center">
-                    <button
-                      onClick={() => navigate('/profile')}
-                      className="relative flex items-center bg-muted rounded-full p-1 w-48 h-10"
-                    >
-                      {/* Background labels */}
-                      <div className="absolute inset-0 flex items-center justify-between px-6 text-sm font-medium">
-                        <span className="text-muted-foreground">Renter</span>
-                        <span className="text-primary-foreground z-10">Lister</span>
-                      </div>
-                      {/* Sliding indicator */}
-                      <div className="absolute right-1 w-[calc(50%-4px)] h-8 bg-primary rounded-full transition-all duration-300" />
-                    </button>
                   </div>
                 </div>
               </CardContent>
