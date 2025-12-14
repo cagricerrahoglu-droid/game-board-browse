@@ -1,4 +1,4 @@
-import { X, Users, Clock, Gauge, Star, Heart, Info, Check, AlertCircle } from "lucide-react";
+import { X, Users, Clock, Star, Heart, Check, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { GameCardProps } from "@/components/GameCard";
@@ -119,36 +119,65 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
           </div>
 
           {/* Icon Row */}
-          <div className="flex flex-wrap items-center gap-2">
-            <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md">
-              <Users className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs font-medium text-foreground">{game.players}</span>
+          <TooltipProvider delayDuration={200}>
+            <div className="flex flex-wrap items-center gap-2">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md cursor-help">
+                    <Users className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-xs font-medium text-foreground">{game.players}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Number of players</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md cursor-help">
+                    <Clock className="w-3 h-3 text-muted-foreground" />
+                    <span className="text-xs font-medium text-foreground">{game.duration}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Average play time</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md cursor-help">
+                    <div className="flex gap-0.5">
+                      {[1, 2, 3].map((bar) => (
+                        <div
+                          key={bar}
+                          className={cn(
+                            "w-1 h-3 rounded-full",
+                            bar <= difficultyConfig[game.difficulty].bars
+                              ? difficultyConfig[game.difficulty].bgColor
+                              : "bg-border"
+                          )}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Difficulty: {difficultyConfig[game.difficulty].label}</p>
+                </TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center gap-1 bg-star/10 px-2 py-1 rounded-md cursor-help">
+                    <Star className="w-3 h-3 fill-star text-star" />
+                    <span className="text-xs font-bold text-foreground">{game.rating.toFixed(1)}</span>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>User rating out of 5</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
-            <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md">
-              <Clock className="w-3 h-3 text-muted-foreground" />
-              <span className="text-xs font-medium text-foreground">{game.duration}</span>
-            </div>
-            <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md">
-              <Gauge className={cn("w-3 h-3", difficultyConfig[game.difficulty].color)} />
-              <div className="flex gap-0.5">
-                {[1, 2, 3].map((bar) => (
-                  <div
-                    key={bar}
-                    className={cn(
-                      "w-1 h-3 rounded-full",
-                      bar <= difficultyConfig[game.difficulty].bars
-                        ? difficultyConfig[game.difficulty].bgColor
-                        : "bg-border"
-                    )}
-                  />
-                ))}
-              </div>
-            </div>
-            <div className="flex items-center gap-1 bg-star/10 px-2 py-1 rounded-md">
-              <Star className="w-3 h-3 fill-star text-star" />
-              <span className="text-xs font-bold text-foreground">{game.rating.toFixed(1)}</span>
-            </div>
-          </div>
+          </TooltipProvider>
 
           {/* Description */}
           <p className="text-sm text-muted-foreground leading-relaxed">
