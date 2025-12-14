@@ -198,34 +198,27 @@ const ListerProfile = () => {
                       {user.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
-                      <Badge className="bg-accent/20 text-accent border-accent/30">Lister</Badge>
-                    </div>
+                <div className="flex-1">
+                    <h2 className="text-lg font-semibold text-foreground mb-1">{user.name}</h2>
                     <p className="text-sm text-muted-foreground">Manage your games and earnings</p>
                   </div>
                 </div>
 
                 {/* Mode Toggle */}
                 <div className="mt-4 pt-4 border-t border-border">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Renter</span>
-                    </div>
-                    <Switch 
-                      checked={mode === "lister"} 
-                      onCheckedChange={(checked) => {
-                        if (!checked) {
-                          handleModeSwitch();
-                        }
-                      }}
-                    />
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-foreground">Lister</span>
-                      <Store className="h-4 w-4 text-primary" />
-                    </div>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={() => navigate('/profile')}
+                      className="relative flex items-center bg-muted rounded-full p-1 w-48 h-10"
+                    >
+                      {/* Background labels */}
+                      <div className="absolute inset-0 flex items-center justify-between px-6 text-sm font-medium">
+                        <span className="text-muted-foreground">Renter</span>
+                        <span className="text-primary-foreground z-10">Lister</span>
+                      </div>
+                      {/* Sliding indicator */}
+                      <div className="absolute right-1 w-[calc(50%-4px)] h-8 bg-primary rounded-full transition-all duration-300" />
+                    </button>
                   </div>
                 </div>
               </CardContent>
