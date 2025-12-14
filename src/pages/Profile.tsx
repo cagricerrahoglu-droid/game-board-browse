@@ -317,23 +317,19 @@ const Profile = () => {
 
             {/* Mode Toggle */}
             <div className="mt-4 pt-4 border-t border-border">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-primary" />
-                  <span className="text-sm font-medium text-foreground">Renter</span>
-                </div>
-                <Switch 
-                  checked={false} 
-                  onCheckedChange={(checked) => {
-                    if (checked) {
-                      navigate('/lister');
-                    }
-                  }}
-                />
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-muted-foreground">Lister</span>
-                  <Store className="h-4 w-4 text-muted-foreground" />
-                </div>
+              <div className="flex justify-center">
+                <button
+                  onClick={() => navigate('/lister')}
+                  className="relative flex items-center bg-muted rounded-full p-1 w-48 h-10"
+                >
+                  {/* Background labels */}
+                  <div className="absolute inset-0 flex items-center justify-between px-6 text-sm font-medium">
+                    <span className="text-primary-foreground z-10">Renter</span>
+                    <span className="text-muted-foreground">Lister</span>
+                  </div>
+                  {/* Sliding indicator */}
+                  <div className="absolute left-1 w-[calc(50%-4px)] h-8 bg-primary rounded-full transition-all duration-300" />
+                </button>
               </div>
             </div>
           </CardContent>
