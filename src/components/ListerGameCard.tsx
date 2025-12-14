@@ -84,17 +84,36 @@ const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onE
           </p>
 
           {/* Actions Row */}
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center gap-2">
-              <Switch
-                checked={game.isAvailable}
-                onCheckedChange={(checked) => onToggleAvailability(game.id, checked)}
-                disabled={game.status === 'sold'}
-              />
-              <span className="text-xs text-muted-foreground">
-                {game.isAvailable ? 'Listed' : 'Unlisted'}
-              </span>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              {/* Listed Toggle */}
+              <div className="flex items-center gap-1.5">
+                <Switch
+                  checked={game.isAvailable}
+                  onCheckedChange={(checked) => onToggleAvailability(game.id, checked)}
+                  disabled={game.status === 'sold'}
+                  className="scale-90"
+                />
+                <span className="text-xs text-muted-foreground">
+                  {game.isAvailable ? 'Listed' : 'Unlisted'}
+                </span>
+              </div>
+
+              {/* Sell After Rent Toggle */}
+              <div className="flex items-center gap-1.5">
+                <Switch
+                  checked={game.sellAfterRent}
+                  onCheckedChange={(checked) => onToggleSellAfterRent(game.id, checked)}
+                  disabled={game.status === 'sold'}
+                  className="scale-90"
+                />
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Tag className="h-3 w-3 text-accent" />
+                  Sell
+                </span>
+              </div>
             </div>
+
             <div className="flex gap-1">
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEdit(game.id)}>
                 <Pencil className="h-4 w-4" />
@@ -103,20 +122,6 @@ const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onE
                 <Pause className="h-4 w-4" />
               </Button>
             </div>
-          </div>
-
-          {/* Sell After Rent Toggle */}
-          <div className="flex items-center justify-between pt-2 border-t border-border/50">
-            <div className="flex items-center gap-2">
-              <Tag className="h-3.5 w-3.5 text-accent" />
-              <span className="text-xs text-muted-foreground">Open to sell</span>
-            </div>
-            <Switch
-              checked={game.sellAfterRent}
-              onCheckedChange={(checked) => onToggleSellAfterRent(game.id, checked)}
-              disabled={game.status === 'sold'}
-              className="scale-90"
-            />
           </div>
         </div>
       </div>
