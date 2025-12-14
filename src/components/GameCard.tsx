@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Users, Clock, Star, Check, X, AlertCircle, Heart } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 
 export interface GameCardProps {
   id: string;
@@ -137,7 +137,7 @@ const GameCard = ({
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />
-              <span className="text-xs font-medium">{duration}</span>
+              <span className="text-xs font-medium">{formatDuration(duration)}</span>
             </div>
           </div>
           <div className="flex items-center gap-3">

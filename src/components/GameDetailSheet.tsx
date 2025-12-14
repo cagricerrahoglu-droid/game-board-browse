@@ -1,5 +1,5 @@
 import { X, Users, Clock, Star, Heart, Check, AlertCircle } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn, formatDuration } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { GameCardProps } from "@/components/GameCard";
 import { useBasket } from "@/contexts/BasketContext";
@@ -136,7 +136,7 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
                 <TooltipTrigger asChild>
                   <div className="flex items-center gap-1 bg-muted/50 px-2 py-1 rounded-md cursor-help">
                     <Clock className="w-3 h-3 text-muted-foreground" />
-                    <span className="text-xs font-medium text-foreground">{game.duration}</span>
+                    <span className="text-xs font-medium text-foreground">{formatDuration(game.duration)}</span>
                   </div>
                 </TooltipTrigger>
                 <TooltipContent>
