@@ -124,8 +124,9 @@ const ListerProfile = () => {
     toast.success(available ? "Game is now listed" : "Game unlisted");
   };
 
-  const handleEditGame = (id: number) => {
-    toast.info("Edit game functionality coming soon");
+  const handleDeleteGame = (id: number) => {
+    setGames(games => games.filter(game => game.id !== id));
+    toast.success("Game removed from your listings");
   };
 
   const handlePauseGame = (id: number) => {
@@ -266,8 +267,8 @@ const ListerProfile = () => {
                     game={game}
                     onToggleAvailability={handleToggleAvailability}
                     onToggleSellAfterRent={handleToggleSellAfterRent}
-                    onEdit={handleEditGame}
                     onPause={handlePauseGame}
+                    onDelete={handleDeleteGame}
                   />
                 </motion.div>
               ))}
