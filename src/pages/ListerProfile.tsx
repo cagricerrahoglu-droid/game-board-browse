@@ -191,27 +191,27 @@ const ListerProfile = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
             <Card className="bg-card border-border overflow-hidden">
               <CardContent className="pt-6">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-16 w-16 ring-2 ring-primary/20">
+                <div className="flex flex-col items-center text-center gap-3">
+                  <Avatar className="h-20 w-20 ring-2 ring-primary/20">
                     <AvatarImage src={user.avatar} />
                     <AvatarFallback className="bg-primary/20 text-primary text-2xl font-semibold">
                       {user.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex-1">
-                    <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
-                    <button
-                      onClick={() => navigate('/profile')}
-                      className="relative flex items-center bg-muted rounded-full p-0.5 w-32 h-7 my-2"
-                    >
-                      <div className="absolute inset-0 flex items-center justify-between px-3 text-xs font-medium">
-                        <span className="text-muted-foreground">Renter</span>
-                        <span className="text-primary-foreground z-10">Lister</span>
-                      </div>
-                      <div className="absolute right-0.5 w-[calc(50%-2px)] h-6 bg-primary rounded-full transition-all duration-300" />
-                    </button>
+                  <div>
+                    <h2 className="text-xl font-semibold text-foreground">{user.name}</h2>
                     <p className="text-sm text-muted-foreground">Manage your games and earnings</p>
                   </div>
+                  <button
+                    onClick={() => navigate('/profile')}
+                    className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8"
+                  >
+                    <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">
+                      <span className="text-muted-foreground">Renter</span>
+                      <span className="text-primary-foreground z-10">Lister</span>
+                    </div>
+                    <div className="absolute right-0.5 w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300" />
+                  </button>
                 </div>
               </CardContent>
             </Card>
