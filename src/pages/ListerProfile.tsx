@@ -357,7 +357,7 @@ const ListerProfile = () => {
                 
                 <Separator className="my-2" />
                 
-                <SettingsRow icon={CreditCard} label="Payout Settings" onClick={() => toast.info("Coming soon")} />
+                <SettingsRow icon={CreditCard} label="Payout Settings" onClick={() => navigate("/payout-settings")} />
               </CardContent>
             </Card>
           </motion.div>

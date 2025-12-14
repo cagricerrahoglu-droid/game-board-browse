@@ -19,6 +19,7 @@ import Basket from "./pages/Basket";
 import Checkout from "./pages/Checkout";
 import ListerProfile from "./pages/ListerProfile";
 import AddGame from "./pages/AddGame";
+import PayoutSettings from "./pages/PayoutSettings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -46,6 +47,7 @@ const App = () => (
                 <Route path="/checkout" element={<Checkout />} />
                 <Route path="/lister" element={<ListerProfile />} />
                 <Route path="/add-game" element={<AddGame />} />
+                <Route path="/payout-settings" element={<PayoutSettings />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
