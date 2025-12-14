@@ -319,7 +319,7 @@ const LenderProfile = () => {
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
-                <SettingsRow icon={Calendar} label="Availability Preferences" onClick={() => toast.info("Coming soon")} />
+                <SettingsRow icon={Calendar} label="Availability Preferences" onClick={() => navigate("/availability-preferences")} />
                 
                 <Separator className="my-2" />
                 
