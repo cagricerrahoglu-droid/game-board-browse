@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar } from "lucide-react";
@@ -19,26 +19,41 @@ const daysOfWeek = [
   { key: "sunday", label: "Sunday" },
 ];
 
+const defaultAvailability = {
+  monday: true,
+  tuesday: true,
+  wednesday: true,
+  thursday: true,
+  friday: true,
+  saturday: true,
+  sunday: false,
+};
+
 const AvailabilityPreferences = () => {
   const navigate = useNavigate();
-  const [availability, setAvailability] = useState<Record<string, boolean>>({
-    monday: true,
-    tuesday: true,
-    wednesday: true,
-    thursday: true,
-    friday: true,
-    saturday: true,
-    sunday: false,
+  
+  const [availability, setAvailability] = useState<Record<string, boolean>>(() => {
+    const saved = localStorage.getItem("lender_availability");
+    return saved ? JSON.parse(saved) : defaultAvailability;
   });
 
-  const [instantBooking, setInstantBooking] = useState(true);
-  const [advanceNotice, setAdvanceNotice] = useState("24");
+  const [instantBooking, setInstantBooking] = useState(() => {
+    const saved = localStorage.getItem("lender_instant_booking");
+    return saved ? JSON.parse(saved) : true;
+  });
+
+  const [advanceNotice, setAdvanceNotice] = useState(() => {
+    return localStorage.getItem("lender_advance_notice") || "24";
+  });
 
   const handleDayToggle = (day: string, checked: boolean) => {
     setAvailability(prev => ({ ...prev, [day]: checked }));
   };
 
   const handleSave = () => {
+    localStorage.setItem("lender_availability", JSON.stringify(availability));
+    localStorage.setItem("lender_instant_booking", JSON.stringify(instantBooking));
+    localStorage.setItem("lender_advance_notice", advanceNotice);
     toast.success("Availability preferences saved!");
     navigate("/lender-profile");
   };
