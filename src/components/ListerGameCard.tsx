@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, HelpCircle, Pause, Pencil, Tag } from "lucide-react";
+import { Check, HelpCircle, Pause, Trash2, Tag } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
@@ -23,11 +23,11 @@ interface ListerGameCardProps {
   game: ListerGame;
   onToggleAvailability: (id: number, available: boolean) => void;
   onToggleSellAfterRent: (id: number, enabled: boolean) => void;
-  onEdit: (id: number) => void;
   onPause: (id: number) => void;
+  onDelete: (id: number) => void;
 }
 
-const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onEdit, onPause }: ListerGameCardProps) => {
+const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onPause, onDelete }: ListerGameCardProps) => {
   const getStatusBadge = () => {
     switch (game.status) {
       case "available":
@@ -126,11 +126,11 @@ const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onE
             </div>
 
             <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onEdit(game.id)}>
-                <Pencil className="h-4 w-4" />
-              </Button>
               <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onPause(game.id)}>
                 <Pause className="h-4 w-4" />
+              </Button>
+              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onDelete(game.id)}>
+                <Trash2 className="h-4 w-4" />
               </Button>
             </div>
           </div>
