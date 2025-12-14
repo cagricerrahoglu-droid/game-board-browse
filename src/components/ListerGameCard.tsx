@@ -105,7 +105,7 @@ const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onE
                 <Switch
                   checked={game.sellAfterRent}
                   onCheckedChange={(checked) => onToggleSellAfterRent(game.id, checked)}
-                  disabled={game.status === 'sold'}
+                  disabled={game.status === 'sold' || !game.isAvailable}
                   className="scale-90"
                 />
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
