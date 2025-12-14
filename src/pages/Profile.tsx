@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import ModeSwitcher from "@/components/ModeSwitcher";
 
 // Tabletop-themed avatar imports
 import pawnToken from "@/assets/avatars/pawn-token.png";
@@ -745,6 +746,9 @@ const Profile = () => {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Mode Switcher FAB */}
+      <ModeSwitcher mode="renter" onSwitch={() => navigate('/lister')} />
     </div>
   );
 };
