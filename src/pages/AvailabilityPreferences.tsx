@@ -55,7 +55,7 @@ const AvailabilityPreferences = () => {
     localStorage.setItem("lender_instant_booking", JSON.stringify(instantBooking));
     localStorage.setItem("lender_advance_notice", advanceNotice);
     toast.success("Availability preferences saved!");
-    navigate("/lender-profile");
+    navigate("/lender");
   };
 
   return (
@@ -64,7 +64,7 @@ const AvailabilityPreferences = () => {
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center gap-4 px-4 py-4">
           <button 
-            onClick={() => navigate('/lender-profile')} 
+            onClick={() => navigate('/lender')} 
             className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors"
           >
             <ArrowLeft className="h-5 w-5 text-foreground" />
