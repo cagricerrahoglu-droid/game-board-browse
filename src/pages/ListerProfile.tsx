@@ -201,31 +201,26 @@ const ListerProfile = () => {
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
-                      <Badge className="bg-accent/20 text-accent border-accent/30">Lister</Badge>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 gap-1.5 text-xs font-medium"
+                        onClick={handleModeSwitch}
+                      >
+                        {mode === "lister" ? (
+                          <>
+                            <Store className="h-3.5 w-3.5" />
+                            Lister
+                          </>
+                        ) : (
+                          <>
+                            <Users className="h-3.5 w-3.5" />
+                            Renter
+                          </>
+                        )}
+                      </Button>
                     </div>
                     <p className="text-sm text-muted-foreground">Manage your games and earnings</p>
-                  </div>
-                </div>
-
-                {/* Mode Toggle */}
-                <div className="mt-4 pt-4 border-t border-border">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <Users className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-sm text-muted-foreground">Renter</span>
-                    </div>
-                    <Switch 
-                      checked={mode === "lister"} 
-                      onCheckedChange={(checked) => {
-                        if (!checked) {
-                          handleModeSwitch();
-                        }
-                      }}
-                    />
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-foreground">Lister</span>
-                      <Store className="h-4 w-4 text-primary" />
-                    </div>
                   </div>
                 </div>
               </CardContent>
