@@ -296,10 +296,7 @@ const Profile = () => {
                 </button>
               </div>
               <div className="flex-1">
-                <div className="flex items-center gap-2 mb-1">
-                  <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
-                  <Badge className="bg-primary/20 text-primary border-primary/30">Renter</Badge>
-                </div>
+                <h2 className="text-lg font-semibold text-foreground mb-1">{user.name}</h2>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
                 <Button 
                   variant="outline" 
