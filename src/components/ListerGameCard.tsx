@@ -21,11 +21,12 @@ export interface ListerGame {
 interface ListerGameCardProps {
   game: ListerGame;
   onToggleAvailability: (id: number, available: boolean) => void;
+  onToggleSellAfterRent: (id: number, enabled: boolean) => void;
   onEdit: (id: number) => void;
   onPause: (id: number) => void;
 }
 
-const ListerGameCard = ({ game, onToggleAvailability, onEdit, onPause }: ListerGameCardProps) => {
+const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onEdit, onPause }: ListerGameCardProps) => {
   const getStatusBadge = () => {
     switch (game.status) {
       case "available":
@@ -83,7 +84,7 @@ const ListerGameCard = ({ game, onToggleAvailability, onEdit, onPause }: ListerG
           </p>
 
           {/* Actions Row */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <Switch
                 checked={game.isAvailable}
@@ -102,6 +103,20 @@ const ListerGameCard = ({ game, onToggleAvailability, onEdit, onPause }: ListerG
                 <Pause className="h-4 w-4" />
               </Button>
             </div>
+          </div>
+
+          {/* Sell After Rent Toggle */}
+          <div className="flex items-center justify-between pt-2 border-t border-border/50">
+            <div className="flex items-center gap-2">
+              <Tag className="h-3.5 w-3.5 text-accent" />
+              <span className="text-xs text-muted-foreground">Open to sell</span>
+            </div>
+            <Switch
+              checked={game.sellAfterRent}
+              onCheckedChange={(checked) => onToggleSellAfterRent(game.id, checked)}
+              disabled={game.status === 'sold'}
+              className="scale-90"
+            />
           </div>
         </div>
       </div>
