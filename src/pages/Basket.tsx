@@ -121,22 +121,6 @@ const Basket = () => {
             <span className="text-foreground font-medium">£{DELIVERY_FEE.toFixed(2)}</span>
           </div>
 
-          <div className="flex justify-between text-sm">
-            <span className="text-muted-foreground flex items-center gap-1.5">
-              Damage protection
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button className="text-primary">
-                    <Info className="w-3.5 h-3.5" />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent className="max-w-xs">
-                  <p>All rentals include damage protection covering accidental spills, torn cards, and lost pieces up to £50.</p>
-                </TooltipContent>
-              </Tooltip>
-            </span>
-            <span className="text-emerald-600 font-medium">Included</span>
-          </div>
 
           <div className="flex items-start gap-2 text-xs text-muted-foreground bg-muted/50 rounded-xl p-3">
             <Info className="w-4 h-4 flex-shrink-0 mt-0.5" />
