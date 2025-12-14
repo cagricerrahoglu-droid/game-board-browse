@@ -280,9 +280,9 @@ const Profile = () => {
         {/* User Info Section */}
         <Card className="bg-card border-border">
           <CardContent className="pt-6">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col items-center text-center gap-3">
               <div className="relative">
-                <Avatar className="h-16 w-16">
+                <Avatar className="h-20 w-20">
                   <AvatarImage src={user.avatar || undefined} />
                   <AvatarFallback className="bg-primary/20 text-primary text-2xl font-semibold">
                     {user.name.split(' ').map(n => n[0]).join('')}
@@ -295,31 +295,30 @@ const Profile = () => {
                   <Camera className="h-3.5 w-3.5 text-primary-foreground" />
                 </button>
               </div>
-              <div className="flex-1">
-                <h2 className="text-lg font-semibold text-foreground">{user.name}</h2>
-                <button
-                  onClick={() => navigate('/lister')}
-                  className="relative flex items-center bg-muted rounded-full p-0.5 w-32 h-7 my-2"
-                >
-                  <div className="absolute inset-0 flex items-center justify-between px-3 text-xs font-medium">
-                    <span className="text-primary-foreground z-10">Renter</span>
-                    <span className="text-muted-foreground">Lister</span>
-                  </div>
-                  <div className="absolute left-0.5 w-[calc(50%-2px)] h-6 bg-primary rounded-full transition-all duration-300" />
-                </button>
+              <div>
+                <h2 className="text-xl font-semibold text-foreground">{user.name}</h2>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="mt-2"
-                  onClick={() => {
-                    setEditedUser({ name: user.name, email: user.email });
-                    setIsEditProfileOpen(true);
-                  }}
-                >
-                  Edit Profile
-                </Button>
               </div>
+              <button
+                onClick={() => navigate('/lister')}
+                className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8"
+              >
+                <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">
+                  <span className="text-primary-foreground z-10">Renter</span>
+                  <span className="text-muted-foreground">Lister</span>
+                </div>
+                <div className="absolute left-0.5 w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300" />
+              </button>
+              <Button 
+                variant="outline" 
+                size="sm"
+                onClick={() => {
+                  setEditedUser({ name: user.name, email: user.email });
+                  setIsEditProfileOpen(true);
+                }}
+              >
+                Edit Profile
+              </Button>
             </div>
           </CardContent>
         </Card>
