@@ -10,21 +10,21 @@ import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
-import ListerOnboarding from "@/components/ListerOnboarding";
-import ListerGameCard, { ListerGame } from "@/components/ListerGameCard";
-import ListerStats from "@/components/ListerStats";
+import LenderOnboarding from "@/components/LenderOnboarding";
+import LenderGameCard, { LenderGame } from "@/components/LenderGameCard";
+import LenderStats from "@/components/LenderStats";
 
 import pawnToken from "@/assets/avatars/pawn-token.png";
 import catanImage from "@/assets/games/7-wonders-duel.jpg";
 import ticketToRide from "@/assets/games/pandemic.jpg";
 import wingspan from "@/assets/games/splendor.jpg";
 
-const ListerProfile = () => {
+const LenderProfile = () => {
   const navigate = useNavigate();
   const [showOnboarding, setShowOnboarding] = useState(() => {
-    return !localStorage.getItem("lister_onboarding_completed");
+    return !localStorage.getItem("lender_onboarding_completed");
   });
-  const [mode, setMode] = useState<"renter" | "lister">("lister");
+  const [mode, setMode] = useState<"renter" | "lender">("lender");
 
   // User data
   const user = {
@@ -48,7 +48,7 @@ const ListerProfile = () => {
     payoutMethod: "Bank Account •••• 4521",
   };
 
-  // Lister settings
+  // Lender settings
   const [settings, setSettings] = useState({
     sellAfterRent: true,
     allowPickup: true,
@@ -56,7 +56,7 @@ const ListerProfile = () => {
   });
 
   // Mock games data
-  const [games, setGames] = useState<ListerGame[]>([
+  const [games, setGames] = useState<LenderGame[]>([
     {
       id: 1,
       title: "7 Wonders Duel",
@@ -98,22 +98,22 @@ const ListerProfile = () => {
   ]);
 
   const handleOnboardingComplete = () => {
-    localStorage.setItem("lister_onboarding_completed", "true");
+    localStorage.setItem("lender_onboarding_completed", "true");
     setShowOnboarding(false);
-    toast.success("Welcome to Lister mode! 🎉");
+    toast.success("Welcome to Lender mode! 🎉");
   };
 
   const handleOnboardingSkip = () => {
-    localStorage.setItem("lister_onboarding_completed", "true");
+    localStorage.setItem("lender_onboarding_completed", "true");
     setShowOnboarding(false);
   };
 
   const handleModeSwitch = () => {
-    if (mode === "lister") {
+    if (mode === "lender") {
       setMode("renter");
       navigate("/profile");
     } else {
-      setMode("lister");
+      setMode("lender");
     }
   };
 
@@ -171,7 +171,7 @@ const ListerProfile = () => {
     <>
       <AnimatePresence>
         {showOnboarding && (
-          <ListerOnboarding onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />
+          <LenderOnboarding onComplete={handleOnboardingComplete} onSkip={handleOnboardingSkip} />
         )}
       </AnimatePresence>
 
@@ -182,7 +182,7 @@ const ListerProfile = () => {
             <button onClick={() => navigate('/')} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors">
               <ArrowLeft className="h-5 w-5 text-foreground" />
             </button>
-            <h1 className="text-xl font-semibold text-foreground">Lister Profile</h1>
+            <h1 className="text-xl font-semibold text-foreground">Lender Profile</h1>
           </div>
         </div>
 
@@ -208,7 +208,7 @@ const ListerProfile = () => {
                   >
                     <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">
                       <span className="text-muted-foreground">Renter</span>
-                      <span className="text-primary-foreground z-10">Lister</span>
+                      <span className="text-primary-foreground z-10">Lender</span>
                     </div>
                     <div className="absolute right-0.5 w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300" />
                   </button>
@@ -238,7 +238,7 @@ const ListerProfile = () => {
 
           {/* Stats Snapshot */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <ListerStats stats={stats} />
+            <LenderStats stats={stats} />
           </motion.div>
 
           {/* Your Games Section */}
@@ -255,7 +255,7 @@ const ListerProfile = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.3 + index * 0.05 }}
                 >
-                  <ListerGameCard
+                  <LenderGameCard
                     game={game}
                     onToggleAvailability={handleToggleAvailability}
                     onToggleSellAfterRent={handleToggleSellAfterRent}
@@ -309,13 +309,13 @@ const ListerProfile = () => {
             </Card>
           </motion.div>
 
-          {/* Lister Settings */}
+          {/* Lender Settings */}
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.45 }}>
             <Card className="bg-card border-border">
               <CardHeader className="pb-3">
                 <CardTitle className="text-base font-semibold flex items-center gap-2">
                   <Settings className="h-5 w-5 text-muted-foreground" />
-                  Lister Settings
+                  Lender Settings
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-1">
@@ -362,4 +362,4 @@ const ListerProfile = () => {
   );
 };
 
-export default ListerProfile;
+export default LenderProfile;

@@ -7,11 +7,11 @@ interface StatsData {
   lifetimeEarnings: number;
 }
 
-interface ListerStatsProps {
+interface LenderStatsProps {
   stats: StatsData;
 }
 
-const ListerStats = ({ stats }: ListerStatsProps) => {
+const LenderStats = ({ stats }: LenderStatsProps) => {
   const statItems = [
     {
       label: "Games Listed",
@@ -66,4 +66,4 @@ const ListerStats = ({ stats }: ListerStatsProps) => {
   );
 };
 
-export default ListerStats;
+export default LenderStats;

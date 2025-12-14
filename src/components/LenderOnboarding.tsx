@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Shield, DollarSign, Heart, ArrowRight, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface ListerOnboardingProps {
+interface LenderOnboardingProps {
   onComplete: () => void;
   onSkip: () => void;
 }
@@ -32,7 +32,7 @@ const onboardingSteps = [
   },
 ];
 
-const ListerOnboarding = ({ onComplete, onSkip }: ListerOnboardingProps) => {
+const LenderOnboarding = ({ onComplete, onSkip }: LenderOnboardingProps) => {
   const [currentStep, setCurrentStep] = useState(0);
 
   const handleNext = () => {
@@ -113,4 +113,4 @@ const ListerOnboarding = ({ onComplete, onSkip }: ListerOnboardingProps) => {
   );
 };
 
-export default ListerOnboarding;
+export default LenderOnboarding;

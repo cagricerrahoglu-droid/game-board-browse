@@ -17,7 +17,7 @@ import BillingAddress from "./pages/BillingAddress";
 import Auth from "./pages/Auth";
 import Basket from "./pages/Basket";
 import Checkout from "./pages/Checkout";
-import ListerProfile from "./pages/ListerProfile";
+import LenderProfile from "./pages/LenderProfile";
 import AddGame from "./pages/AddGame";
 import PayoutSettings from "./pages/PayoutSettings";
 import NotFound from "./pages/NotFound";
@@ -45,7 +45,7 @@ const App = () => (
                 <Route path="/auth" element={<Auth />} />
                 <Route path="/basket" element={<Basket />} />
                 <Route path="/checkout" element={<Checkout />} />
-                <Route path="/lister" element={<ListerProfile />} />
+                <Route path="/lender" element={<LenderProfile />} />
                 <Route path="/add-game" element={<AddGame />} />
                 <Route path="/payout-settings" element={<PayoutSettings />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
