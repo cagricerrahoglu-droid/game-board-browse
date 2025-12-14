@@ -212,6 +212,13 @@ const ListerProfile = () => {
                     </div>
                     <div className="absolute right-0.5 w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300" />
                   </button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => toast.info("Edit profile coming soon")}
+                  >
+                    Edit Profile
+                  </Button>
                 </div>
               </CardContent>
             </Card>
