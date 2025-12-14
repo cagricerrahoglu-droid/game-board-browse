@@ -102,6 +102,11 @@ const AddGame = () => {
       return;
     }
     
+    if (!isComplete) {
+      toast.error("Games must have all pieces included to be listed");
+      return;
+    }
+    
     // Here you would typically save to a database
     toast.success("Game added successfully!");
     navigate("/lister");
