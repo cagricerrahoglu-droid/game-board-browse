@@ -160,22 +160,6 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
               <span className="text-lg font-bold text-foreground">
                 £{game.monthlyPrice.toFixed(2)} <span className="text-xs font-medium text-muted-foreground">/month</span>
               </span>
-              <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                <Check className="w-3 h-3 text-available" />
-                <span>Damage protection included</span>
-                <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button className="p-0.5">
-                        <Info className="w-3 h-3" />
-                      </button>
-                    </TooltipTrigger>
-                    <TooltipContent className="max-w-[200px] bg-card text-foreground border-border">
-                      <p>Full coverage for accidental damage. No extra fees for normal wear and tear.</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
             </div>
           </div>
 
