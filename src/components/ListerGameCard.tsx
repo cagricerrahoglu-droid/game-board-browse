@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Check, Pause, Pencil, Tag } from "lucide-react";
+import { Check, HelpCircle, Pause, Pencil, Tag } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Switch } from "@/components/ui/switch";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -110,6 +111,16 @@ const ListerGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onE
                 <span className="text-xs text-muted-foreground flex items-center gap-1">
                   <Tag className="h-3 w-3 text-accent" />
                   Sell
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <HelpCircle className="h-3 w-3 text-muted-foreground/60 cursor-help" />
+                      </TooltipTrigger>
+                      <TooltipContent side="top" className="max-w-[200px] text-center">
+                        <p>Enable this to let renters purchase the game after their rental period ends.</p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
                 </span>
               </div>
             </div>
