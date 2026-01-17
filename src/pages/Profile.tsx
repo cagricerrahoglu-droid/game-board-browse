@@ -54,10 +54,10 @@ const defaultAvatars = avatarCategories.flatMap(cat => cat.avatars);
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useAuth();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    logout();
     navigate("/");
   };
   

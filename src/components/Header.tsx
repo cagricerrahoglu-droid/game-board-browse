@@ -1,11 +1,16 @@
-import { Dice5 } from "lucide-react";
+import { Dice5, LogOut } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const navigate = useNavigate();
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-xl border-b border-border/50">
@@ -20,9 +25,19 @@ const Header = () => {
         </div>
         <div className="flex items-center gap-2">
           {isLoggedIn ? (
-            <span className="text-sm text-muted-foreground font-medium px-3 py-1.5 bg-muted/60 rounded-full">
-              Welcome back! 👋
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground font-medium px-3 py-1.5 bg-muted/60 rounded-full">
+                Welcome back! 👋
+              </span>
+              <Button 
+                variant="ghost" 
+                size="sm"
+                onClick={handleLogout}
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+              >
+                <LogOut className="w-4 h-4" />
+              </Button>
+            </div>
           ) : (
             <>
               <Button 

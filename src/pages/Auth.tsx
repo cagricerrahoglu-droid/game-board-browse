@@ -5,6 +5,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAuth } from "@/contexts/AuthContext";
 import { toast } from "sonner";
 
@@ -13,10 +15,13 @@ const Auth = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [signupRoles, setSignupRoles] = useState<string[]>(["renter", "lender"]);
+  const [signinRole, setSigninRole] = useState("renter");
   const navigate = useNavigate();
-  const { setIsLoggedIn } = useAuth();
+  const { login, signup, isLoading: authLoading } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) {
@@ -29,11 +34,34 @@ const Auth = () => {
       return;
     }
 
-    // Mock authentication
-    setIsLoggedIn(true);
-    toast.success(isLogin ? "Welcome back!" : "Account created successfully!");
-    navigate("/");
+    if (!isLogin && signupRoles.length === 0) {
+      toast.error("Please select at least one role");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      if (isLogin) {
+        await login(email, password, signinRole);
+        toast.success("Welcome back!");
+        // Redirect to lender dashboard if signing in as lender
+        navigate(signinRole === "lender" ? "/lender" : "/");
+      } else {
+        await signup(email, password, signupRoles);
+        toast.success("Account created successfully! Check your email for verification code.");
+        // Store email for confirmation page and redirect
+        localStorage.setItem('switchboard_pending_email', email);
+        navigate("/confirm");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Authentication failed. Please try again.");
+      console.error("Auth error:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+
+  const isSubmitting = isLoading || authLoading;
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
@@ -56,6 +84,7 @@ const Auth = () => {
             size="sm" 
             onClick={() => navigate("/")}
             className="gap-2"
+            disabled={isSubmitting}
           >
             <ArrowLeft className="w-4 h-4" />
             Back
@@ -86,6 +115,7 @@ const Auth = () => {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
+                  disabled={isSubmitting}
                 />
               </div>
               <div className="space-y-2">
@@ -96,6 +126,7 @@ const Auth = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  disabled={isSubmitting}
                 />
               </div>
               {!isLogin && (
@@ -107,11 +138,72 @@ const Auth = () => {
                     placeholder="••••••••"
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
+                    disabled={isSubmitting}
                   />
                 </div>
               )}
-              <Button type="submit" className="w-full">
-                {isLogin ? "Sign In" : "Create Account"}
+              {!isLogin && (
+                <div className="space-y-3 pt-2">
+                  <Label>What would you like to do?</Label>
+                  <div className="space-y-2">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="renter"
+                        checked={signupRoles.includes("renter")}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSignupRoles([...signupRoles, "renter"]);
+                          } else {
+                            setSignupRoles(signupRoles.filter(r => r !== "renter"));
+                          }
+                        }}
+                        disabled={isSubmitting}
+                      />
+                      <Label htmlFor="renter" className="font-normal cursor-pointer">
+                        Rent games from others
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <Checkbox
+                        id="lender"
+                        checked={signupRoles.includes("lender")}
+                        onCheckedChange={(checked) => {
+                          if (checked) {
+                            setSignupRoles([...signupRoles, "lender"]);
+                          } else {
+                            setSignupRoles(signupRoles.filter(r => r !== "lender"));
+                          }
+                        }}
+                        disabled={isSubmitting}
+                      />
+                      <Label htmlFor="lender" className="font-normal cursor-pointer">
+                        Lend your games to others
+                      </Label>
+                    </div>
+                  </div>
+                </div>
+              )}
+              {isLogin && (
+                <div className="space-y-3 pt-2">
+                  <Label>Sign in as</Label>
+                  <RadioGroup value={signinRole} onValueChange={setSigninRole} disabled={isSubmitting}>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="renter" id="signin-renter" disabled={isSubmitting} />
+                      <Label htmlFor="signin-renter" className="font-normal cursor-pointer">
+                        Renter
+                      </Label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="lender" id="signin-lender" disabled={isSubmitting} />
+                      <Label htmlFor="signin-lender" className="font-normal cursor-pointer">
+                        Lender
+                      </Label>
+                    </div>
+                  </RadioGroup>
+                </div>
+              )}
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
+                {isSubmitting ? "Processing..." : isLogin ? "Sign In" : "Create Account"}
               </Button>
             </form>
 
@@ -119,7 +211,8 @@ const Auth = () => {
               <button
                 type="button"
                 onClick={() => setIsLogin(!isLogin)}
-                className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                disabled={isSubmitting}
+                className="text-sm text-muted-foreground hover:text-primary transition-colors disabled:opacity-50"
               >
                 {isLogin 
                   ? "Don't have an account? Sign up" 
