@@ -1,7 +1,8 @@
 import { useState, useRef } from "react";
-import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil, Users, Store } from "lucide-react";
+import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil, Users, Store, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCheckIn } from "@/contexts/CheckInContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
+import { cn } from "@/lib/utils";
 
 // Tabletop-themed avatar imports
 import pawnToken from "@/assets/avatars/pawn-token.png";
@@ -217,9 +219,16 @@ const Profile = () => {
 
   // Mock past rentals
   const pastRentals = [
-    { id: 1, name: "Pandemic", returnedDate: "Nov 20, 2025", status: "returned" },
-    { id: 2, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned" },
+    { id: 101, name: "Pandemic", returnedDate: "Nov 20, 2025", status: "returned" },
+    { id: 102, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned" },
   ];
+
+  const { completedCheckIns } = useCheckIn();
+
+  const getRatingForRental = (rentalId: number) => {
+    const checkIn = completedCheckIns.find(c => c.rentalId === rentalId);
+    return checkIn?.rating;
+  };
 
 
   const getStatusBadge = (status: string) => {
@@ -362,15 +371,35 @@ const Profile = () => {
             <div>
               <h3 className="text-sm font-medium text-muted-foreground mb-3">Past Rentals</h3>
               <div className="space-y-3">
-                {pastRentals.map((rental) => (
-                  <div key={rental.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                    <div>
-                      <p className="font-medium text-foreground">{rental.name}</p>
-                      <p className="text-sm text-muted-foreground">Returned: {rental.returnedDate}</p>
+                {pastRentals.map((rental) => {
+                  const rating = getRatingForRental(rental.id);
+                  return (
+                    <div key={rental.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                      <div>
+                        <p className="font-medium text-foreground">{rental.name}</p>
+                        <p className="text-sm text-muted-foreground">Returned: {rental.returnedDate}</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {rating && (
+                          <div className="flex items-center gap-0.5">
+                            {[1, 2, 3, 4, 5].map((value) => (
+                              <Star
+                                key={value}
+                                className={cn(
+                                  "h-3.5 w-3.5",
+                                  rating >= value
+                                    ? "fill-[hsl(var(--star))] text-[hsl(var(--star))]"
+                                    : "text-muted-foreground/30"
+                                )}
+                              />
+                            ))}
+                          </div>
+                        )}
+                        {getStatusBadge(rental.status)}
+                      </div>
                     </div>
-                    {getStatusBadge(rental.status)}
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           </CardContent>
