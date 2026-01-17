@@ -217,10 +217,10 @@ const Profile = () => {
     { id: 2, name: "Ticket to Ride", dueDate: "Dec 15, 2025", status: "active" },
   ];
 
-  // Mock past rentals
+  // Mock past rentals with receipt info
   const pastRentals = [
-    { id: 101, name: "Pandemic", returnedDate: "Nov 20, 2025", status: "returned" },
-    { id: 102, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned" },
+    { id: 101, name: "Pandemic", returnedDate: "Nov 20, 2025", status: "returned", amount: "$12.99" },
+    { id: 102, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned", amount: "$9.99" },
   ];
 
   const { completedCheckIns } = useCheckIn();
@@ -374,12 +374,9 @@ const Profile = () => {
                 {pastRentals.map((rental) => {
                   const rating = getRatingForRental(rental.id);
                   return (
-                    <div key={rental.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                      <div>
+                    <div key={rental.id} className="p-3 bg-muted/30 rounded-lg">
+                      <div className="flex items-center justify-between mb-2">
                         <p className="font-medium text-foreground">{rental.name}</p>
-                        <p className="text-sm text-muted-foreground">Returned: {rental.returnedDate}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
                         {rating && (
                           <div className="flex items-center gap-0.5">
                             {[1, 2, 3, 4, 5].map((value) => (
@@ -395,7 +392,15 @@ const Profile = () => {
                             ))}
                           </div>
                         )}
-                        {getStatusBadge(rental.status)}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">Returned: {rental.returnedDate}</p>
+                        <button
+                          onClick={() => navigate(`/payment-receipts?rental=${rental.id}`)}
+                          className="text-sm text-primary font-medium hover:underline"
+                        >
+                          View Order
+                        </button>
                       </div>
                     </div>
                   );
@@ -444,7 +449,6 @@ const Profile = () => {
 
             <Separator />
 
-            <SettingsRow icon={FileText} label="Past Payment Receipts" onClick={() => navigate('/payment-receipts')} />
             <SettingsRow icon={FileText} label="Billing Address" onClick={() => navigate('/billing-address')} />
           </CardContent>
         </Card>
