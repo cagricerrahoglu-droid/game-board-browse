@@ -167,7 +167,7 @@ const CheckInModal = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex-1 flex flex-col px-4 py-6"
+              className="flex-1 flex flex-col px-4 py-6 min-h-0 overflow-hidden"
             >
               <div className="text-center mb-6">
                 <h2 className="text-xl font-bold text-foreground mb-1">
@@ -178,7 +178,7 @@ const CheckInModal = () => {
                 </p>
               </div>
 
-              <div className="flex-1 overflow-y-auto">
+              <div className="flex-1 overflow-y-auto min-h-0 pb-4">
                 <div className="grid grid-cols-2 gap-2">
                   {issueOptions.map((issue) => {
                     const isSelected = selectedIssues.includes(issue.id);
@@ -224,7 +224,7 @@ const CheckInModal = () => {
                 </AnimatePresence>
               </div>
 
-              <div className="pt-4 pb-2">
+              <div className="flex-shrink-0 pt-4 pb-2 bg-background">
                 <Button
                   onClick={() => handleSubmit()}
                   className="w-full h-12 text-base font-semibold"
