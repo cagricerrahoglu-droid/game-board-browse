@@ -103,10 +103,10 @@ const CheckInModal = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] bg-background"
+        className="fixed inset-0 z-[100] bg-background flex flex-col"
       >
         {/* Header */}
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
+        <div className="flex-shrink-0 bg-background/95 backdrop-blur-sm border-b border-border">
           <div className="flex items-center justify-between px-4 py-4">
             <h1 className="text-lg font-semibold text-foreground">
               {step === "confirmation" ? "All done!" : "Check in your game"}
@@ -122,7 +122,7 @@ const CheckInModal = () => {
           </div>
         </div>
 
-        <div className="flex flex-col min-h-[calc(100vh-65px)]">
+        <div className="flex-1 flex flex-col overflow-hidden">
           {/* Step: Rating */}
           {step === "rating" && (
             <motion.div
@@ -167,9 +167,9 @@ const CheckInModal = () => {
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex-1 flex flex-col px-4 py-6 min-h-0 overflow-hidden"
+              className="flex-1 flex flex-col overflow-hidden"
             >
-              <div className="text-center mb-6">
+              <div className="flex-shrink-0 text-center px-4 pt-6 pb-4">
                 <h2 className="text-xl font-bold text-foreground mb-1">
                   What wasn't quite right?
                 </h2>
@@ -178,7 +178,7 @@ const CheckInModal = () => {
                 </p>
               </div>
 
-              <div className="flex-1 overflow-y-auto min-h-0 pb-4">
+              <div className="flex-1 overflow-y-auto px-4 pb-4">
                 <div className="grid grid-cols-2 gap-2">
                   {issueOptions.map((issue) => {
                     const isSelected = selectedIssues.includes(issue.id);
@@ -224,7 +224,7 @@ const CheckInModal = () => {
                 </AnimatePresence>
               </div>
 
-              <div className="flex-shrink-0 pt-4 pb-2 bg-background">
+              <div className="flex-shrink-0 px-4 pt-4 pb-6 bg-background border-t border-border">
                 <Button
                   onClick={() => handleSubmit()}
                   className="w-full h-12 text-base font-semibold"
