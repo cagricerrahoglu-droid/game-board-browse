@@ -19,6 +19,7 @@ import ContactSupport from "./pages/ContactSupport";
 import PaymentReceipts from "./pages/PaymentReceipts";
 import BillingAddress from "./pages/BillingAddress";
 import Auth from "./pages/Auth";
+import Confirm from "./pages/Confirm";
 import Basket from "./pages/Basket";
 import Checkout from "./pages/Checkout";
 import LenderProfile from "./pages/LenderProfile";

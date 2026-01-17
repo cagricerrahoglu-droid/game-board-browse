@@ -6,7 +6,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useBasket } from "@/contexts/BasketContext";
-import { toast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
+import { API } from "@/services/api";
+import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 
 type Step = "delivery" | "payment" | "confirmation";
@@ -19,8 +21,10 @@ const deliveryOptions = [
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, getSubtotal, clearBasket } = useBasket();
+  const { user, isLoggedIn } = useAuth();
   const [currentStep, setCurrentStep] = useState<Step>("delivery");
   const [deliveryMethod, setDeliveryMethod] = useState("home");
+  const [isProcessing, setIsProcessing] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     address: "",
@@ -45,20 +49,53 @@ const Checkout = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleContinue = () => {
+  const handleContinue = async () => {
     if (currentStep === "delivery") {
       if (!formData.fullName || !formData.address || !formData.city || !formData.postcode) {
-        toast({ title: "Please fill in all delivery details", variant: "destructive" });
+        toast.error("Please fill in all delivery details");
         return;
       }
       setCurrentStep("payment");
     } else if (currentStep === "payment") {
       if (!formData.cardNumber || !formData.expiry || !formData.cvv) {
-        toast({ title: "Please fill in all payment details", variant: "destructive" });
+        toast.error("Please fill in all payment details");
         return;
       }
-      setCurrentStep("confirmation");
-      clearBasket();
+
+      if (!isLoggedIn || !user) {
+        toast.error("You must be logged in to checkout");
+        navigate("/auth");
+        return;
+      }
+
+      setIsProcessing(true);
+      try {
+        // Create rental records for each game in the basket
+        for (const item of items) {
+          const rentalData = {
+            game_id: item.id,
+            renter_id: user.id,
+            rental_start_date: new Date().toISOString().split('T')[0],
+            rental_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
+            total_price: item.monthlyPrice * (item.rentalDurationMonths || 1),
+            status: 'active',
+            delivery_method: deliveryMethod,
+            delivery_address: `${formData.address}, ${formData.city} ${formData.postcode}`,
+          };
+
+          await API.createRental(rentalData);
+        }
+
+        // Clear basket and move to confirmation
+        clearBasket();
+        setCurrentStep("confirmation");
+        toast.success("Order confirmed! Your games are on their way.");
+      } catch (error: any) {
+        console.error("Checkout error:", error);
+        toast.error(error.message || "Failed to process order. Please try again.");
+      } finally {
+        setIsProcessing(false);
+      }
     }
   };
 
@@ -82,6 +119,7 @@ const Checkout = () => {
           <button
             onClick={() => currentStep === "delivery" ? navigate("/basket") : setCurrentStep("delivery")}
             className="p-2 -ml-2 rounded-full hover:bg-muted transition-colors"
+            disabled={isProcessing}
           >
             <ArrowLeft className="w-5 h-5 text-foreground" />
           </button>
@@ -309,8 +347,19 @@ const Checkout = () => {
       {/* Sticky CTA */}
       {currentStep !== "confirmation" && (
         <div className="fixed bottom-0 left-0 right-0 bg-background/95 backdrop-blur-xl border-t border-border/50 px-5 py-4">
-          <Button onClick={handleContinue} className="w-full rounded-full font-display font-semibold" size="lg">
-            {currentStep === "delivery" ? "Continue to Payment" : `Pay £${total.toFixed(2)}/mo`}
+          <Button 
+            onClick={handleContinue} 
+            className="w-full rounded-full font-display font-semibold" 
+            size="lg"
+            disabled={isProcessing}
+          >
+            {isProcessing ? (
+              <>Processing...</>
+            ) : currentStep === "delivery" ? (
+              "Continue to Payment"
+            ) : (
+              `Pay £${total.toFixed(2)}/mo`
+            )}
           </Button>
         </div>
       )}

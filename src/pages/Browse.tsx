@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import BottomNav from "@/components/BottomNav";
@@ -6,6 +6,8 @@ import HorizontalGameCard from "@/components/HorizontalGameCard";
 import GameDetailSheet from "@/components/GameDetailSheet";
 import { useFavorites } from "@/contexts/FavoritesContext";
 import { GameCardProps } from "@/components/GameCard";
+import { API } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   strategyGames,
   familyGames,
@@ -19,18 +21,79 @@ const Browse = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [allGames, setAllGames] = useState<GameCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const { toggleFavorite, isFavorite } = useFavorites();
+  const { isLoggedIn } = useAuth();
 
-  const allGames = useMemo(() => {
-    return [
-      ...strategyGames,
-      ...familyGames,
-      ...twoPlayerGames,
-      ...partyGames,
-      ...beginnerGames,
-      ...coopGames,
-    ];
-  }, []);
+  // Load games from API if authenticated, otherwise use mock data
+  useEffect(() => {
+    const loadGames = async () => {
+      try {
+        setIsLoading(true);
+        setError(null);
+        
+        if (isLoggedIn) {
+          try {
+            const response = await API.listGames();
+            const games = (response as any).games || [];
+            // Convert API games to GameCardProps format
+            const formattedGames = games.map((game: any) => ({
+              id: game.game_id,
+              title: game.title,
+              imageUrl: game.image_url || "",
+              players: game.players || "2-4",
+              duration: game.duration || "30-60",
+              difficulty: game.difficulty || "Medium",
+              rating: game.rating || 4,
+              availability: "available",
+              monthlyPrice: game.price || 9.99,
+              description: game.description || ""
+            }));
+            setAllGames(formattedGames);
+          } catch (apiError) {
+            console.warn("Failed to fetch from API, falling back to mock data:", apiError);
+            // Fall back to mock data if API fails
+            setAllGames([
+              ...strategyGames,
+              ...familyGames,
+              ...twoPlayerGames,
+              ...partyGames,
+              ...beginnerGames,
+              ...coopGames,
+            ]);
+          }
+        } else {
+          // Use mock data for unauthenticated users
+          setAllGames([
+            ...strategyGames,
+            ...familyGames,
+            ...twoPlayerGames,
+            ...partyGames,
+            ...beginnerGames,
+            ...coopGames,
+          ]);
+        }
+      } catch (err: any) {
+        console.error("Error loading games:", err);
+        setError("Failed to load games");
+        // Still show mock data on error
+        setAllGames([
+          ...strategyGames,
+          ...familyGames,
+          ...twoPlayerGames,
+          ...partyGames,
+          ...beginnerGames,
+          ...coopGames,
+        ]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadGames();
+  }, [isLoggedIn]);
 
   const filteredGames = useMemo(() => {
     if (!searchQuery.trim()) return allGames;
@@ -56,13 +119,22 @@ const Browse = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10 bg-muted/50 border-border/50 focus:border-primary"
+            disabled={isLoading}
           />
         </div>
       </div>
 
       {/* Games List */}
       <div className="flex flex-col gap-4 px-5 py-5">
-        {filteredGames.length > 0 ? (
+        {isLoading ? (
+          <div className="text-center py-12 text-muted-foreground">
+            Loading games...
+          </div>
+        ) : error ? (
+          <div className="text-center py-12 text-amber-600">
+            {error}. Showing available games.
+          </div>
+        ) : filteredGames.length > 0 ? (
           filteredGames.map((game, index) => (
             <div
               key={game.id}

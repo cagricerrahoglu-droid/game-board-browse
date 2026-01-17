@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
+import { useAuth } from "@/contexts/AuthContext";
 import BottomNav from "@/components/BottomNav";
 import LenderOnboarding from "@/components/LenderOnboarding";
 import LenderGameCard, { LenderGame } from "@/components/LenderGameCard";
@@ -21,6 +22,7 @@ import wingspan from "@/assets/games/splendor.jpg";
 
 const LenderProfile = () => {
   const navigate = useNavigate();
+  const { switchRole } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(() => {
     return !localStorage.getItem("lender_onboarding_completed");
   });
@@ -111,9 +113,11 @@ const LenderProfile = () => {
   const handleModeSwitch = () => {
     if (mode === "lender") {
       setMode("renter");
+      switchRole("renter");
       navigate("/profile");
     } else {
       setMode("lender");
+      switchRole("lender");
     }
   };
 

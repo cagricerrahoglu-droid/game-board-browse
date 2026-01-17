@@ -9,6 +9,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
+import { API } from "@/services/api";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   strategyGames,
   familyGames,
@@ -43,6 +45,7 @@ const conditionMultipliers = {
 
 const AddGame = () => {
   const navigate = useNavigate();
+  const { user, isLoggedIn } = useAuth();
   
   // Search state
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,6 +57,9 @@ const AddGame = () => {
   const [isComplete, setIsComplete] = useState(true);
   const [hasManual, setHasManual] = useState(true);
   const [sellAfterRent, setSellAfterRent] = useState(false);
+  
+  // Loading state
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Filter games based on search query
   const filteredGames = useMemo(() => {
@@ -96,7 +102,7 @@ const AddGame = () => {
     setSearchQuery("");
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!selectedGame) {
       toast.error("Please select a game");
       return;
@@ -106,10 +112,37 @@ const AddGame = () => {
       toast.error("Games must have all pieces included to be listed");
       return;
     }
+
+    if (!isLoggedIn || !user) {
+      toast.error("You must be logged in to add a game");
+      navigate("/auth");
+      return;
+    }
     
-    // Here you would typically save to a database
-    toast.success("Game added successfully!");
-    navigate("/lister");
+    setIsSubmitting(true);
+    try {
+      const gameData = {
+        title: selectedGame.title,
+        description: selectedGame.description,
+        image_url: selectedGame.imageUrl,
+        price: calculatedRentalPrice,
+        condition: condition,
+        is_complete: isComplete,
+        has_manual: hasManual,
+        for_sale: sellAfterRent,
+        sale_price: sellAfterRent ? calculatedSellPrice : null,
+        owner_id: user.id
+      };
+
+      const response = await API.createGame(gameData);
+      toast.success("Game added successfully!");
+      navigate("/lender");
+    } catch (error: any) {
+      console.error("Failed to add game:", error);
+      toast.error(error.message || "Failed to add game. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -117,7 +150,7 @@ const AddGame = () => {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center gap-4 px-4 py-4">
-          <button onClick={() => navigate("/lister")} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors">
+          <button onClick={() => navigate("/lender")} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors" disabled={isSubmitting}>
             <ArrowLeft className="h-5 w-5 text-foreground" />
           </button>
           <h1 className="text-xl font-semibold text-foreground">Add a Game</h1>
@@ -142,11 +175,13 @@ const AddGame = () => {
               }}
               onFocus={() => setShowResults(true)}
               className="h-12 pl-10 pr-10"
+              disabled={isSubmitting}
             />
             {selectedGame && (
               <button
                 onClick={handleClearSelection}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 hover:bg-muted rounded-full"
+                disabled={isSubmitting}
               >
                 <X className="h-4 w-4 text-muted-foreground" />
               </button>
@@ -159,7 +194,8 @@ const AddGame = () => {
                   <button
                     key={game.id}
                     onClick={() => handleSelectGame(game)}
-                    className="w-full flex items-center gap-3 p-3 hover:bg-muted/50 transition-colors text-left"
+                    className="w-full flex items-center gap-3 p-3 hover:bg-muted/50 transition-colors text-left disabled:opacity-50"
+                    disabled={isSubmitting}
                   >
                     <img
                       src={game.imageUrl}
@@ -341,10 +377,10 @@ const AddGame = () => {
               onClick={handleSubmit} 
               className="w-full h-12" 
               size="lg"
-              disabled={!isComplete}
+              disabled={!isComplete || isSubmitting}
             >
               <Check className="h-5 w-5 mr-2" />
-              Add Game
+              {isSubmitting ? "Adding..." : "Add Game"}
             </Button>
             {!isComplete && (
               <p className="text-xs text-muted-foreground text-center mt-2">
