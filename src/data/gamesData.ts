@@ -376,7 +376,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.8,
     availability: "limited",
     monthlyPrice: 10.99,
-    description: "Play as powerful spirits defending your island from colonizing invaders. A complex and rewarding cooperative experience.",
+    description: "Island Spirits join forces using elemental powers to defend their home from invaders.",
   },
   {
     id: "the-crew",
