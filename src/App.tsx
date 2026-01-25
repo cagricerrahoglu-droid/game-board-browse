@@ -19,6 +19,7 @@ import Confirm from "./pages/Confirm";
 import Basket from "./pages/Basket";
 import Checkout from "./pages/Checkout";
 import LenderProfile from "./pages/LenderProfile";
+import LenderHome from "./pages/LenderHome";
 import AddGame from "./pages/AddGame";
 import PayoutSettings from "./pages/PayoutSettings";
 import AvailabilityPreferences from "./pages/AvailabilityPreferences";
@@ -48,6 +49,7 @@ const App = () => (
                 <Route path="/confirm" element={<Confirm />} />
                 <Route path="/basket" element={<Basket />} />
                 <Route path="/checkout" element={<Checkout />} />
+                <Route path="/lender-home" element={<LenderHome />} />
                 <Route path="/lender" element={<LenderProfile />} />
                 <Route path="/add-game" element={<AddGame />} />
                 <Route path="/payout-settings" element={<PayoutSettings />} />

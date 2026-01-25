@@ -35,10 +35,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const storedRole = localStorage.getItem('switchboard_selected_role') || 'renter';
     
     if (token && userId && email) {
+      // All users have both roles by default
+      const roles = JSON.parse(localStorage.getItem('switchboard_user_roles') || '["renter", "lender"]');
       setUser({
         id: userId,
         email: email,
-        roles: ['renter'] // TODO: Store and retrieve actual roles
+        roles: roles
       });
       setSelectedRole(storedRole);
       setIsLoggedIn(true);
@@ -50,10 +52,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoading(true);
     try {
       const response = await API.signin(email, password);
+      
+      // Get the user_id that was just stored in localStorage by the signin method
+      const userId = localStorage.getItem('switchboard_user_id') || email;
+      
+      // All users have both roles
+      const roles = (response as any).roles || ['renter', 'lender'];
+      localStorage.setItem('switchboard_user_roles', JSON.stringify(roles));
+      
       setUser({
-        id: (response as any).user_id,
+        id: userId,
         email: email,
-        roles: (response as any).roles || ['renter']
+        roles: roles
       });
       setSelectedRole(role);
       localStorage.setItem('switchboard_selected_role', role);
@@ -98,6 +108,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setIsLoggedIn(false);
     setSelectedRole('renter');
     localStorage.removeItem('switchboard_selected_role');
+    localStorage.removeItem('switchboard_user_roles');
   };
 
   const switchRole = (role: string) => {

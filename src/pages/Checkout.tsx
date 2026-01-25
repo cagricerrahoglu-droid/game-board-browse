@@ -21,7 +21,8 @@ const deliveryOptions = [
 const Checkout = () => {
   const navigate = useNavigate();
   const { items, getSubtotal, clearBasket } = useBasket();
-  const { user, isLoggedIn } = useAuth();
+  const { user, isLoggedIn, selectedRole } = useAuth();
+  const homePath = selectedRole === "lender" ? "/lender-home" : "/";
   const [currentStep, setCurrentStep] = useState<Step>("delivery");
   const [deliveryMethod, setDeliveryMethod] = useState("home");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -70,17 +71,27 @@ const Checkout = () => {
 
       setIsProcessing(true);
       try {
+        // Mock payment processing (simulating a successful payment)
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         // Create rental records for each game in the basket
         for (const item of items) {
+          // First, get the game details to find the lender_id
+          const gameDetails = await API.getGame(item.id);
+          
+          const durationMonths = item.rentalDurationMonths || 1;
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setMonth(endDate.getMonth() + durationMonths);
+
           const rentalData = {
-            game_id: item.id,
             renter_id: user.id,
-            rental_start_date: new Date().toISOString().split('T')[0],
-            rental_end_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days from now
-            total_price: item.monthlyPrice * (item.rentalDurationMonths || 1),
-            status: 'active',
-            delivery_method: deliveryMethod,
-            delivery_address: `${formData.address}, ${formData.city} ${formData.postcode}`,
+            lender_id: gameDetails.owner_id,
+            game_id: item.id,
+            start_date: startDate.toISOString().split('T')[0],
+            end_date: endDate.toISOString().split('T')[0],
+            deposit_amount: item.monthlyPrice * durationMonths, // Store the rental amount as deposit
+            notes: `Delivery: ${deliveryMethod}, Address: ${formData.address}, ${formData.city} ${formData.postcode}`
           };
 
           await API.createRental(rentalData);
@@ -337,7 +348,7 @@ const Checkout = () => {
             <p className="text-sm text-muted-foreground mb-8">
               Order #SB{Math.floor(Math.random() * 100000).toString().padStart(5, "0")}
             </p>
-            <Button onClick={() => navigate("/")} className="rounded-full" size="lg">
+            <Button onClick={() => navigate(homePath)} className="rounded-full" size="lg">
               Back to Home
             </Button>
           </div>

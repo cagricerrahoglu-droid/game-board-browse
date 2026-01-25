@@ -8,6 +8,7 @@ import { useFavorites } from "@/contexts/FavoritesContext";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
+import { mapBackendGameToFrontend } from "@/utils/gameMapper";
 import {
   strategyGames,
   familyGames,
@@ -27,66 +28,35 @@ const Browse = () => {
   const { toggleFavorite, isFavorite } = useFavorites();
   const { isLoggedIn } = useAuth();
 
-  // Load games from API if authenticated, otherwise use mock data
+  // Load games from database
   useEffect(() => {
     const loadGames = async () => {
       try {
         setIsLoading(true);
         setError(null);
         
-        if (isLoggedIn) {
-          try {
-            const response = await API.listGames();
-            const games = (response as any).games || [];
-            // Convert API games to GameCardProps format
-            const formattedGames = games.map((game: any) => ({
-              id: game.game_id,
-              title: game.title,
-              imageUrl: game.image_url || "",
-              players: game.players || "2-4",
-              duration: game.duration || "30-60",
-              difficulty: game.difficulty || "Medium",
-              rating: game.rating || 4,
-              availability: "available",
-              monthlyPrice: game.price || 9.99,
-              description: game.description || ""
-            }));
-            setAllGames(formattedGames);
-          } catch (apiError) {
-            console.warn("Failed to fetch from API, falling back to mock data:", apiError);
-            // Fall back to mock data if API fails
-            setAllGames([
-              ...strategyGames,
-              ...familyGames,
-              ...twoPlayerGames,
-              ...partyGames,
-              ...beginnerGames,
-              ...coopGames,
-            ]);
+        const response = await API.listGames();
+        
+        // Handle both response formats
+        const games = Array.isArray(response) ? response : ((response as any).games || []);
+        
+        // Convert API games to GameCardProps format using the mapper
+        const formattedGames = games.map((game: any) => mapBackendGameToFrontend(game));
+        
+        // Deduplicate games by name - keep the first occurrence of each unique game name
+        const uniqueGames = formattedGames.reduce((acc: GameCardProps[], game) => {
+          const exists = acc.some(g => g.title.toLowerCase() === game.title.toLowerCase());
+          if (!exists) {
+            acc.push(game);
           }
-        } else {
-          // Use mock data for unauthenticated users
-          setAllGames([
-            ...strategyGames,
-            ...familyGames,
-            ...twoPlayerGames,
-            ...partyGames,
-            ...beginnerGames,
-            ...coopGames,
-          ]);
-        }
+          return acc;
+        }, []);
+        
+        setAllGames(uniqueGames);
       } catch (err: any) {
         console.error("Error loading games:", err);
-        setError("Failed to load games");
-        // Still show mock data on error
-        setAllGames([
-          ...strategyGames,
-          ...familyGames,
-          ...twoPlayerGames,
-          ...partyGames,
-          ...beginnerGames,
-          ...coopGames,
-        ]);
+        setError("Failed to load games from database");
+        setAllGames([]);
       } finally {
         setIsLoading(false);
       }
