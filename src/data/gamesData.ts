@@ -24,6 +24,7 @@ import hanabiImg from "@/assets/games/hanabi.jpg";
 import mysteriumImg from "@/assets/games/mysterium.jpg";
 import monopolyImg from "@/assets/games/monopoly.png";
 import scrabbleImg from "@/assets/games/scrabble.png";
+import theChameleonImg from "@/assets/games/the-chameleon.jpg";
 
 export const strategyGames: GameCardProps[] = [
   {
@@ -274,6 +275,18 @@ export const partyGames: GameCardProps[] = [
     availability: "available",
     monthlyPrice: 5.99,
     description: "Uncover the spies hidden among you in this game of deception and deduction. Trust no one, suspect everyone.",
+  },
+  {
+    id: "the-chameleon",
+    title: "The Chameleon",
+    imageUrl: theChameleonImg,
+    players: "3-8",
+    duration: "15",
+    difficulty: "Easy",
+    rating: 4.4,
+    availability: "available",
+    monthlyPrice: 5.99,
+    description: "Blend in or get caught! One player is the Chameleon trying to fake their way through. Find them before they escape!",
   },
 ];
 
