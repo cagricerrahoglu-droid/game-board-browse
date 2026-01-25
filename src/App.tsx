@@ -23,6 +23,7 @@ import Confirm from "./pages/Confirm";
 import Basket from "./pages/Basket";
 import Checkout from "./pages/Checkout";
 import LenderProfile from "./pages/LenderProfile";
+import LenderHome from "./pages/LenderHome";
 import AddGame from "./pages/AddGame";
 import PayoutSettings from "./pages/PayoutSettings";
 import AvailabilityPreferences from "./pages/AvailabilityPreferences";
@@ -36,35 +37,31 @@ const App = () => (
       <AuthProvider>
         <FavoritesProvider>
           <BasketProvider>
-            <CheckInProvider>
-              <RenterRatingProvider>
-                <Toaster />
-                <Sonner />
-                <CheckInBanner />
-                <CheckInModal />
-                <BrowserRouter>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/browse" element={<Browse />} />
-                    <Route path="/favourites" element={<Favourites />} />
-                    <Route path="/games/:categoryId" element={<CarouselGames />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/contact-support" element={<ContactSupport />} />
-                    <Route path="/payment-receipts" element={<PaymentReceipts />} />
-                    <Route path="/billing-address" element={<BillingAddress />} />
-                    <Route path="/auth" element={<Auth />} />
-                    <Route path="/basket" element={<Basket />} />
-                    <Route path="/checkout" element={<Checkout />} />
-                    <Route path="/lender" element={<LenderProfile />} />
-                    <Route path="/add-game" element={<AddGame />} />
-                    <Route path="/payout-settings" element={<PayoutSettings />} />
-                    <Route path="/availability-preferences" element={<AvailabilityPreferences />} />
-                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
-                </BrowserRouter>
-              </RenterRatingProvider>
-            </CheckInProvider>
+            <Toaster />
+            <Sonner />
+            <BrowserRouter basename={import.meta.env.BASE_URL}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/browse" element={<Browse />} />
+                <Route path="/favourites" element={<Favourites />} />
+                <Route path="/games/:categoryId" element={<CarouselGames />} />
+                <Route path="/profile" element={<Profile />} />
+                <Route path="/contact-support" element={<ContactSupport />} />
+                <Route path="/payment-receipts" element={<PaymentReceipts />} />
+                <Route path="/billing-address" element={<BillingAddress />} />
+                <Route path="/auth" element={<Auth />} />
+                <Route path="/confirm" element={<Confirm />} />
+                <Route path="/basket" element={<Basket />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/lender-home" element={<LenderHome />} />
+                <Route path="/lender" element={<LenderProfile />} />
+                <Route path="/add-game" element={<AddGame />} />
+                <Route path="/payout-settings" element={<PayoutSettings />} />
+                <Route path="/availability-preferences" element={<AvailabilityPreferences />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </BrowserRouter>
           </BasketProvider>
         </FavoritesProvider>
       </AuthProvider>

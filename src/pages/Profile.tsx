@@ -1,5 +1,5 @@
-import { useState, useRef } from "react";
-import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil, Users, Store, Star, X, Info } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil, Users, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCheckIn } from "@/contexts/CheckInContext";
@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import BottomNav from "@/components/BottomNav";
-import { cn } from "@/lib/utils";
+import { API } from "@/services/api";
 
 // Tabletop-themed avatar imports
 import pawnToken from "@/assets/avatars/pawn-token.png";
@@ -57,7 +57,7 @@ const defaultAvatars = avatarCategories.flatMap(cat => cat.avatars);
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, selectedRole, switchRole } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -212,17 +212,68 @@ const Profile = () => {
     avatar: pawnToken,
   });
 
-  // Mock current rentals
-  const currentRentals = [
-    { id: 1, name: "Catan", dueDate: "Dec 10, 2025", status: "due-soon" },
-    { id: 2, name: "Ticket to Ride", dueDate: "Dec 15, 2025", status: "active" },
-  ];
+  // Rentals state - fetch from database
+  const [currentRentals, setCurrentRentals] = useState<any[]>([]);
+  const [pastRentals, setPastRentals] = useState<any[]>([]);
+  const [loadingRentals, setLoadingRentals] = useState(true);
 
-  // Mock past rentals with receipt info
-  const pastRentals = [
-    { id: 101, name: "Pandemic", returnedDate: "Nov 20, 2025", status: "returned", amount: "$12.99" },
-    { id: 102, name: "Codenames", returnedDate: "Nov 5, 2025", status: "returned", amount: "$9.99" },
-  ];
+  // Fetch rentals on mount
+  useEffect(() => {
+    const fetchRentals = async () => {
+      try {
+        setLoadingRentals(true);
+        const userId = API.getCurrentUserId();
+        if (!userId) {
+          console.error('No user ID found');
+          return;
+        }
+
+        const rentalsResponse = await API.getRentalsByRenter(userId);
+        console.log('Fetched rentals:', rentalsResponse);
+
+        if (Array.isArray(rentalsResponse)) {
+          const currentDate = new Date();
+          const current: any[] = [];
+          const past: any[] = [];
+
+          rentalsResponse.forEach((rental: any) => {
+            const endDate = new Date(rental.end_date);
+            const daysUntilDue = Math.ceil((endDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+            
+            const rentalItem = {
+              id: rental.rental_id,
+              name: rental.game_name,
+              dueDate: endDate.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }),
+              returnedDate: rental.updated_at ? new Date(rental.updated_at).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' }) : null,
+              status: rental.status === 'completed' || rental.status === 'cancelled' 
+                ? 'returned' 
+                : daysUntilDue < 0 
+                  ? 'late' 
+                  : daysUntilDue <= 3 
+                    ? 'due-soon' 
+                    : 'active'
+            };
+
+            if (rental.status === 'active') {
+              current.push(rentalItem);
+            } else {
+              past.push(rentalItem);
+            }
+          });
+
+          setCurrentRentals(current);
+          setPastRentals(past);
+        }
+      } catch (error) {
+        console.error('Failed to fetch rentals:', error);
+        toast.error('Failed to load rental activity');
+      } finally {
+        setLoadingRentals(false);
+      }
+    };
+
+    fetchRentals();
+  }, []);
 
   const { completedCheckIns } = useCheckIn();
   const { renterRating, isRatingVisible, showFirstTimeBanner, dismissBanner, getRatingMessage } = useRenterRating();
@@ -282,7 +333,7 @@ const Profile = () => {
       {/* Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur-sm border-b border-border">
         <div className="flex items-center gap-4 px-4 py-4">
-          <button onClick={() => navigate('/')} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors">
+          <button onClick={() => navigate(selectedRole === "lender" ? "/lender-home" : "/")} className="p-2 -ml-2 hover:bg-muted rounded-full transition-colors">
             <ArrowLeft className="h-5 w-5 text-foreground" />
           </button>
           <h1 className="text-xl font-semibold text-foreground">Profile</h1>
@@ -313,14 +364,16 @@ const Profile = () => {
                 <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
               <button
-                onClick={() => navigate('/lender')}
+                onClick={() => {
+                  switchRole(selectedRole === "renter" ? "lender" : "renter");
+                }}
                 className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8"
               >
                 <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">
-                  <span className="text-primary-foreground z-10">Renter</span>
-                  <span className="text-muted-foreground">Lender</span>
+                  <span className={selectedRole === "renter" ? "text-primary-foreground z-10" : "text-muted-foreground"}>Renter</span>
+                  <span className={selectedRole === "lender" ? "text-primary-foreground z-10" : "text-muted-foreground"}>Lender</span>
                 </div>
-                <div className="absolute left-0.5 w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300" />
+                <div className={`absolute ${selectedRole === "renter" ? "left-0.5" : "left-[calc(50%+2px)]"} w-[calc(50%-2px)] h-7 bg-primary rounded-full transition-all duration-300`} />
               </button>
               <Button 
                 variant="outline" 
@@ -443,75 +496,62 @@ const Profile = () => {
             <CardTitle className="text-base font-semibold">Rental Activity</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {/* Current Rentals */}
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-3">Current Rentals</h3>
-              {currentRentals.length > 0 ? (
-                <div className="space-y-3">
-                  {currentRentals.map((rental) => (
-                    <div key={rental.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
-                      <div>
-                        <p className="font-medium text-foreground">{rental.name}</p>
-                        <p className="text-sm text-muted-foreground">Due: {rental.dueDate}</p>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        {getStatusBadge(rental.status)}
-                        {rental.status === "due-soon" && (
-                          <Button variant="ghost" size="sm" className="text-primary text-xs">
-                            Extend
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-muted-foreground">No current rentals</p>
-              )}
-            </div>
-
-            <Separator />
-
-            {/* Past Rentals */}
-            <div>
-              <h3 className="text-sm font-medium text-muted-foreground mb-3">Past Rentals</h3>
-              <div className="space-y-3">
-                {pastRentals.map((rental) => {
-                  const rating = getRatingForRental(rental.id);
-                  return (
-                    <div key={rental.id} className="p-3 bg-muted/30 rounded-lg">
-                      <div className="flex items-center justify-between mb-2">
-                        <p className="font-medium text-foreground">{rental.name}</p>
-                        {rating && (
-                          <div className="flex items-center gap-0.5">
-                            {[1, 2, 3, 4, 5].map((value) => (
-                              <Star
-                                key={value}
-                                className={cn(
-                                  "h-3.5 w-3.5",
-                                  rating >= value
-                                    ? "fill-[hsl(var(--star))] text-[hsl(var(--star))]"
-                                    : "text-muted-foreground/30"
-                                )}
-                              />
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <p className="text-sm text-muted-foreground">Returned: {rental.returnedDate}</p>
-                        <button
-                          onClick={() => navigate(`/payment-receipts?rental=${rental.id}`)}
-                          className="text-sm text-primary font-medium hover:underline"
-                        >
-                          View Order
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
+            {loadingRentals ? (
+              <div className="flex items-center justify-center py-8">
+                <p className="text-sm text-muted-foreground">Loading rental activity...</p>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* Current Rentals */}
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">Current Rentals</h3>
+                  {currentRentals.length > 0 ? (
+                    <div className="space-y-3">
+                      {currentRentals.map((rental) => (
+                        <div key={rental.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                          <div>
+                            <p className="font-medium text-foreground">{rental.name}</p>
+                            <p className="text-sm text-muted-foreground">Due: {rental.dueDate}</p>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {getStatusBadge(rental.status)}
+                            {rental.status === "due-soon" && (
+                              <Button variant="ghost" size="sm" className="text-primary text-xs">
+                                Extend
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No current rentals</p>
+                  )}
+                </div>
+
+                <Separator />
+
+                {/* Past Rentals */}
+                <div>
+                  <h3 className="text-sm font-medium text-muted-foreground mb-3">Past Rentals</h3>
+                  {pastRentals.length > 0 ? (
+                    <div className="space-y-3">
+                      {pastRentals.map((rental) => (
+                        <div key={rental.id} className="flex items-center justify-between p-3 bg-muted/30 rounded-lg">
+                          <div>
+                            <p className="font-medium text-foreground">{rental.name}</p>
+                            <p className="text-sm text-muted-foreground">Returned: {rental.returnedDate}</p>
+                          </div>
+                          {getStatusBadge(rental.status)}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-sm text-muted-foreground">No past rentals</p>
+                  )}
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
 

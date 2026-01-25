@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Plus, ChevronRight, Wallet, Clock, CreditCard, Calendar, Truck, Tag, Settings, Users, Store } from "lucide-react";
@@ -14,11 +14,12 @@ import BottomNav from "@/components/BottomNav";
 import LenderOnboarding from "@/components/LenderOnboarding";
 import LenderGameCard, { LenderGame } from "@/components/LenderGameCard";
 import LenderStats from "@/components/LenderStats";
+import { API } from "@/services/api";
 
 import pawnToken from "@/assets/avatars/pawn-token.png";
-import catanImage from "@/assets/games/7-wonders-duel.jpg";
-import ticketToRide from "@/assets/games/pandemic.jpg";
-import wingspan from "@/assets/games/splendor.jpg";
+
+// Generic placeholder for games without images
+const DEFAULT_GAME_IMAGE = "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&h=400&fit=crop";
 
 const LenderProfile = () => {
   const navigate = useNavigate();
@@ -35,17 +36,17 @@ const LenderProfile = () => {
     avatar: pawnToken,
   };
 
-  // Stats data
-  const stats = {
-    gamesListed: 8,
-    activeRentals: 3,
-    earningsThisMonth: 47.50,
-    lifetimeEarnings: 324.00,
-  };
+  // Stats data - calculated from database
+  const [stats, setStats] = useState({
+    gamesListed: 0,
+    activeRentals: 0,
+    earningsThisMonth: 0,
+    lifetimeEarnings: 0,
+  });
 
   // Earnings data
   const earnings = {
-    availableBalance: 47.50,
+    availableBalance: stats.earningsThisMonth,
     pendingPayouts: 12.00,
     payoutMethod: "Bank Account •••• 4521",
   };
@@ -57,47 +58,104 @@ const LenderProfile = () => {
     allowDelivery: true,
   });
 
-  // Mock games data
-  const [games, setGames] = useState<LenderGame[]>([
-    {
-      id: 1,
-      title: "7 Wonders Duel",
-      image: catanImage,
-      condition: "excellent",
-      isComplete: true,
-      hasManual: true,
-      isAvailable: true,
-      status: "available",
-      rentalPrice: 4.99,
-      sellAfterRent: true,
-      sellPrice: 25.00,
-    },
-    {
-      id: 2,
-      title: "Pandemic",
-      image: ticketToRide,
-      condition: "good",
-      isComplete: true,
-      hasManual: true,
-      isAvailable: true,
-      status: "rented",
-      rentalPrice: 3.99,
-      sellAfterRent: false,
-    },
-    {
-      id: 3,
-      title: "Splendor",
-      image: wingspan,
-      condition: "good",
-      isComplete: false,
-      hasManual: false,
-      isAvailable: false,
-      status: "paused",
-      rentalPrice: 3.49,
-      sellAfterRent: true,
-      sellPrice: 20.00,
-    },
-  ]);
+  // Games data - fetch from database
+  const [games, setGames] = useState<LenderGame[]>([]);
+  const [loadingGames, setLoadingGames] = useState(true);
+
+  // Fetch games and rentals on mount
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoadingGames(true);
+        const userId = API.getCurrentUserId();
+        if (!userId) {
+          console.error('No user ID found');
+          return;
+        }
+
+        // Fetch games
+        const gamesResponse = await API.getGamesByOwner(userId);
+        console.log('Fetched games:', gamesResponse);
+
+        // Map database games to LenderGame format
+        let mappedGames: LenderGame[] = [];
+        // Backend returns games array directly
+        if (Array.isArray(gamesResponse)) {
+          mappedGames = gamesResponse.map((dbGame: any) => ({
+            id: dbGame.game_id,
+            title: dbGame.name,
+            image: dbGame.image_url || DEFAULT_GAME_IMAGE,
+            condition: dbGame.condition?.toLowerCase() as "excellent" | "good" | "fair" || "good",
+            isComplete: dbGame.is_complete ?? true,
+            hasManual: dbGame.has_manual ?? true,
+            isAvailable: dbGame.available ?? true,
+            status: dbGame.available ? "available" : "paused",
+            rentalPrice: dbGame.rental_price ?? 4.99,
+            sellAfterRent: dbGame.sell_after_rent ?? false,
+            sellPrice: dbGame.sell_price,
+          }));
+          setGames(mappedGames);
+        }
+
+        // Fetch rentals for stats
+        try {
+          const rentalsResponse = await API.getRentalsByLender(userId);
+          console.log('Fetched rentals:', rentalsResponse);
+
+          let activeRentals = 0;
+          let lifetimeEarnings = 0;
+          let earningsThisMonth = 0;
+
+          const currentDate = new Date();
+          const currentMonth = currentDate.getMonth();
+          const currentYear = currentDate.getFullYear();
+
+          if (Array.isArray(rentalsResponse)) {
+            rentalsResponse.forEach((rental: any) => {
+              // Count active rentals
+              if (rental.status === 'active') {
+                activeRentals++;
+              }
+
+              // Calculate earnings (using deposit_amount as proxy for rental income)
+              const rentalIncome = rental.deposit_amount || 0;
+              lifetimeEarnings += rentalIncome;
+
+              // Check if rental is from this month
+              if (rental.created_at) {
+                const rentalDate = new Date(rental.created_at);
+                if (rentalDate.getMonth() === currentMonth && rentalDate.getFullYear() === currentYear) {
+                  earningsThisMonth += rentalIncome;
+                }
+              }
+            });
+          }
+
+          // Update stats
+          setStats({
+            gamesListed: mappedGames.length,
+            activeRentals,
+            earningsThisMonth,
+            lifetimeEarnings,
+          });
+        } catch (rentalError) {
+          console.error('Failed to fetch rentals:', rentalError);
+          // Still update games count even if rentals fail
+          setStats(prev => ({
+            ...prev,
+            gamesListed: mappedGames.length,
+          }));
+        }
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
+        toast.error('Failed to load your profile data');
+      } finally {
+        setLoadingGames(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleOnboardingComplete = () => {
     localStorage.setItem("lender_onboarding_completed", "true");
@@ -121,30 +179,66 @@ const LenderProfile = () => {
     }
   };
 
-  const handleToggleAvailability = (id: number, available: boolean) => {
-    setGames(prev => prev.map(game => 
-      game.id === id ? { ...game, isAvailable: available, status: available ? "available" : "paused" } : game
-    ));
-    toast.success(available ? "Game is now listed" : "Game unlisted");
+  const handleToggleAvailability = async (id: number, available: boolean) => {
+    try {
+      // Update in database
+      await API.updateGame(String(id), { available });
+      
+      // Update local state
+      setGames(prev => prev.map(game => 
+        game.id === id ? { ...game, isAvailable: available, status: available ? "available" : "paused" } : game
+      ));
+      toast.success(available ? "Game is now listed" : "Game unlisted");
+    } catch (error) {
+      console.error('Failed to toggle availability:', error);
+      toast.error('Failed to update game availability');
+    }
   };
 
-  const handleDeleteGame = (id: number) => {
-    setGames(games => games.filter(game => game.id !== id));
-    toast.success("Game removed from your listings");
+  const handleDeleteGame = async (id: number) => {
+    try {
+      // Delete from database
+      await API.deleteGame(String(id));
+      
+      // Update local state
+      setGames(games => games.filter(game => game.id !== id));
+      toast.success("Game removed from your listings");
+    } catch (error) {
+      console.error('Failed to delete game:', error);
+      toast.error('Failed to delete game');
+    }
   };
 
-  const handlePauseGame = (id: number) => {
-    setGames(prev => prev.map(game => 
-      game.id === id ? { ...game, isAvailable: false, status: "paused" } : game
-    ));
-    toast.success("Game paused");
+  const handlePauseGame = async (id: number) => {
+    try {
+      // Update in database
+      await API.updateGame(String(id), { available: false });
+      
+      // Update local state
+      setGames(prev => prev.map(game => 
+        game.id === id ? { ...game, isAvailable: false, status: "paused" } : game
+      ));
+      toast.success("Game paused");
+    } catch (error) {
+      console.error('Failed to pause game:', error);
+      toast.error('Failed to pause game');
+    }
   };
 
-  const handleToggleSellAfterRent = (id: number, enabled: boolean) => {
-    setGames(prev => prev.map(game => 
-      game.id === id ? { ...game, sellAfterRent: enabled } : game
-    ));
-    toast.success(enabled ? "Game is now open to sell" : "Game is no longer open to sell");
+  const handleToggleSellAfterRent = async (id: number, enabled: boolean) => {
+    try {
+      // Update in database
+      await API.updateGame(String(id), { sell_after_rent: enabled });
+      
+      // Update local state
+      setGames(prev => prev.map(game => 
+        game.id === id ? { ...game, sellAfterRent: enabled } : game
+      ));
+      toast.success(enabled ? "Game is now open to sell" : "Game is no longer open to sell");
+    } catch (error) {
+      console.error('Failed to toggle sell after rent:', error);
+      toast.error('Failed to update sell after rent setting');
+    }
   };
 
   const SettingsRow = ({ icon: Icon, label, showSwitch = false, switchChecked = false, onSwitchChange, onClick }: {
@@ -251,24 +345,35 @@ const LenderProfile = () => {
               <h2 className="text-lg font-semibold text-foreground">Your Games</h2>
               <span className="text-sm text-muted-foreground">{games.length} games</span>
             </div>
-            <div className="space-y-3">
-              {games.map((game, index) => (
-                <motion.div
-                  key={game.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + index * 0.05 }}
-                >
-                  <LenderGameCard
-                    game={game}
-                    onToggleAvailability={handleToggleAvailability}
-                    onToggleSellAfterRent={handleToggleSellAfterRent}
-                    onPause={handlePauseGame}
-                    onDelete={handleDeleteGame}
-                  />
-                </motion.div>
-              ))}
-            </div>
+            {loadingGames ? (
+              <div className="flex items-center justify-center py-8">
+                <p className="text-sm text-muted-foreground">Loading your games...</p>
+              </div>
+            ) : games.length === 0 ? (
+              <div className="text-center py-8 bg-muted/30 rounded-xl">
+                <p className="text-sm text-muted-foreground mb-2">No games listed yet</p>
+                <p className="text-xs text-muted-foreground">Add your first game to get started!</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {games.map((game, index) => (
+                  <motion.div
+                    key={game.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + index * 0.05 }}
+                  >
+                    <LenderGameCard
+                      game={game}
+                      onToggleAvailability={handleToggleAvailability}
+                      onToggleSellAfterRent={handleToggleSellAfterRent}
+                      onPause={handlePauseGame}
+                      onDelete={handleDeleteGame}
+                    />
+                  </motion.div>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           {/* Earnings Section */}

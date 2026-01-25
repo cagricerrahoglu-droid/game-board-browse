@@ -2,15 +2,22 @@ import { Home, Search, Heart, ShoppingCart, User } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { useBasket } from "@/contexts/BasketContext";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface NavItem {
   icon: typeof Search;
   label: string;
   path: string;
+  getPath?: (selectedRole: string) => string;
 }
 
 const navItems: NavItem[] = [
-  { icon: Home, label: "Home", path: "/" },
+  { 
+    icon: Home, 
+    label: "Home", 
+    path: "/",
+    getPath: (selectedRole: string) => selectedRole === "lender" ? "/lender-home" : "/"
+  },
   { icon: Search, label: "Browse", path: "/browse" },
   { icon: Heart, label: "Favourites", path: "/favourites" },
   { icon: ShoppingCart, label: "Basket", path: "/basket" },
@@ -21,17 +28,19 @@ const BottomNav = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { getItemCount } = useBasket();
+  const { selectedRole } = useAuth();
   const basketCount = getItemCount();
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-nav-background/95 backdrop-blur-xl shadow-nav border-t border-border/30 safe-bottom">
       <div className="flex items-center justify-around py-2 px-2 max-w-lg mx-auto">
         {navItems.map((item) => {
-          const isActive = location.pathname === item.path;
+          const itemPath = item.getPath ? item.getPath(selectedRole) : item.path;
+          const isActive = location.pathname === itemPath;
           return (
             <button
               key={item.label}
-              onClick={() => navigate(item.path)}
+              onClick={() => navigate(itemPath)}
               className={cn(
                 "flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-2xl",
                 "transition-all duration-300 ease-out",

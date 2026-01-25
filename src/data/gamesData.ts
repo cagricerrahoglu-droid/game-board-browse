@@ -1,30 +1,6 @@
 import { GameCardProps } from "@/components/GameCard";
-import splendorImg from "@/assets/games/splendor.jpg";
-import kingdominoImg from "@/assets/games/kingdomino.jpg";
-import sushiGoImg from "@/assets/games/sushi-go.jpg";
-import dixitImg from "@/assets/games/dixit.jpg";
-import sevenWondersDuelImg from "@/assets/games/7-wonders-duel.jpg";
-import patchworkImg from "@/assets/games/patchwork.jpg";
-import jaipurImg from "@/assets/games/jaipur.jpg";
-import codenamesImg from "@/assets/games/codenames.jpg";
-import wavelengthImg from "@/assets/games/wavelength.jpg";
-import justOneImg from "@/assets/games/just-one.jpg";
-import telestrationsImg from "@/assets/games/telestrations.jpg";
-import theResistanceImg from "@/assets/games/the-resistance.jpg";
-import codenamesDuetImg from "@/assets/games/codenames-duet.jpg";
-import starRealmsImg from "@/assets/games/star-realms.jpg";
-import loveLetterImg from "@/assets/games/love-letter.jpg";
-import unoImg from "@/assets/games/uno.jpg";
-import dobbleImg from "@/assets/games/dobble.jpg";
-import explodingKittensImg from "@/assets/games/exploding-kittens.jpg";
-import pandemicImg from "@/assets/games/pandemic.jpg";
-import spiritIslandImg from "@/assets/games/spirit-island.jpg";
-import theCrewImg from "@/assets/games/the-crew.jpg";
-import hanabiImg from "@/assets/games/hanabi.jpg";
-import mysteriumImg from "@/assets/games/mysterium.jpg";
-import monopolyImg from "@/assets/games/monopoly.png";
-import scrabbleImg from "@/assets/games/scrabble.png";
-import theChameleonImg from "@/assets/games/the-chameleon.jpg";
+
+const S3_BASE_URL = "https://switchboard-dev-game-images.s3.eu-west-1.amazonaws.com/games";
 
 export const strategyGames: GameCardProps[] = [
   {
@@ -105,7 +81,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "splendor",
     title: "Splendor",
-    imageUrl: splendorImg,
+    imageUrl: `${S3_BASE_URL}/splendor.jpg`,
     players: "2-4",
     duration: "30",
     difficulty: "Easy",
@@ -117,7 +93,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "kingdomino",
     title: "Kingdomino",
-    imageUrl: kingdominoImg,
+    imageUrl: `${S3_BASE_URL}/kingdomino.jpg`,
     players: "2-4",
     duration: "15-20",
     difficulty: "Easy",
@@ -129,7 +105,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "dixit",
     title: "Dixit",
-    imageUrl: dixitImg,
+    imageUrl: `${S3_BASE_URL}/dixit.jpg`,
     players: "3-6",
     duration: "30",
     difficulty: "Easy",
@@ -141,7 +117,7 @@ export const familyGames: GameCardProps[] = [
   {
     id: "sushi-go",
     title: "Sushi Go!",
-    imageUrl: sushiGoImg,
+    imageUrl: `${S3_BASE_URL}/sushi-go.jpg`,
     players: "2-5",
     duration: "15",
     difficulty: "Easy",
@@ -156,7 +132,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "7-wonders-duel",
     title: "7 Wonders Duel",
-    imageUrl: sevenWondersDuelImg,
+    imageUrl: `${S3_BASE_URL}/7-wonders-duel.jpg`,
     players: "2",
     duration: "30",
     difficulty: "Medium",
@@ -168,7 +144,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "patchwork",
     title: "Patchwork",
-    imageUrl: patchworkImg,
+    imageUrl: `${S3_BASE_URL}/patchwork.jpg`,
     players: "2",
     duration: "15-30",
     difficulty: "Easy",
@@ -180,7 +156,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "jaipur",
     title: "Jaipur",
-    imageUrl: jaipurImg,
+    imageUrl: `${S3_BASE_URL}/jaipur.jpg`,
     players: "2",
     duration: "30",
     difficulty: "Easy",
@@ -192,7 +168,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "codenames-duet",
     title: "Codenames Duet",
-    imageUrl: codenamesDuetImg,
+    imageUrl: `${S3_BASE_URL}/codenames-duet.jpg`,
     players: "2",
     duration: "15-30",
     difficulty: "Easy",
@@ -204,7 +180,7 @@ export const twoPlayerGames: GameCardProps[] = [
   {
     id: "star-realms",
     title: "Star Realms",
-    imageUrl: starRealmsImg,
+    imageUrl: `${S3_BASE_URL}/star-realms.jpg`,
     players: "2",
     duration: "20",
     difficulty: "Medium",
@@ -219,7 +195,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "codenames",
     title: "Codenames",
-    imageUrl: codenamesImg,
+    imageUrl: `${S3_BASE_URL}/codenames.jpg`,
     players: "2-8",
     duration: "15-30",
     difficulty: "Easy",
@@ -231,7 +207,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "wavelength",
     title: "Wavelength",
-    imageUrl: wavelengthImg,
+    imageUrl: `${S3_BASE_URL}/wavelength.jpg`,
     players: "2-12",
     duration: "30-45",
     difficulty: "Easy",
@@ -243,7 +219,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "just-one",
     title: "Just One",
-    imageUrl: justOneImg,
+    imageUrl: `${S3_BASE_URL}/just-one.jpg`,
     players: "3-7",
     duration: "20",
     difficulty: "Easy",
@@ -255,7 +231,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "telestrations",
     title: "Telestrations",
-    imageUrl: telestrationsImg,
+    imageUrl: `${S3_BASE_URL}/telestrations.jpg`,
     players: "4-8",
     duration: "30",
     difficulty: "Easy",
@@ -267,7 +243,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "the-resistance",
     title: "The Resistance",
-    imageUrl: theResistanceImg,
+    imageUrl: `${S3_BASE_URL}/the-resistance.jpg`,
     players: "5-10",
     duration: "30",
     difficulty: "Easy",
@@ -306,7 +282,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "love-letter",
     title: "Love Letter",
-    imageUrl: loveLetterImg,
+    imageUrl: `${S3_BASE_URL}/love-letter.jpg`,
     players: "2-4",
     duration: "20",
     difficulty: "Easy",
@@ -318,7 +294,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "uno",
     title: "UNO",
-    imageUrl: unoImg,
+    imageUrl: `${S3_BASE_URL}/uno.jpg`,
     players: "2-10",
     duration: "30",
     difficulty: "Easy",
@@ -330,7 +306,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "dobble",
     title: "Dobble",
-    imageUrl: dobbleImg,
+    imageUrl: `${S3_BASE_URL}/dobble.jpg`,
     players: "2-8",
     duration: "15",
     difficulty: "Easy",
@@ -342,7 +318,7 @@ export const beginnerGames: GameCardProps[] = [
   {
     id: "exploding-kittens",
     title: "Exploding Kittens",
-    imageUrl: explodingKittensImg,
+    imageUrl: `${S3_BASE_URL}/exploding-kittens.jpg`,
     players: "2-5",
     duration: "15",
     difficulty: "Easy",
@@ -357,7 +333,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "pandemic",
     title: "Pandemic",
-    imageUrl: pandemicImg,
+    imageUrl: `${S3_BASE_URL}/pandemic.jpg`,
     players: "2-4",
     duration: "45",
     difficulty: "Medium",
@@ -369,7 +345,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "spirit-island",
     title: "Spirit Island",
-    imageUrl: spiritIslandImg,
+    imageUrl: `${S3_BASE_URL}/spirit-island.jpg`,
     players: "1-4",
     duration: "90-120",
     difficulty: "Hard",
@@ -381,7 +357,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "the-crew",
     title: "The Crew",
-    imageUrl: theCrewImg,
+    imageUrl: `${S3_BASE_URL}/the-crew.jpg`,
     players: "2-5",
     duration: "20",
     difficulty: "Medium",
@@ -393,7 +369,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "hanabi",
     title: "Hanabi",
-    imageUrl: hanabiImg,
+    imageUrl: `${S3_BASE_URL}/hanabi.jpg`,
     players: "2-5",
     duration: "25",
     difficulty: "Medium",
@@ -405,7 +381,7 @@ export const coopGames: GameCardProps[] = [
   {
     id: "mysterium",
     title: "Mysterium",
-    imageUrl: mysteriumImg,
+    imageUrl: `${S3_BASE_URL}/mysterium.jpg`,
     players: "2-7",
     duration: "45",
     difficulty: "Medium",
@@ -420,7 +396,7 @@ export const classicGames: GameCardProps[] = [
   {
     id: "monopoly",
     title: "Monopoly",
-    imageUrl: monopolyImg,
+    imageUrl: `${S3_BASE_URL}/monopoly.png`,
     players: "2-8",
     duration: "60-180",
     difficulty: "Easy",
@@ -432,7 +408,7 @@ export const classicGames: GameCardProps[] = [
   {
     id: "scrabble",
     title: "Scrabble",
-    imageUrl: scrabbleImg,
+    imageUrl: `${S3_BASE_URL}/scrabble.png`,
     players: "2-4",
     duration: "90",
     difficulty: "Medium",

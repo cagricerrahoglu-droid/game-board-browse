@@ -53,10 +53,16 @@ export const API = {
         body: JSON.stringify({ action: 'signin', email, password })
       });
       const data = await handleFetchError(response, AUTH_URL, 'signin');
+      console.log('Full signin response:', data);
+      
       if ((data as any).token) {
+        // Try different possible user ID fields from the response
+        const userId = (data as any).user_id || (data as any).userId || (data as any).sub || email;
+        console.log('Extracted user ID:', userId);
+        
         localStorage.setItem('switchboard_token', (data as any).token);
         localStorage.setItem('switchboard_refresh_token', (data as any).refreshToken || '');
-        localStorage.setItem('switchboard_user_id', (data as any).user_id || '');
+        localStorage.setItem('switchboard_user_id', userId);
         localStorage.setItem('switchboard_user_email', email);
       }
       return data;

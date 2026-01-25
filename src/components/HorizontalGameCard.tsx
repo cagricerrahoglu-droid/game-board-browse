@@ -59,13 +59,23 @@ const HorizontalGameCard = ({
           alt={title}
           className={cn(
             "w-full h-full object-cover transition-transform duration-500",
-            "group-hover:scale-105"
+            "group-hover:scale-105",
+            availability === "unavailable" && "grayscale opacity-40"
           )}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
             target.src = `https://placehold.co/300x300/f5f0e8/e85d4c?text=${encodeURIComponent(title)}`;
           }}
         />
+        
+        {/* Unavailable Overlay */}
+        {availability === "unavailable" && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
+            <div className="bg-card/95 px-2 py-1 rounded-full">
+              <span className="text-[10px] font-bold text-muted-foreground">Not available</span>
+            </div>
+          </div>
+        )}
         {/* Favorite Button */}
         <div
           onClick={handleFavoriteClick}

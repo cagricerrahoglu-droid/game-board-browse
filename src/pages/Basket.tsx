@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, MapPin, Truck, Info, ShieldCheck, XCircle, Lock, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useBasket } from "@/contexts/BasketContext";
+import { useAuth } from "@/contexts/AuthContext";
 import BasketItemCard from "@/components/BasketItemCard";
 import {
   Tooltip,
@@ -14,6 +15,8 @@ const DELIVERY_FEE = 3.99;
 const Basket = () => {
   const navigate = useNavigate();
   const { items, removeFromBasket, getSubtotal } = useBasket();
+  const { selectedRole } = useAuth();
+  const homePath = selectedRole === "lender" ? "/lender-home" : "/";
 
   const subtotal = getSubtotal();
   const total = subtotal + DELIVERY_FEE;
@@ -25,7 +28,7 @@ const Basket = () => {
         {/* Header */}
         <header className="px-5 py-4">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate(homePath)}
             className="p-2 -ml-2 rounded-xl hover:bg-muted/50 transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-foreground" />
@@ -60,7 +63,7 @@ const Basket = () => {
       {/* Header */}
       <header className="sticky top-0 z-40 bg-background/95 backdrop-blur-xl px-5 py-4">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate(homePath)}
           className="p-2 -ml-2 rounded-xl hover:bg-muted/50 transition-colors"
         >
           <ArrowLeft className="w-5 h-5 text-foreground" />
