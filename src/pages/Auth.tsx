@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Dice5, ArrowLeft } from "lucide-react";
+import { Dice5, ArrowLeft, Info } from "lucide-react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -119,7 +120,43 @@ const Auth = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">Password</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <button
+                        type="button"
+                        className="text-xs text-muted-foreground hover:text-primary transition-colors flex items-center gap-1"
+                      >
+                        <Info className="w-3 h-3" />
+                        Password requirements
+                      </button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-72 p-3" align="end">
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium">Password must include:</p>
+                        <ul className="text-xs text-muted-foreground space-y-1">
+                          <li className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-primary" />
+                            Minimum 8 characters
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-primary" />
+                            At least one uppercase letter
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-primary" />
+                            At least one number
+                          </li>
+                          <li className="flex items-center gap-2">
+                            <span className="w-1 h-1 rounded-full bg-primary" />
+                            At least one special character
+                          </li>
+                        </ul>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
                 <Input
                   id="password"
                   type="password"
