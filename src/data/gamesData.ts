@@ -252,6 +252,18 @@ export const partyGames: GameCardProps[] = [
     monthlyPrice: 5.99,
     description: "Uncover the spies hidden among you in this game of deception and deduction. Trust no one, suspect everyone.",
   },
+  {
+    id: "the-chameleon",
+    title: "The Chameleon",
+    imageUrl: theChameleonImg,
+    players: "3-8",
+    duration: "15",
+    difficulty: "Easy",
+    rating: 4.4,
+    availability: "available",
+    monthlyPrice: 5.99,
+    description: "Blend in or get caught! One player is the Chameleon trying to fake their way through. Find them before they escape!",
+  },
 ];
 
 export const beginnerGames: GameCardProps[] = [
@@ -340,7 +352,7 @@ export const coopGames: GameCardProps[] = [
     rating: 4.8,
     availability: "limited",
     monthlyPrice: 10.99,
-    description: "Play as powerful spirits defending your island from colonizing invaders. A complex and rewarding cooperative experience.",
+    description: "Island Spirits join forces using elemental powers to defend their home from invaders.",
   },
   {
     id: "the-crew",

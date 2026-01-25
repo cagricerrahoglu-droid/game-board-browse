@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, Camera, ChevronRight, CreditCard, Bell, Globe, FileText, Shield, LogOut, HelpCircle, MessageCircle, AlertTriangle, Plus, Upload, Trash2, Pencil, Users, Store } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCheckIn } from "@/contexts/CheckInContext";
+import { useRenterRating } from "@/contexts/RenterRatingContext";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -273,6 +275,16 @@ const Profile = () => {
     fetchRentals();
   }, []);
 
+  const { completedCheckIns } = useCheckIn();
+  const { renterRating, isRatingVisible, showFirstTimeBanner, dismissBanner, getRatingMessage } = useRenterRating();
+
+  const getRatingForRental = (rentalId: number) => {
+    const checkIn = completedCheckIns.find(c => c.rentalId === rentalId);
+    return checkIn?.rating;
+  };
+
+  const ratingMessage = getRatingMessage();
+
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -376,6 +388,107 @@ const Profile = () => {
             </div>
           </CardContent>
         </Card>
+
+        {/* First-time Rating Banner */}
+        {showFirstTimeBanner && (
+          <div className="relative bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/20 rounded-xl p-4">
+            <button
+              onClick={dismissBanner}
+              className="absolute top-3 right-3 p-1 hover:bg-muted rounded-full transition-colors"
+            >
+              <X className="h-4 w-4 text-muted-foreground" />
+            </button>
+            <div className="flex items-start gap-3">
+              <div className="p-2 bg-primary/20 rounded-full">
+                <Star className="h-5 w-5 text-primary fill-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-foreground mb-1">
+                  You now have a renter rating ⭐
+                </h3>
+                <p className="text-sm text-muted-foreground">
+                  See how you're doing based on feedback from lenders.
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Your Renter Rating */}
+        {isRatingVisible && (
+          <Card className="bg-card border-border">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold flex items-center gap-2">
+                Your Renter Rating
+                <span className="text-xs font-normal text-muted-foreground">(Private)</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Star Rating Display */}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((value) => (
+                    <Star
+                      key={value}
+                      className={cn(
+                        "h-6 w-6",
+                        renterRating.averageRating >= value
+                          ? "fill-[hsl(var(--star))] text-[hsl(var(--star))]"
+                          : renterRating.averageRating >= value - 0.5
+                          ? "fill-[hsl(var(--star))]/50 text-[hsl(var(--star))]"
+                          : "text-muted-foreground/30"
+                      )}
+                    />
+                  ))}
+                </div>
+                <span className="text-2xl font-bold text-foreground">
+                  {renterRating.averageRating.toFixed(1)}
+                </span>
+              </div>
+
+              <p className="text-sm text-muted-foreground">
+                Based on feedback from lenders after game returns.
+              </p>
+
+              {/* Adaptive Message */}
+              <div className={cn(
+                "p-3 rounded-lg",
+                ratingMessage.tone === "high" && "bg-emerald-500/10 border border-emerald-500/20",
+                ratingMessage.tone === "medium" && "bg-amber-500/10 border border-amber-500/20",
+                ratingMessage.tone === "low" && "bg-muted border border-border"
+              )}>
+                <div className="flex items-start gap-2">
+                  <Info className={cn(
+                    "h-4 w-4 mt-0.5 flex-shrink-0",
+                    ratingMessage.tone === "high" && "text-emerald-500",
+                    ratingMessage.tone === "medium" && "text-amber-500",
+                    ratingMessage.tone === "low" && "text-muted-foreground"
+                  )} />
+                  <div>
+                    <p className={cn(
+                      "text-sm font-medium mb-1",
+                      ratingMessage.tone === "high" && "text-emerald-600 dark:text-emerald-400",
+                      ratingMessage.tone === "medium" && "text-amber-600 dark:text-amber-400",
+                      ratingMessage.tone === "low" && "text-foreground"
+                    )}>
+                      {ratingMessage.title}
+                    </p>
+                    <p className="text-sm text-muted-foreground">
+                      {ratingMessage.message}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Educational Copy */}
+              <div className="pt-2 border-t border-border">
+                <p className="text-xs text-muted-foreground">
+                  Lenders rate how games are returned — including condition, care, and timeliness.
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Rental Activity */}
         <Card className="bg-card border-border">
@@ -481,7 +594,6 @@ const Profile = () => {
 
             <Separator />
 
-            <SettingsRow icon={FileText} label="Past Payment Receipts" onClick={() => navigate('/payment-receipts')} />
             <SettingsRow icon={FileText} label="Billing Address" onClick={() => navigate('/billing-address')} />
           </CardContent>
         </Card>
