@@ -122,8 +122,8 @@ const AddGame = () => {
     setIsSubmitting(true);
     try {
       const gameData = {
-        title: selectedGame.title,
-        description: selectedGame.description,
+        name: selectedGame.title,
+        description: selectedGame.description || `${selectedGame.title} - ${selectedGame.players} players, ${selectedGame.duration} min`,
         image_url: selectedGame.imageUrl,
         price: calculatedRentalPrice,
         condition: condition,
