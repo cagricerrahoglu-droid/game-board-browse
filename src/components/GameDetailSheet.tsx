@@ -198,7 +198,7 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
             disabled={isInBasket || game.availability === "unavailable"}
             className={cn(
               "w-full h-12 text-sm font-bold rounded-xl",
-              game.availability === "unavailable" && "bg-muted text-muted-foreground hover:bg-muted cursor-not-allowed"
+              game.availability === "unavailable" && "bg-muted text-foreground hover:bg-muted cursor-not-allowed"
             )}
           >
             {isInBasket ? "Already in basket" : game.availability === "unavailable" ? "Unavailable" : "Add to basket"}
