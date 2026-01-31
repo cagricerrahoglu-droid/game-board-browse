@@ -37,8 +37,11 @@ const App = () => (
       <AuthProvider>
         <FavoritesProvider>
           <BasketProvider>
-            <Toaster />
-            <Sonner />
+            <CheckInProvider>
+              <Toaster />
+              <Sonner />
+              <CheckInBanner />
+              <CheckInModal />
             <BrowserRouter basename={import.meta.env.BASE_URL}>
               <Routes>
                 <Route path="/" element={<Index />} />
@@ -62,6 +65,7 @@ const App = () => (
                 <Route path="*" element={<NotFound />} />
               </Routes>
             </BrowserRouter>
+            </CheckInProvider>
           </BasketProvider>
         </FavoritesProvider>
       </AuthProvider>
