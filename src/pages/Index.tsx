@@ -9,7 +9,7 @@ import GameDetailSheet from "@/components/GameDetailSheet";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { mapBackendGameToFrontendWithCategory, groupGamesByBackendCategory } from "@/utils/gameMapper";
+import { mapBackendGameToFrontendWithCategory, groupGamesByBackendCategory, categoryMetadata } from "@/utils/gameMapper";
 import {
   strategyGames,
   familyGames,
@@ -191,20 +191,19 @@ const Index = () => {
     setSheetOpen(true);
   };
 
-  // Get category emoji
-  const getCategoryEmoji = (category: string) => {
-    const emojiMap: Record<string, string> = {
-      "Strategy": "🎯",
-      "Family": "👨‍👩‍👧‍👦",
-      "2-Player": "🎲",
-      "Two Player": "🎲",
-      "Party": "🎉",
-      "Beginner": "🌱",
-      "Cooperative": "🤝",
-      "Coop": "🤝",
-      "Other": "🎮"
+  // Get category display info
+  const getCategoryInfo = (category: string) => {
+    const meta = categoryMetadata[category];
+    if (meta) {
+      return {
+        title: `${meta.emoji} ${meta.title}`,
+        description: meta.description
+      };
+    }
+    return {
+      title: category,
+      description: undefined
     };
-    return emojiMap[category] || "🎮";
   };
 
   const handleSwitchToLender = () => {
@@ -239,12 +238,12 @@ const Index = () => {
         ) : useFallbackData ? (
           // Show fallback carousels with hardcoded data
           <>
-            <GameCarousel title="🎯 Strategy" games={strategyGames} categoryId="strategy" onGameClick={handleGameClick} />
-            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" games={familyGames} categoryId="family" onGameClick={handleGameClick} />
-            <GameCarousel title="🎲 2-Player Hits" games={twoPlayerGames} categoryId="two-player" onGameClick={handleGameClick} />
-            <GameCarousel title="🎉 Party Games" games={partyGames} categoryId="party" onGameClick={handleGameClick} />
-            <GameCarousel title="🌱 Beginner-Friendly" games={beginnerGames} categoryId="beginner" onGameClick={handleGameClick} />
-            <GameCarousel title="🤝 Cooperative Games" games={coopGames} categoryId="coop" onGameClick={handleGameClick} />
+            <GameCarousel title="🎯 Strategy" description="Think ahead and outmaneuver your opponents" games={strategyGames} categoryId="strategy" onGameClick={handleGameClick} />
+            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" description="Fun for all ages, perfect for game nights" games={familyGames} categoryId="family" onGameClick={handleGameClick} />
+            <GameCarousel title="🎲 2-Player Hits" description="Head-to-head competition for two" games={twoPlayerGames} categoryId="two-player" onGameClick={handleGameClick} />
+            <GameCarousel title="🎉 Party Games" description="Laugh and compete with friends" games={partyGames} categoryId="party" onGameClick={handleGameClick} />
+            <GameCarousel title="🌱 Beginner-Friendly" description="Easy to learn, quick to play" games={beginnerGames} categoryId="beginner" onGameClick={handleGameClick} />
+            <GameCarousel title="🤝 Cooperative Games" description="Work together to win" games={coopGames} categoryId="coop" onGameClick={handleGameClick} />
 
             {/* Divider */}
             <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
@@ -255,17 +254,19 @@ const Index = () => {
         ) : (
           // Show carousels from backend data
           <>
-            {Object.entries(gamesByCategory).map(([category, games]) => (
-              games.length > 0 && (
+            {Object.entries(gamesByCategory).map(([category, games]) => {
+              const categoryInfo = getCategoryInfo(category);
+              return games.length > 0 && (
                 <GameCarousel 
                   key={category}
-                  title={`${getCategoryEmoji(category)} ${category}`}
+                  title={categoryInfo.title}
+                  description={categoryInfo.description}
                   games={games}
                   categoryId={category.toLowerCase().replace(/\s+/g, '-')}
                   onGameClick={handleGameClick}
                 />
-              )
-            ))}
+              );
+            })}
             
             {Object.keys(gamesByCategory).length === 0 && (
               <div className="text-center py-20">

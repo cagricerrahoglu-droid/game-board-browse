@@ -167,11 +167,64 @@ export const mapBackendGameToFrontendWithCategory = (backendGame: BackendGame & 
   };
 };
 
+// Category metadata with display names and descriptions
+export const categoryMetadata: Record<string, { title: string; emoji: string; description: string }> = {
+  "Strategy": { 
+    title: "Strategy", 
+    emoji: "🎯", 
+    description: "Think ahead and outmaneuver your opponents" 
+  },
+  "Family": { 
+    title: "Family Favourites", 
+    emoji: "👨‍👩‍👧‍👦", 
+    description: "Fun for all ages, perfect for game nights" 
+  },
+  "2-Player": { 
+    title: "2-Player Hits", 
+    emoji: "🎲", 
+    description: "Head-to-head competition for two" 
+  },
+  "Two Player": { 
+    title: "2-Player Hits", 
+    emoji: "🎲", 
+    description: "Head-to-head competition for two" 
+  },
+  "Party": { 
+    title: "Party Games", 
+    emoji: "🎉", 
+    description: "Laugh and compete with friends" 
+  },
+  "Beginner": { 
+    title: "Beginner-Friendly", 
+    emoji: "🌱", 
+    description: "Easy to learn, quick to play" 
+  },
+  "Cooperative": { 
+    title: "Cooperative Games", 
+    emoji: "🤝", 
+    description: "Work together to win" 
+  },
+  "Coop": { 
+    title: "Cooperative Games", 
+    emoji: "🤝", 
+    description: "Work together to win" 
+  },
+};
+
+// Categories to exclude from display
+const excludedCategories = ["Other", "unknown", "Unknown", ""];
+
 export const groupGamesByBackendCategory = (gamesWithCategories: Array<GameCardProps & { category: string }>): Record<string, GameCardProps[]> => {
   const grouped: Record<string, GameCardProps[]> = {};
   
   gamesWithCategories.forEach(game => {
     const category = game.category || "Other";
+    
+    // Skip excluded categories
+    if (excludedCategories.includes(category)) {
+      return;
+    }
+    
     if (!grouped[category]) {
       grouped[category] = [];
     }
