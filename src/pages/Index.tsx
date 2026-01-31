@@ -267,6 +267,20 @@ const Index = () => {
                 />
               );
             })}
+
+            {/* Divider */}
+            {backendGames.length > 0 && (
+              <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
+            )}
+
+            {/* Vertical List */}
+            {backendGames.length > 0 && (
+              <VerticalGameList 
+                title="✨ All Games" 
+                games={backendGames.slice(0, 10)} 
+                onGameClick={handleGameClick} 
+              />
+            )}
             
             {Object.keys(gamesByCategory).length === 0 && (
               <div className="text-center py-20">
