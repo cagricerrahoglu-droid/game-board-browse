@@ -66,11 +66,14 @@ const Index = () => {
       // Start with all backend games (including duplicates/multiple copies)
       const mergedGames = [...backendMappedGames];
       
-      // Add hardcoded games ONLY if they don't exist in backend at all (mark as unavailable)
+      // Add hardcoded games ONLY if they don't exist in backend at all
+      // Some games will be available, some limited, some unavailable for demo variety
+      const availableHardcodedIds = new Set(['catan', 'ticket-to-ride', 'azul', 'splendor', '7-wonders-duel', 'patchwork', 'codenames', 'wavelength', 'carcassonne', 'love-letter', 'pandemic', 'the-crew']);
+      const limitedHardcodedIds = new Set(['wingspan', 'kingdomino', 'jaipur', 'just-one', 'exploding-kittens', 'spirit-island', 'clue', 'risk']);
+      
       allHardcodedGames.forEach(hardcodedGame => {
         if (!backendGameTitles.has(hardcodedGame.title.toLowerCase().trim())) {
-          // Game not in backend at all, add hardcoded version as unavailable
-          // Infer category for hardcoded game
+          // Game not in backend, add hardcoded version with appropriate availability
           let category = "Other";
           const name = hardcodedGame.title.toLowerCase();
           if (strategyGames.some(g => g.title.toLowerCase() === name)) category = "Strategy";
@@ -80,9 +83,17 @@ const Index = () => {
           else if (coopGames.some(g => g.title.toLowerCase() === name)) category = "Cooperative";
           else if (beginnerGames.some(g => g.title.toLowerCase() === name)) category = "Beginner";
           
+          // Determine availability based on game id
+          let availability: "available" | "limited" | "unavailable" = "unavailable";
+          if (availableHardcodedIds.has(hardcodedGame.id)) {
+            availability = "available";
+          } else if (limitedHardcodedIds.has(hardcodedGame.id)) {
+            availability = "limited";
+          }
+          
           mergedGames.push({
             ...hardcodedGame,
-            availability: "unavailable" as const,
+            availability,
             category
           });
         }
