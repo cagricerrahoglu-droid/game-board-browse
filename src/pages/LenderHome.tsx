@@ -229,7 +229,10 @@ const LenderHome = () => {
                 <LenderGameCard 
                   key={game.id} 
                   game={game}
-                  onEdit={() => navigate(`/lender`)}
+                  onToggleAvailability={() => {}}
+                  onToggleSellAfterRent={() => {}}
+                  onPause={() => navigate(`/lender`)}
+                  onDelete={() => {}}
                 />
               ))}
             </div>

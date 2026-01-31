@@ -70,34 +70,27 @@ const Index = () => {
       allHardcodedGames.forEach(hardcodedGame => {
         if (!backendGameTitles.has(hardcodedGame.title.toLowerCase().trim())) {
           // Game not in backend at all, add hardcoded version as unavailable
+          // Infer category for hardcoded game
+          let category = "Other";
+          const name = hardcodedGame.title.toLowerCase();
+          if (strategyGames.some(g => g.title.toLowerCase() === name)) category = "Strategy";
+          else if (familyGames.some(g => g.title.toLowerCase() === name)) category = "Family";
+          else if (twoPlayerGames.some(g => g.title.toLowerCase() === name)) category = "2-Player";
+          else if (partyGames.some(g => g.title.toLowerCase() === name)) category = "Party";
+          else if (coopGames.some(g => g.title.toLowerCase() === name)) category = "Cooperative";
+          else if (beginnerGames.some(g => g.title.toLowerCase() === name)) category = "Beginner";
+          
           mergedGames.push({
             ...hardcodedGame,
-            availability: "unavailable" as const
+            availability: "unavailable" as const,
+            category
           });
         }
         // If game exists in backend, skip hardcoded version (backend already added above)
       });
       
-      // Group by category - need to infer category for hardcoded games
-      const gamesWithCategories = mergedGames.map(game => {
-        // If it already has a category from backend, use it
-        if ('category' in game) {
-          return game as typeof game & { category: string };
-        }
-        
-        // Infer category from hardcoded arrays
-        let category = "Other";
-        const name = game.title.toLowerCase();
-        
-        if (strategyGames.some(g => g.title.toLowerCase() === name)) category = "Strategy";
-        else if (familyGames.some(g => g.title.toLowerCase() === name)) category = "Family";
-        else if (twoPlayerGames.some(g => g.title.toLowerCase() === name)) category = "2-Player";
-        else if (partyGames.some(g => g.title.toLowerCase() === name)) category = "Party";
-        else if (coopGames.some(g => g.title.toLowerCase() === name)) category = "Cooperative";
-        else if (beginnerGames.some(g => g.title.toLowerCase() === name)) category = "Beginner";
-        
-        return { ...game, category };
-      });
+      // All games should now have categories - just cast them
+      const gamesWithCategories = mergedGames as (GameCardProps & { category: string })[];
       
       const grouped = groupGamesByBackendCategory(gamesWithCategories);
       
