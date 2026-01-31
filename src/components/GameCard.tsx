@@ -74,8 +74,7 @@ const GameCard = ({
           alt={title}
           className={cn(
             "w-full h-full object-cover object-top transition-transform duration-500",
-            "group-hover:scale-105",
-            availability === "unavailable" && "grayscale opacity-40"
+            "group-hover:scale-105"
           )}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
@@ -84,15 +83,6 @@ const GameCard = ({
         />
         {/* Gradient overlay for better badge visibility */}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-black/10 pointer-events-none" />
-        
-        {/* Unavailable Overlay */}
-        {availability === "unavailable" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
-            <div className="bg-card/95 px-3 py-1.5 rounded-full">
-              <span className="text-xs font-bold text-muted-foreground">Not available right now</span>
-            </div>
-          </div>
-        )}
         
         {/* Favorite Button */}
         <div
