@@ -12,19 +12,19 @@ const BillingAddress = () => {
   const navigate = useNavigate();
   
   const [address, setAddress] = useState({
-    street: "123 Main Street",
-    apt: "Apt 4B",
-    city: "New York",
-    state: "NY",
-    zipCode: "10001",
-    country: "United States",
+    street: "42 Baker Street",
+    apt: "Flat 2",
+    city: "London",
+    county: "",
+    postcode: "NW1 6XE",
+    country: "United Kingdom",
   });
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedAddress, setEditedAddress] = useState(address);
 
   const handleSave = () => {
-    if (!editedAddress.street.trim() || !editedAddress.city.trim() || !editedAddress.zipCode.trim()) {
+    if (!editedAddress.street.trim() || !editedAddress.city.trim() || !editedAddress.postcode.trim()) {
       toast.error("Please fill in required fields");
       return;
     }
@@ -90,32 +90,32 @@ const BillingAddress = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="city">City *</Label>
+                    <Label htmlFor="city">City/Town *</Label>
                     <Input
                       id="city"
                       value={editedAddress.city}
                       onChange={(e) => setEditedAddress({ ...editedAddress, city: e.target.value })}
-                      placeholder="New York"
+                      placeholder="London"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="state">State</Label>
+                    <Label htmlFor="county">County</Label>
                     <Input
-                      id="state"
-                      value={editedAddress.state}
-                      onChange={(e) => setEditedAddress({ ...editedAddress, state: e.target.value })}
-                      placeholder="NY"
+                      id="county"
+                      value={editedAddress.county}
+                      onChange={(e) => setEditedAddress({ ...editedAddress, county: e.target.value })}
+                      placeholder="Greater London"
                     />
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="zipCode">ZIP Code *</Label>
+                    <Label htmlFor="postcode">Postcode *</Label>
                     <Input
-                      id="zipCode"
-                      value={editedAddress.zipCode}
-                      onChange={(e) => setEditedAddress({ ...editedAddress, zipCode: e.target.value })}
-                      placeholder="10001"
+                      id="postcode"
+                      value={editedAddress.postcode}
+                      onChange={(e) => setEditedAddress({ ...editedAddress, postcode: e.target.value })}
+                      placeholder="NW1 6XE"
                     />
                   </div>
                   <div className="space-y-2">
@@ -124,7 +124,7 @@ const BillingAddress = () => {
                       id="country"
                       value={editedAddress.country}
                       onChange={(e) => setEditedAddress({ ...editedAddress, country: e.target.value })}
-                      placeholder="United States"
+                      placeholder="United Kingdom"
                     />
                   </div>
                 </div>
@@ -141,7 +141,8 @@ const BillingAddress = () => {
               <div className="space-y-1 text-foreground">
                 <p>{address.street}</p>
                 {address.apt && <p>{address.apt}</p>}
-                <p>{address.city}, {address.state} {address.zipCode}</p>
+                <p>{address.city}{address.county ? `, ${address.county}` : ''}</p>
+                <p>{address.postcode}</p>
                 <p className="text-muted-foreground">{address.country}</p>
               </div>
             )}
