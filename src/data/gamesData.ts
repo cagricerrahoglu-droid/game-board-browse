@@ -255,7 +255,7 @@ export const partyGames: GameCardProps[] = [
   {
     id: "the-chameleon",
     title: "The Chameleon",
-    imageUrl: theChameleonImg,
+    imageUrl: `${S3_BASE_URL}/the-chameleon.jpg`,
     players: "3-8",
     duration: "15",
     difficulty: "Easy",
