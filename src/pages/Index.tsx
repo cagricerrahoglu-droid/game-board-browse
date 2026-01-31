@@ -284,11 +284,19 @@ const Index = () => {
               <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
             )}
 
-            {/* Vertical List */}
+            {/* Vertical List - deduplicated by title */}
             {backendGames.length > 0 && (
               <VerticalGameList 
                 title="✨ All Games" 
-                games={backendGames.slice(0, 10)} 
+                games={(() => {
+                  const seen = new Set<string>();
+                  return backendGames.filter(game => {
+                    const key = game.title.toLowerCase().trim();
+                    if (seen.has(key)) return false;
+                    seen.add(key);
+                    return true;
+                  }).slice(0, 10);
+                })()} 
                 onGameClick={handleGameClick} 
               />
             )}
