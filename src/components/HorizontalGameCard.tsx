@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Users, Clock, Gauge, Star, Check, X, AlertCircle, Heart } from "lucide-react";
+import { Users, Clock, Gauge, Star, Heart } from "lucide-react";
 import { cn, formatDuration } from "@/lib/utils";
 import { GameCardProps } from "./GameCard";
 
@@ -7,12 +7,6 @@ const difficultyConfig = {
   Easy: { color: "text-available", bgColor: "bg-available", bars: 1 },
   Medium: { color: "text-limited", bgColor: "bg-limited", bars: 2 },
   Hard: { color: "text-primary", bgColor: "bg-primary", bars: 3 },
-};
-
-const availabilityConfig = {
-  available: { icon: Check, label: "Available", color: "text-available bg-available/15" },
-  limited: { icon: AlertCircle, label: "Limited", color: "text-limited bg-limited/15" },
-  unavailable: { icon: X, label: "Unavailable", color: "text-unavailable bg-unavailable/15" },
 };
 
 const HorizontalGameCard = ({
@@ -23,14 +17,12 @@ const HorizontalGameCard = ({
   duration,
   difficulty,
   rating,
-  availability,
   monthlyPrice,
   description,
   isFavorite = false,
   onFavoriteToggle,
   onClick,
 }: GameCardProps) => {
-  const StatusIcon = availabilityConfig[availability].icon;
   const [isHovered, setIsHovered] = useState(false);
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
@@ -59,8 +51,7 @@ const HorizontalGameCard = ({
           alt={title}
           className={cn(
             "w-full h-full object-cover transition-transform duration-500",
-            "group-hover:scale-105",
-            availability === "unavailable" && "grayscale opacity-40"
+            "group-hover:scale-105"
           )}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
@@ -68,14 +59,6 @@ const HorizontalGameCard = ({
           }}
         />
         
-        {/* Unavailable Overlay */}
-        {availability === "unavailable" && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px]">
-            <div className="bg-card/95 px-2 py-1 rounded-full">
-              <span className="text-[10px] font-bold text-muted-foreground">Not available</span>
-            </div>
-          </div>
-        )}
         {/* Favorite Button */}
         <div
           onClick={handleFavoriteClick}
@@ -93,16 +76,6 @@ const HorizontalGameCard = ({
               isFavorite ? "fill-primary text-primary" : "text-foreground hover:text-primary"
             )}
           />
-        </div>
-        {/* Availability Badge */}
-        <div
-          className={cn(
-            "absolute top-2 left-2 flex items-center gap-1 px-1.5 py-0.5 rounded-full",
-            "text-[10px] font-bold backdrop-blur-sm",
-            availabilityConfig[availability].color
-          )}
-        >
-          <StatusIcon className="w-3 h-3" />
         </div>
       </div>
 
