@@ -57,80 +57,70 @@ const LenderGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onP
         </div>
 
         {/* Game Info */}
-        <div className="flex-1 min-w-0">
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <h3 className="font-semibold text-foreground truncate">{game.title}</h3>
+        <div className="flex-1 min-w-0 flex flex-col">
+          {/* Row 1: Title + Status */}
+          <div className="flex items-center justify-between gap-2 mb-1.5">
+            <h3 className="font-semibold text-foreground truncate text-sm">{game.title}</h3>
             {getStatusBadge()}
           </div>
 
-          {/* Condition Indicators */}
-          <div className="flex flex-wrap gap-2 mb-3">
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <div className={`w-4 h-4 rounded-full flex items-center justify-center ${game.isComplete ? 'bg-secondary/20' : 'bg-muted'}`}>
-                {game.isComplete && <Check className="h-3 w-3 text-secondary" />}
-              </div>
-              <span>Complete</span>
-            </div>
-            <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <div className={`w-4 h-4 rounded-full flex items-center justify-center ${game.condition === 'excellent' || game.condition === 'good' ? 'bg-secondary/20' : 'bg-muted'}`}>
-                {(game.condition === 'excellent' || game.condition === 'good') && <Check className="h-3 w-3 text-secondary" />}
-              </div>
-              <span className="capitalize">{game.condition}</span>
-            </div>
+          {/* Row 2: Condition chips */}
+          <div className="flex items-center gap-1.5 mb-2">
+            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 capitalize">
+              {game.condition}
+            </Badge>
+            {game.isComplete && (
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 bg-secondary/10 text-secondary border-secondary/30">
+                <Check className="h-2.5 w-2.5 mr-0.5" />
+                Complete
+              </Badge>
+            )}
           </div>
 
-          {/* Price */}
-          <p className="text-sm text-foreground font-medium mb-3">
-            £{game.rentalPrice.toFixed(2)}<span className="text-muted-foreground font-normal">/mo</span>
+          {/* Row 3: Price */}
+          <p className="text-base font-semibold text-foreground mb-2">
+            £{game.rentalPrice.toFixed(2)}
+            <span className="text-xs text-muted-foreground font-normal">/mo</span>
           </p>
 
-          {/* Actions Row */}
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          {/* Row 4: Toggles & Actions */}
+          <div className="flex items-center justify-between mt-auto pt-1 border-t border-border/50">
+            <div className="flex items-center gap-3">
               {/* Listed Toggle */}
-              <div className="flex items-center gap-1.5">
+              <label className="flex items-center gap-1 cursor-pointer">
                 <Switch
                   checked={game.isAvailable}
                   onCheckedChange={(checked) => onToggleAvailability(game.id, checked)}
                   disabled={game.status === 'sold'}
-                  className="scale-90"
+                  className="scale-75"
                 />
-                <span className="text-xs text-muted-foreground">
+                <span className="text-[10px] text-muted-foreground">
                   {game.isAvailable ? 'Listed' : 'Unlisted'}
                 </span>
-              </div>
+              </label>
 
-              {/* Sell After Rent Toggle */}
-              <div className="flex items-center gap-1.5">
+              {/* Sell Toggle */}
+              <label className="flex items-center gap-1 cursor-pointer">
                 <Switch
                   checked={game.sellAfterRent}
                   onCheckedChange={(checked) => onToggleSellAfterRent(game.id, checked)}
                   disabled={game.status === 'sold' || !game.isAvailable}
-                  className="scale-90"
+                  className="scale-75"
                 />
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Tag className="h-3 w-3 text-accent" />
+                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
+                  <Tag className="h-2.5 w-2.5 text-accent" />
                   Sell
-                  <TooltipProvider>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <HelpCircle className="h-3 w-3 text-muted-foreground/60 cursor-help" />
-                      </TooltipTrigger>
-                      <TooltipContent side="top" className="max-w-[200px] text-center">
-                        <p>Enable this to let renters purchase the game after their rental period ends.</p>
-                      </TooltipContent>
-                    </Tooltip>
-                  </TooltipProvider>
                 </span>
-              </div>
+              </label>
             </div>
 
-            <div className="flex gap-1">
-              <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => onPause(game.id)}>
-                <Pause className="h-4 w-4" />
+            {/* Action buttons */}
+            <div className="flex gap-0.5">
+              <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onPause(game.id)}>
+                <Pause className="h-3 w-3" />
               </Button>
-              <Button variant="ghost" size="icon" className="h-8 w-8 text-destructive hover:text-destructive" onClick={() => onDelete(game.id)}>
-                <Trash2 className="h-4 w-4" />
+              <Button variant="ghost" size="icon" className="h-6 w-6 text-destructive hover:text-destructive" onClick={() => onDelete(game.id)}>
+                <Trash2 className="h-3 w-3" />
               </Button>
             </div>
           </div>
