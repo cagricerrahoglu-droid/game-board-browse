@@ -40,8 +40,8 @@ const Header = () => {
 
         <div className="flex items-center gap-3">
           {/* Role Toggle - Right aligned */}
-          {showRoleToggle && <button onClick={handleSwitchRole} className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8">
-              <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">
+          {showRoleToggle && <button onClick={handleSwitchRole} className="relative flex items-center bg-muted rounded-full p-0.5 w-28 h-8">
+              <div className="absolute inset-0 flex items-center justify-between px-3 text-xs font-medium">
                 <span className={selectedRole === "renter" ? "text-primary-foreground z-10" : "text-muted-foreground"}>
                   Renter
                 </span>
