@@ -11,17 +11,18 @@ import { useAuth } from "@/contexts/AuthContext";
 
 // Generic placeholder for games without images
 const DEFAULT_GAME_IMAGE = "https://images.unsplash.com/photo-1606167668584-78701c57f13d?w=400&h=400&fit=crop";
-
 const LenderHome = () => {
   const navigate = useNavigate();
-  const { switchRole } = useAuth();
+  const {
+    switchRole
+  } = useAuth();
   const [games, setGames] = useState<LenderGame[]>([]);
   const [loadingGames, setLoadingGames] = useState(true);
   const [stats, setStats] = useState({
     totalGames: 0,
     activeRentals: 0,
     earningsThisMonth: 0,
-    totalViews: 0,
+    totalViews: 0
   });
 
   // Fetch lender data
@@ -37,7 +38,6 @@ const LenderHome = () => {
 
         // Fetch games
         const gamesResponse = await API.getGamesByOwner(userId);
-        
         let mappedGames: LenderGame[] = [];
         if (Array.isArray(gamesResponse)) {
           mappedGames = gamesResponse.map((dbGame: any) => ({
@@ -51,7 +51,7 @@ const LenderHome = () => {
             status: dbGame.available ? "available" : "paused",
             rentalPrice: dbGame.rental_price ?? 4.99,
             sellAfterRent: dbGame.sell_after_rent ?? false,
-            sellPrice: dbGame.sell_price,
+            sellPrice: dbGame.sell_price
           }));
           setGames(mappedGames);
         }
@@ -59,20 +59,16 @@ const LenderHome = () => {
         // Fetch rentals for stats
         try {
           const rentalsResponse = await API.getRentalsByLender(userId);
-          
           let activeRentals = 0;
           let earningsThisMonth = 0;
-
           const currentDate = new Date();
           const currentMonth = currentDate.getMonth();
           const currentYear = currentDate.getFullYear();
-
           if (Array.isArray(rentalsResponse)) {
             rentalsResponse.forEach((rental: any) => {
               if (rental.status === 'active') {
                 activeRentals++;
               }
-
               if (rental.created_at) {
                 const rentalDate = new Date(rental.created_at);
                 if (rentalDate.getMonth() === currentMonth && rentalDate.getFullYear() === currentYear) {
@@ -81,18 +77,17 @@ const LenderHome = () => {
               }
             });
           }
-
           setStats({
             totalGames: mappedGames.length,
             activeRentals,
             earningsThisMonth,
-            totalViews: Math.floor(Math.random() * 500) + 100, // Mock data for now
+            totalViews: Math.floor(Math.random() * 500) + 100 // Mock data for now
           });
         } catch (rentalError) {
           console.error('Failed to fetch rentals:', rentalError);
           setStats(prev => ({
             ...prev,
-            totalGames: mappedGames.length,
+            totalGames: mappedGames.length
           }));
         }
       } catch (error) {
@@ -101,17 +96,13 @@ const LenderHome = () => {
         setLoadingGames(false);
       }
     };
-
     fetchData();
   }, []);
-
   const handleSwitchToRenter = () => {
     switchRole("renter");
     navigate("/");
   };
-
-  return (
-    <div className="min-h-screen bg-background pb-20">
+  return <div className="min-h-screen bg-background pb-20">
       <Header />
 
       {/* Main Content */}
@@ -173,18 +164,11 @@ const LenderHome = () => {
             <CardTitle className="text-lg">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
-            <Button 
-              className="w-full justify-start gap-2" 
-              onClick={() => navigate("/add-game")}
-            >
+            <Button className="w-full justify-start gap-2" onClick={() => navigate("/add-game")}>
               <Plus className="w-4 h-4" />
               Add New Game
             </Button>
-            <Button 
-              variant="outline" 
-              className="w-full justify-start gap-2"
-              onClick={() => navigate("/lender")}
-            >
+            <Button variant="outline" className="w-full justify-start gap-2" onClick={() => navigate("/lender")}>
               <Package className="w-4 h-4" />
               Manage Listings
             </Button>
@@ -195,23 +179,14 @@ const LenderHome = () => {
         <div>
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-xl font-bold">Your Listings</h2>
-            {games.length > 0 && (
-              <Button 
-                variant="ghost" 
-                size="sm"
-                onClick={() => navigate("/lender")}
-              >
+            {games.length > 0 && <Button variant="ghost" size="sm" onClick={() => navigate("/lender")}>
                 View All
-              </Button>
-            )}
+              </Button>}
           </div>
 
-          {loadingGames ? (
-            <div className="text-center py-8 text-muted-foreground">
+          {loadingGames ? <div className="text-center py-8 text-muted-foreground">
               Loading your games...
-            </div>
-          ) : games.length === 0 ? (
-            <Card>
+            </div> : games.length === 0 ? <Card>
               <CardContent className="py-8 text-center">
                 <Package className="w-12 h-12 mx-auto mb-3 text-muted-foreground" />
                 <p className="text-muted-foreground mb-4">
@@ -222,26 +197,13 @@ const LenderHome = () => {
                   Add Your First Game
                 </Button>
               </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-3">
-              {games.slice(0, 3).map((game) => (
-                <LenderGameCard 
-                  key={game.id} 
-                  game={game}
-                  onToggleAvailability={() => {}}
-                  onToggleSellAfterRent={() => {}}
-                  onPause={() => navigate(`/lender`)}
-                  onDelete={() => {}}
-                />
-              ))}
-            </div>
-          )}
+            </Card> : <div className="space-y-3">
+              {games.slice(0, 3).map(game => <LenderGameCard key={game.id} game={game} onToggleAvailability={() => {}} onToggleSellAfterRent={() => {}} onPause={() => navigate(`/lender`)} onDelete={() => {}} />)}
+            </div>}
         </div>
 
         {/* Tips Section */}
-        {games.length > 0 && (
-          <Card className="bg-primary/5 border-primary/20">
+        {games.length > 0 && <Card className="bg-primary/5 border-primary/20">
             <CardHeader>
               <CardTitle className="text-lg flex items-center gap-2">
                 <TrendingUp className="w-5 h-5" />
@@ -250,19 +212,16 @@ const LenderHome = () => {
             </CardHeader>
             <CardContent>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>• Add clear photos of your games</li>
+                
                 <li>• Keep your availability calendar updated</li>
                 <li>• Respond quickly to rental requests</li>
                 <li>• Offer competitive pricing</li>
               </ul>
             </CardContent>
-          </Card>
-        )}
+          </Card>}
       </main>
 
       <BottomNav />
-    </div>
-  );
+    </div>;
 };
-
 export default LenderHome;
