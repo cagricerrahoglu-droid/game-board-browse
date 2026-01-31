@@ -44,58 +44,57 @@ const LenderGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onP
   };
 
   return (
-    <div className="bg-card rounded-2xl p-4 shadow-[var(--card-shadow)] border border-border/50 transition-all hover:shadow-[var(--card-shadow-hover)]">
-      <div className="flex gap-4">
+    <div className="bg-card rounded-2xl p-3 shadow-[var(--card-shadow)] border border-border/50 transition-all hover:shadow-[var(--card-shadow-hover)]">
+      <div className="flex gap-3">
         {/* Game Image */}
-        <div className="relative w-20 h-28 rounded-xl overflow-hidden flex-shrink-0">
+        <div className="relative w-16 h-20 rounded-lg overflow-hidden flex-shrink-0">
           <img src={game.image} alt={game.title} className="w-full h-full object-cover" />
           {game.sellAfterRent && (
-            <div className="absolute top-1 right-1 bg-accent text-accent-foreground p-1 rounded-full">
-              <Tag className="h-3 w-3" />
+            <div className="absolute top-1 right-1 bg-accent text-accent-foreground p-0.5 rounded-full">
+              <Tag className="h-2.5 w-2.5" />
             </div>
           )}
         </div>
 
         {/* Game Info */}
-        <div className="flex-1 min-w-0 flex flex-col">
-          {/* Row 1: Title + Status */}
-          <div className="flex items-center justify-between gap-2 mb-1.5">
-            <h3 className="font-semibold text-foreground truncate text-sm">{game.title}</h3>
-            {getStatusBadge()}
-          </div>
-
-          {/* Row 2: Condition chips */}
-          <div className="flex items-center gap-1.5 mb-2">
-            <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 capitalize">
-              {game.condition}
-            </Badge>
-            {game.isComplete && (
-              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-5 bg-secondary/10 text-secondary border-secondary/30">
-                <Check className="h-2.5 w-2.5 mr-0.5" />
-                Complete
+        <div className="flex-1 min-w-0 flex flex-col justify-between">
+          {/* Top: Title + Price */}
+          <div>
+            <div className="flex items-start justify-between gap-2">
+              <h3 className="font-semibold text-foreground truncate text-sm leading-tight">{game.title}</h3>
+              <span className="text-sm font-bold text-primary whitespace-nowrap">
+                £{game.rentalPrice.toFixed(2)}
+              </span>
+            </div>
+            
+            {/* Status + Condition row */}
+            <div className="flex items-center gap-1.5 mt-1">
+              {getStatusBadge()}
+              <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 capitalize font-normal">
+                {game.condition}
               </Badge>
-            )}
+              {game.isComplete && (
+                <Badge variant="outline" className="text-[10px] px-1.5 py-0 h-4 bg-secondary/10 text-secondary border-secondary/30 font-normal">
+                  <Check className="h-2 w-2 mr-0.5" />
+                  Complete
+                </Badge>
+              )}
+            </div>
           </div>
 
-          {/* Row 3: Price */}
-          <p className="text-base font-semibold text-foreground mb-2">
-            £{game.rentalPrice.toFixed(2)}
-            <span className="text-xs text-muted-foreground font-normal">/mo</span>
-          </p>
-
-          {/* Row 4: Toggles & Actions */}
-          <div className="flex items-center justify-between mt-auto pt-1 border-t border-border/50">
-            <div className="flex items-center gap-3">
+          {/* Bottom: Toggles & Actions */}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-2">
               {/* Listed Toggle */}
               <label className="flex items-center gap-1 cursor-pointer">
                 <Switch
                   checked={game.isAvailable}
                   onCheckedChange={(checked) => onToggleAvailability(game.id, checked)}
                   disabled={game.status === 'sold'}
-                  className="scale-75"
+                  className="scale-[0.65] origin-left"
                 />
-                <span className="text-[10px] text-muted-foreground">
-                  {game.isAvailable ? 'Listed' : 'Unlisted'}
+                <span className="text-[10px] text-muted-foreground -ml-1">
+                  {game.isAvailable ? 'Listed' : 'Off'}
                 </span>
               </label>
 
@@ -105,17 +104,14 @@ const LenderGameCard = ({ game, onToggleAvailability, onToggleSellAfterRent, onP
                   checked={game.sellAfterRent}
                   onCheckedChange={(checked) => onToggleSellAfterRent(game.id, checked)}
                   disabled={game.status === 'sold' || !game.isAvailable}
-                  className="scale-75"
+                  className="scale-[0.65] origin-left"
                 />
-                <span className="text-[10px] text-muted-foreground flex items-center gap-0.5">
-                  <Tag className="h-2.5 w-2.5 text-accent" />
-                  Sell
-                </span>
+                <span className="text-[10px] text-muted-foreground -ml-1">Sell</span>
               </label>
             </div>
 
             {/* Action buttons */}
-            <div className="flex gap-0.5">
+            <div className="flex">
               <Button variant="ghost" size="icon" className="h-6 w-6" onClick={() => onPause(game.id)}>
                 <Pause className="h-3 w-3" />
               </Button>
