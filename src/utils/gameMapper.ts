@@ -217,6 +217,9 @@ const excludedCategories = ["Other", "unknown", "Unknown", ""];
 export const groupGamesByBackendCategory = (gamesWithCategories: Array<GameCardProps & { category: string }>): Record<string, GameCardProps[]> => {
   const grouped: Record<string, GameCardProps[]> = {};
   
+  // Track seen game IDs to prevent duplicates within each category
+  const seenByCategory: Record<string, Set<string>> = {};
+  
   gamesWithCategories.forEach(game => {
     const category = game.category || "Other";
     
@@ -227,7 +230,16 @@ export const groupGamesByBackendCategory = (gamesWithCategories: Array<GameCardP
     
     if (!grouped[category]) {
       grouped[category] = [];
+      seenByCategory[category] = new Set();
     }
+    
+    // Skip if we've already added a game with this ID or title in this category
+    const gameKey = game.id || game.title.toLowerCase().trim();
+    if (seenByCategory[category].has(gameKey)) {
+      return;
+    }
+    
+    seenByCategory[category].add(gameKey);
     grouped[category].push(game);
   });
   
