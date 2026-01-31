@@ -301,7 +301,10 @@ const LenderProfile = () => {
                     <p className="text-sm text-muted-foreground">Manage your games and earnings</p>
                   </div>
                   <button
-                    onClick={() => navigate('/profile')}
+                    onClick={() => {
+                      switchRole("renter");
+                      navigate('/profile');
+                    }}
                     className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8"
                   >
                     <div className="absolute inset-0 flex items-center justify-between px-4 text-xs font-medium">

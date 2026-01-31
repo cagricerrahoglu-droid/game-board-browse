@@ -366,7 +366,11 @@ const Profile = () => {
               </div>
               <button
                 onClick={() => {
-                  switchRole(selectedRole === "renter" ? "lender" : "renter");
+                  const newRole = selectedRole === "renter" ? "lender" : "renter";
+                  switchRole(newRole);
+                  if (newRole === "lender") {
+                    navigate("/lender");
+                  }
                 }}
                 className="relative flex items-center bg-muted rounded-full p-0.5 w-36 h-8"
               >
