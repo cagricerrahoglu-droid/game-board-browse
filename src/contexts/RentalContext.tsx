@@ -2,6 +2,7 @@ import { createContext, useContext, useState, useCallback, ReactNode } from "rea
 import { ActiveRental, RentalState } from "@/types/rental";
 import { mockRentals as initialMockRentals } from "@/data/mockRentals";
 import { useToast } from "@/hooks/use-toast";
+import RentalDecisionDialog from "@/components/RentalDecisionDialog";
 
 interface RentalContextType {
   rentals: ActiveRental[];
@@ -13,6 +14,8 @@ const RentalContext = createContext<RentalContextType | undefined>(undefined);
 
 export function RentalProvider({ children }: { children: ReactNode }) {
   const [rentals, setRentals] = useState<ActiveRental[]>(initialMockRentals);
+  const [decisionRental, setDecisionRental] = useState<ActiveRental | null>(null);
+  const [isDecisionDialogOpen, setIsDecisionDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const updateRentalState = useCallback((
@@ -33,10 +36,46 @@ export function RentalProvider({ children }: { children: ReactNode }) {
     ));
   }, []);
 
+  const handleDecision = useCallback((rental: ActiveRental, decision: "extend" | "return" | "purchase") => {
+    switch (decision) {
+      case "extend":
+        updateRentalState(rental.id, "extension_pending", {
+          phase: "play",
+          requiresAction: false,
+        });
+        toast({
+          title: "Extension requested! 📅",
+          description: `Waiting for ${rental.counterparty.name} to approve your extension for "${rental.gameTitle}"`,
+        });
+        break;
+
+      case "return":
+        updateRentalState(rental.id, "return_pending", {
+          phase: "return",
+          requiresAction: true,
+        });
+        toast({
+          title: "Return initiated 📦",
+          description: `Please ship "${rental.gameTitle}" back to ${rental.counterparty.name}`,
+        });
+        break;
+
+      case "purchase":
+        updateRentalState(rental.id, "purchase_pending", {
+          phase: "play",
+          requiresAction: false,
+        });
+        toast({
+          title: "Purchase requested! 🎉",
+          description: `Processing your purchase of "${rental.gameTitle}"`,
+        });
+        break;
+    }
+  }, [updateRentalState, toast]);
+
   const handleRentalAction = useCallback((rental: ActiveRental, action: string) => {
     switch (action) {
       case "confirm_receipt":
-        // Transition from awaiting_receipt_confirmation to active_play
         updateRentalState(rental.id, "active_play", {
           phase: "play",
           requiresAction: false,
@@ -48,11 +87,8 @@ export function RentalProvider({ children }: { children: ReactNode }) {
         break;
 
       case "make_decision":
-        // For demo, show options toast
-        toast({
-          title: "Decision time",
-          description: `Choose to extend, return, or purchase "${rental.gameTitle}"`,
-        });
+        setDecisionRental(rental);
+        setIsDecisionDialogOpen(true);
         break;
 
       case "review_request":
@@ -127,6 +163,12 @@ export function RentalProvider({ children }: { children: ReactNode }) {
   return (
     <RentalContext.Provider value={{ rentals, updateRentalState, handleRentalAction }}>
       {children}
+      <RentalDecisionDialog
+        rental={decisionRental}
+        open={isDecisionDialogOpen}
+        onOpenChange={setIsDecisionDialogOpen}
+        onDecision={handleDecision}
+      />
     </RentalContext.Provider>
   );
 }
