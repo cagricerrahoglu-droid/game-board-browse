@@ -9,24 +9,16 @@ import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { mapBackendGameToFrontend } from "@/utils/gameMapper";
-import {
-  strategyGames,
-  familyGames,
-  twoPlayerGames,
-  partyGames,
-  beginnerGames,
-  coopGames,
-} from "@/data/gamesData";
+import { useGameSheet } from "@/hooks/useGameSheet";
 
 const Browse = () => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
-  const [sheetOpen, setSheetOpen] = useState(false);
   const [allGames, setAllGames] = useState<GameCardProps[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { toggleFavorite, isFavorite } = useFavorites();
   const { isLoggedIn } = useAuth();
+  const { selectedGame, sheetOpen, handleGameClick, setSheetOpen } = useGameSheet();
 
   // Load games from database
   useEffect(() => {
@@ -71,11 +63,6 @@ const Browse = () => {
       game.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
   }, [searchQuery, allGames]);
-
-  const handleGameClick = (game: GameCardProps) => {
-    setSelectedGame(game);
-    setSheetOpen(true);
-  };
 
   return (
     <div className="min-h-screen bg-background pb-24">
