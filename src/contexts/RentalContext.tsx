@@ -3,6 +3,7 @@ import { ActiveRental, RentalState } from "@/types/rental";
 import { mockRentals as initialMockRentals } from "@/data/mockRentals";
 import { useToast } from "@/hooks/use-toast";
 import RentalDecisionDialog from "@/components/RentalDecisionDialog";
+import ReturnInstructionsDialog from "@/components/ReturnInstructionsDialog";
 
 interface RentalContextType {
   rentals: ActiveRental[];
@@ -16,6 +17,8 @@ export function RentalProvider({ children }: { children: ReactNode }) {
   const [rentals, setRentals] = useState<ActiveRental[]>(initialMockRentals);
   const [decisionRental, setDecisionRental] = useState<ActiveRental | null>(null);
   const [isDecisionDialogOpen, setIsDecisionDialogOpen] = useState(false);
+  const [returnRental, setReturnRental] = useState<ActiveRental | null>(null);
+  const [isReturnDialogOpen, setIsReturnDialogOpen] = useState(false);
   const { toast } = useToast();
 
   const updateRentalState = useCallback((
@@ -139,10 +142,8 @@ export function RentalProvider({ children }: { children: ReactNode }) {
         break;
 
       case "view_return":
-        toast({
-          title: "Return instructions",
-          description: `View how to return "${rental.gameTitle}" to ${rental.counterparty.name}`,
-        });
+        setReturnRental(rental);
+        setIsReturnDialogOpen(true);
         break;
 
       case "rate_renter":
@@ -160,6 +161,19 @@ export function RentalProvider({ children }: { children: ReactNode }) {
     }
   }, [updateRentalState, toast]);
 
+  const handleReturnShipped = useCallback(() => {
+    if (!returnRental) return;
+    updateRentalState(returnRental.id, "in_transit_to_lender", {
+      phase: "return",
+      requiresAction: false,
+    });
+    setIsReturnDialogOpen(false);
+    toast({
+      title: "Marked as shipped! 📦",
+      description: `"${returnRental.gameTitle}" is on its way back to ${returnRental.counterparty.name}`,
+    });
+  }, [returnRental, updateRentalState, toast]);
+
   return (
     <RentalContext.Provider value={{ rentals, updateRentalState, handleRentalAction }}>
       {children}
@@ -168,6 +182,12 @@ export function RentalProvider({ children }: { children: ReactNode }) {
         open={isDecisionDialogOpen}
         onOpenChange={setIsDecisionDialogOpen}
         onDecision={handleDecision}
+      />
+      <ReturnInstructionsDialog
+        rental={returnRental}
+        open={isReturnDialogOpen}
+        onOpenChange={setIsReturnDialogOpen}
+        onMarkShipped={handleReturnShipped}
       />
     </RentalContext.Provider>
   );
