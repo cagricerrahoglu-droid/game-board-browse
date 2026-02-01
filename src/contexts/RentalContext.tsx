@@ -1,3 +1,4 @@
+// Rental context provider - manages rental state and actions
 import { createContext, useContext, useState, useCallback, ReactNode } from "react";
 import { ActiveRental, RentalState } from "@/types/rental";
 import { mockRentals as initialMockRentals } from "@/data/mockRentals";
