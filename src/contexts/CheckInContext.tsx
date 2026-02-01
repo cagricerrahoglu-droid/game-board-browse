@@ -33,10 +33,7 @@ interface CheckInContextType {
 const CheckInContext = createContext<CheckInContextType | undefined>(undefined);
 
 export const CheckInProvider = ({ children }: { children: ReactNode }) => {
-  const [pendingCheckIns, setPendingCheckIns] = useState<PendingCheckIn[]>([
-    // Demo: one pending check-in for Catan
-    { rentalId: 1, gameName: "Catan", arrivedAt: new Date().toISOString() },
-  ]);
+  const [pendingCheckIns, setPendingCheckIns] = useState<PendingCheckIn[]>([]);
   const [completedCheckIns, setCompletedCheckIns] = useState<CheckInData[]>(() => {
     const stored = localStorage.getItem("completed_check_ins");
     return stored ? JSON.parse(stored) : [
