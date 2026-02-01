@@ -198,15 +198,14 @@ export const lenderCTAs: Partial<Record<RentalState, CTAConfig>> = {
     label: "Review extension",
     action: "review_extension",
   },
+  in_transit_to_lender: {
+    label: "Confirm received",
+    action: "confirm_return_received",
+  },
   completed: {
     label: "Rate renter",
     action: "rate_renter",
     variant: "secondary",
-  },
-  in_transit_to_lender: {
-    label: "Track return",
-    action: "track_return",
-    variant: "outline",
   },
 };
 
