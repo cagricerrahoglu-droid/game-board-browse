@@ -8,6 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import { BasketProvider } from "@/contexts/BasketContext";
 import { CheckInProvider } from "@/contexts/CheckInContext";
 import { RenterRatingProvider } from "@/contexts/RenterRatingContext";
+import { RentalProvider } from "@/contexts/RentalContext";
 import CheckInBanner from "@/components/CheckInBanner";
 import CheckInModal from "@/components/CheckInModal";
 import Index from "./pages/Index";
@@ -40,7 +41,8 @@ const App = () => (
             <BrowserRouter basename={import.meta.env.BASE_URL}>
               <CheckInProvider>
                 <RenterRatingProvider>
-                  <Toaster />
+                  <RentalProvider>
+                    <Toaster />
                   <Sonner />
                   <CheckInBanner />
                   <CheckInModal />
@@ -64,7 +66,8 @@ const App = () => (
                     <Route path="/availability-preferences" element={<AvailabilityPreferences />} />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
-                  </Routes>
+                    </Routes>
+                  </RentalProvider>
                 </RenterRatingProvider>
               </CheckInProvider>
             </BrowserRouter>

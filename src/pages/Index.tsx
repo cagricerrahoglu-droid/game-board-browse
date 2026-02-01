@@ -10,9 +10,7 @@ import GameDetailSheet from "@/components/GameDetailSheet";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
-import { mockRentals } from "@/data/mockRentals";
-import { ActiveRental } from "@/types/rental";
-import { useToast } from "@/hooks/use-toast";
+import { useRentals } from "@/contexts/RentalContext";
 import { mapBackendGameToFrontendWithCategory, groupGamesByBackendCategory, categoryMetadata } from "@/utils/gameMapper";
 import {
   strategyGames,
@@ -27,7 +25,7 @@ import {
 const Index = () => {
   const navigate = useNavigate();
   const { switchRole, isLoggedIn } = useAuth();
-  const { toast } = useToast();
+  const { rentals, handleRentalAction } = useRentals();
   const [filters, setFilters] = useState<FilterState>({
     players: null,
     age: null,
@@ -222,25 +220,6 @@ const Index = () => {
     };
   };
 
-  // Handle rental actions
-  const handleRentalAction = (rental: ActiveRental, action: string) => {
-    // Demo action handling - in production this would connect to backend
-    toast({
-      title: `Action: ${action}`,
-      description: `Processing "${action}" for ${rental.gameTitle}`,
-    });
-    
-    // Example navigation for specific actions
-    if (action === "contact_support") {
-      navigate("/contact-support");
-    } else if (action === "view_details") {
-      // Could open a rental detail sheet
-      toast({
-        title: rental.gameTitle,
-        description: `${rental.role === "renter" ? "Renting from" : "Lending to"} ${rental.counterparty.name}`,
-      });
-    }
-  };
 
   const handleSwitchToLender = () => {
     switchRole("lender");
@@ -255,7 +234,7 @@ const Index = () => {
       {/* Active Rental Tray - only shows when rentals exist */}
       {isLoggedIn && (
         <ActiveRentalTray 
-          rentals={mockRentals} 
+          rentals={rentals} 
           onRentalAction={handleRentalAction}
         />
       )}
