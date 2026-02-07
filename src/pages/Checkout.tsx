@@ -76,8 +76,18 @@ const Checkout = () => {
         
         // Create rental records for each game in the basket
         for (const item of items) {
-          // First, get the game details to find the lender_id
-          const gameDetails = await API.getGame(item.id);
+          // Get the catalog game ID from the item
+          const catalogGameId = item.catalogGameId || item.id;
+          
+          // Find an available game listing that matches this catalog game
+          const availabilityCheck = await API.checkGameAvailability(catalogGameId);
+          
+          if (!availabilityCheck.available || availabilityCheck.games.length === 0) {
+            throw new Error(`${item.title || item.name} is no longer available`);
+          }
+          
+          // Use the first available game
+          const availableGame = availabilityCheck.games[0];
           
           const durationMonths = item.rentalDurationMonths || 1;
           const startDate = new Date();
@@ -86,8 +96,8 @@ const Checkout = () => {
 
           const rentalData = {
             renter_id: user.id,
-            lender_id: gameDetails.owner_id,
-            game_id: item.id,
+            lender_id: availableGame.owner_id,
+            game_id: availableGame.game_id,
             start_date: startDate.toISOString().split('T')[0],
             end_date: endDate.toISOString().split('T')[0],
             deposit_amount: item.monthlyPrice * durationMonths, // Store the rental amount as deposit
