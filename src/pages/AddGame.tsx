@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Check, Search, X } from "lucide-react";
@@ -11,30 +11,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
 import { API } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
-import {
-  strategyGames,
-  familyGames,
-  twoPlayerGames,
-  partyGames,
-  beginnerGames,
-  coopGames,
-  classicGames,
-} from "@/data/gamesData";
 import { GameCardProps } from "@/components/GameCard";
-
-// Combine all games into a single searchable list
-const allGames: GameCardProps[] = [
-  ...strategyGames,
-  ...familyGames,
-  ...twoPlayerGames,
-  ...partyGames,
-  ...beginnerGames,
-  ...coopGames,
-  ...classicGames,
-].filter((game, index, self) => 
-  // Remove duplicates by id
-  index === self.findIndex((g) => g.id === game.id)
-);
 
 // Price multipliers based on condition
 const conditionMultipliers = {
@@ -60,6 +37,38 @@ const AddGame = () => {
   
   // Loading state
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [allGames, setAllGames] = useState<GameCardProps[]>([]);
+  const [isLoadingGames, setIsLoadingGames] = useState(false);
+
+  // Fetch catalog games on mount
+  useEffect(() => {
+    const fetchCatalogGames = async () => {
+      try {
+        setIsLoadingGames(true);
+        const catalogGames = await API.listCatalogGames();
+        const mapped = catalogGames.map((game: any) => ({
+          id: game.catalog_game_id,
+          catalogGameId: game.catalog_game_id,
+          title: game.name,
+          description: game.description,
+          imageUrl: game.image_url || '/placeholder.svg',
+          monthlyPrice: game.min_retail_price_gbp || 0,
+          rating: game.avg_rating || 0,
+          players: `${game.min_players || 1}-${game.max_players || 4}`,
+          duration: game.play_time_minutes ? `${game.play_time_minutes}` : '60',
+          difficulty: 'Medium' as const,
+          availability: 'available' as const,
+        }));
+        setAllGames(mapped);
+      } catch (error) {
+        console.error('Failed to load catalog games:', error);
+        toast.error('Failed to load game catalog');
+      } finally {
+        setIsLoadingGames(false);
+      }
+    };
+    fetchCatalogGames();
+  }, []);
 
   // Filter games based on search query
   const filteredGames = useMemo(() => {
@@ -122,16 +131,16 @@ const AddGame = () => {
     setIsSubmitting(true);
     try {
       const gameData = {
-        name: selectedGame.title,
-        description: selectedGame.description || `${selectedGame.title} - ${selectedGame.players} players, ${selectedGame.duration} min`,
-        image_url: selectedGame.imageUrl,
-        price: calculatedRentalPrice,
-        condition: condition,
+        catalog_game_id: selectedGame.catalogGameId || selectedGame.id,
+        owner_id: user.id,
+        rental_price: calculatedRentalPrice,
+        condition: condition.charAt(0).toUpperCase() + condition.slice(1), // Capitalize: Excellent, Good, Fair
         is_complete: isComplete,
         has_manual: hasManual,
-        for_sale: sellAfterRent,
-        sale_price: sellAfterRent ? calculatedSellPrice : null,
-        owner_id: user.id
+        sell_after_rent: sellAfterRent,
+        sell_price: sellAfterRent ? calculatedSellPrice : null,
+        available: true,
+        notes: `Added via frontend - ${condition} condition`
       };
 
       const response = await API.createGame(gameData);

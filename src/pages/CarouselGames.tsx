@@ -1,43 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
-import {
-  strategyGames,
-  familyGames,
-  twoPlayerGames,
-  partyGames,
-  beginnerGames,
-  coopGames,
-} from "@/data/gamesData";
+import { API } from "@/services/api";
 import VerticalGameList from "@/components/VerticalGameList";
 import GameDetailSheet from "@/components/GameDetailSheet";
 import { GameCardProps } from "@/components/GameCard";
 
-const carouselCategories: Record<string, { title: string; games: GameCardProps[] }> = {
-  "strategy": {
-    title: "🎯 Strategy",
-    games: strategyGames
-  },
-  "family": {
-    title: "👨‍👩‍👧‍👦 Family Favourites",
-    games: familyGames
-  },
-  "two-player": {
-    title: "🎲 2-Player Hits",
-    games: twoPlayerGames
-  },
-  "party": {
-    title: "🎉 Party Games",
-    games: partyGames
-  },
-  "beginner": {
-    title: "🌱 Beginner-Friendly",
-    games: beginnerGames
-  },
-  "coop": {
-    title: "🤝 Cooperative Games",
-    games: coopGames
-  }
+const categoryTitles: Record<string, string> = {
+  "Strategy": "🎯 Strategy",
+  "Family": "👨‍👩‍👧‍👦 Family Favourites",
+  "2-Player": "🎲 2-Player Hits",
+  "Party": "🎉 Party Games",
+  "Beginner": "🌱 Beginner-Friendly",
+  "Cooperative": "🤝 Cooperative Games",
+  "Classic": "🎮 Classic Games",
+  "Recommended": "⭐ Recommended",
 };
 
 const CarouselGames = () => {
@@ -45,8 +22,45 @@ const CarouselGames = () => {
   const navigate = useNavigate();
   const [selectedGame, setSelectedGame] = useState<GameCardProps | null>(null);
   const [sheetOpen, setSheetOpen] = useState(false);
+  const [games, setGames] = useState<GameCardProps[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const category = categoryId ? carouselCategories[categoryId] : null;
+  useEffect(() => {
+    if (!categoryId) return;
+
+    const fetchCategoryGames = async () => {
+      try {
+        setIsLoading(true);
+        const catalogGames = await API.listCatalogGamesByCategory(categoryId);
+        
+        // Map to frontend format
+        const mappedGames: GameCardProps[] = catalogGames.map((game) => ({
+          id: game.catalog_game_id,
+          catalogGameId: game.catalog_game_id,
+          name: game.name,
+          imageUrl: game.image_url || "/placeholder.svg",
+          minPlayers: game.min_players || 1,
+          maxPlayers: game.max_players || 4,
+          playTime: game.play_time_minutes,
+          difficulty: game.complexity || 2.5,
+          description: game.description || "",
+          categories: game.categories || [],
+          yearPublished: game.year_published,
+        }));
+        
+        setGames(mappedGames);
+      } catch (error) {
+        console.error("Failed to fetch category games:", error);
+        setGames([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchCategoryGames();
+  }, [categoryId]);
+
+  const title = categoryId ? categoryTitles[categoryId] || categoryId : "Games";
 
   const handleGameClick = (game: GameCardProps) => {
     setSelectedGame(game);
@@ -80,7 +94,13 @@ const CarouselGames = () => {
 
       {/* Games List */}
       <div className="pt-5">
-        <VerticalGameList title="" games={category.games} onGameClick={handleGameClick} />
+        {isLoading ? (
+          <div className="flex items-center justify-center py-12">
+            <p className="text-muted-foreground">Loading games...</p>
+          </div>
+        ) : (
+          <VerticalGameList title="" games={games} onGameClick={handleGameClick} />
+        )}
       </div>
 
       {/* Game Detail Sheet */}

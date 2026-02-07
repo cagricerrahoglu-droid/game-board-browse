@@ -23,17 +23,17 @@ const DEFAULT_GAME_IMAGE = "https://images.unsplash.com/photo-1606167668584-7870
 
 const LenderProfile = () => {
   const navigate = useNavigate();
-  const { switchRole } = useAuth();
+  const { switchRole, user: authUser } = useAuth();
   const [showOnboarding, setShowOnboarding] = useState(() => {
     return !localStorage.getItem("lender_onboarding_completed");
   });
   const [mode, setMode] = useState<"renter" | "lender">("lender");
 
-  // User data
+  // User data from AuthContext
   const user = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: pawnToken,
+    name: authUser?.name || authUser?.email?.split('@')[0] || "User",
+    email: authUser?.email || "",
+    avatar: authUser?.avatar || pawnToken,
   };
 
   // Stats data - calculated from database

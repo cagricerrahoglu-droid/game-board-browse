@@ -1,10 +1,10 @@
 import { ActiveRental } from "@/types/rental";
 
-// Import game images
-import catanImage from "@/assets/games/splendor.jpg";
-import ticketToRideImage from "@/assets/games/pandemic.jpg";
-import azulImage from "@/assets/games/7-wonders-duel.jpg";
-import wingspanImage from "@/assets/games/kingdomino.jpg";
+// Use placeholder or S3 URLs for game images
+const catanImage = "https://switchboard-dev-game-images.s3.eu-west-1.amazonaws.com/splendor.jpg";
+const ticketToRideImage = "https://switchboard-dev-game-images.s3.eu-west-1.amazonaws.com/pandemic-original.jpg";
+const azulImage = "https://switchboard-dev-game-images.s3.eu-west-1.amazonaws.com/7-wonders-duel.jpg";
+const wingspanImage = "https://switchboard-dev-game-images.s3.eu-west-1.amazonaws.com/kingdomino.jpg";
 
 // Mock counterparty avatars
 import adventurerAvatar from "@/assets/avatars/adventurer.png";
@@ -16,7 +16,16 @@ const now = new Date();
 const addDays = (days: number) => new Date(now.getTime() + days * 24 * 60 * 60 * 1000);
 const addHours = (hours: number) => new Date(now.getTime() + hours * 60 * 60 * 1000);
 
-// Mock rentals for demonstration
+/**
+ * Mock rentals - FALLBACK ONLY
+ * 
+ * These are now only used as fallback data when the backend is unavailable.
+ * In normal operation, rentals are fetched from the API using:
+ * - API.getRentalsByRenter(userId)
+ * - API.getRentalsByLender(userId)
+ * 
+ * See RentalContext.tsx for the live implementation.
+ */
 export const mockRentals: ActiveRental[] = [
   // Renter rentals
   {

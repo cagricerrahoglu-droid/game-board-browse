@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { API } from "@/services/api";
 
 interface RenterRatingData {
   averageRating: number;
@@ -12,6 +13,7 @@ interface RenterRatingContextType {
   showFirstTimeBanner: boolean;
   dismissBanner: () => void;
   getRatingMessage: () => { title: string; message: string; tone: "high" | "medium" | "low" };
+  refetchRating: () => Promise<void>;
 }
 
 const RenterRatingContext = createContext<RenterRatingContextType | undefined>(undefined);
@@ -24,23 +26,66 @@ export const RenterRatingProvider = ({ children }: { children: ReactNode }) => {
     if (stored) {
       return JSON.parse(stored);
     }
-    // Demo data: 4 completed rentals with ratings from lenders
+    // Default data until backend loads
     return {
-      averageRating: 4.3,
-      totalRatings: 4,
+      averageRating: 5.0,
+      totalRatings: 0,
       hasSeenRatingBanner: false,
     };
   });
 
-  const isRatingVisible = renterRating.totalRatings >= MIN_RENTALS_FOR_RATING;
-  const showFirstTimeBanner = isRatingVisible && !renterRating.hasSeenRatingBanner;
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Fetch rating from backend
+  const fetchRating = async () => {
+    try {
+      const userId = API.getCurrentUserId();
+      if (!userId || !API.isAuthenticated()) {
+        setIsLoading(false);
+        return;
+      }
+
+      const ratingData = await API.getUserRating(userId);
+      const stored = localStorage.getItem("renter_rating_data");
+      const hasSeenBanner = stored ? JSON.parse(stored).hasSeenRatingBanner : false;
+
+      setRenterRating({
+        averageRating: ratingData.averageRating,
+        totalRatings: ratingData.totalRatings,
+        hasSeenRatingBanner: hasSeenBanner
+      });
+    } catch (error) {
+      console.error('Failed to fetch renter rating:', error);
+      // Keep default values if fetch fails
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Fetch on mount
   useEffect(() => {
-    localStorage.setItem("renter_rating_data", JSON.stringify(renterRating));
-  }, [renterRating]);
+    fetchRating();
+  }, []);
+
+  const isRatingVisible = renterRating.totalRatings >= MIN_RENTALS_FOR_RATING;
+  const showFirstTimeBanner = isRatingVisible && !renterRating.hasSeenRatingBanner && !isLoading;
+
+  // Persist banner dismissal to localStorage
+  useEffect(() => {
+    const stored = localStorage.getItem("renter_rating_data");
+    const storedData = stored ? JSON.parse(stored) : {};
+    localStorage.setItem("renter_rating_data", JSON.stringify({
+      ...storedData,
+      hasSeenRatingBanner: renterRating.hasSeenRatingBanner
+    }));
+  }, [renterRating.hasSeenRatingBanner]);
 
   const dismissBanner = () => {
     setRenterRating((prev) => ({ ...prev, hasSeenRatingBanner: true }));
+  };
+
+  const refetchRating = async () => {
+    await fetchRating();
   };
 
   const getRatingMessage = (): { title: string; message: string; tone: "high" | "medium" | "low" } => {
@@ -81,6 +126,7 @@ export const RenterRatingProvider = ({ children }: { children: ReactNode }) => {
         showFirstTimeBanner,
         dismissBanner,
         getRatingMessage,
+        refetchRating,
       }}
     >
       {children}

@@ -148,6 +148,102 @@ export const API = {
     return this.request('/games', 'get_by_owner', { owner_id: user_id });
   },
 
+  async checkGameAvailability(catalog_game_id: string) {
+    try {
+      const allGames = await this.listGames();
+      // Filter games by catalog_game_id and check if any are available
+      const matchingGames = allGames.filter((game: any) => 
+        game.catalog_game_id === catalog_game_id && game.available === true
+      );
+      return {
+        available: matchingGames.length > 0,
+        availableCount: matchingGames.length,
+        games: matchingGames
+      };
+    } catch (err) {
+      console.error('Check game availability error:', err);
+      // If we can't check, assume unavailable for safety
+      return {
+        available: false,
+        availableCount: 0,
+        games: []
+      };
+    }
+  },
+
+  // Catalog Games endpoints (no auth required for browsing)
+  async listCatalogGames() {
+    try {
+      const url = `${API_BASE}/catalog-games`;
+      console.log(`Fetching catalog games from: ${url}`);
+      
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 15000);
+      
+      const response = await fetch(url, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        signal: controller.signal
+      });
+      
+      clearTimeout(timeoutId);
+      return await handleFetchError(response, 'catalog-games', 'list');
+    } catch (err) {
+      console.error('List catalog games error:', err);
+      if ((err as any).name === 'AbortError') {
+        throw new Error('Request timeout - API server may be down');
+      }
+      throw err;
+    }
+  },
+
+  async getCatalogGame(catalog_game_id: string) {
+    try {
+      const url = `${API_BASE}/catalog-games`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'get', catalog_game_id })
+      });
+      return await handleFetchError(response, 'catalog-games', 'get');
+    } catch (err) {
+      console.error('Get catalog game error:', err);
+      throw err;
+    }
+  },
+
+  async searchCatalogGames(name: string) {
+    try {
+      const url = `${API_BASE}/catalog-games`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'search', name })
+      });
+      return await handleFetchError(response, 'catalog-games', 'search');
+    } catch (err) {
+      console.error('Search catalog games error:', err);
+      throw err;
+    }
+  },
+
+  async listCatalogGamesByCategory(category: string) {
+    try {
+      const url = `${API_BASE}/catalog-games`;
+      const response = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'list_by_category', category })
+      });
+      return await handleFetchError(response, 'catalog-games', 'list_by_category');
+    } catch (err) {
+      console.error('List catalog games by category error:', err);
+      throw err;
+    }
+  },
+
   async createGame(gameData: any) {
     return this.request('/games', 'create', gameData);
   },
@@ -200,6 +296,40 @@ export const API = {
 
   async getUserByEmail(email: string) {
     return this.request('/users', 'get_by_email', { email });
+  },
+
+  async updateUser(user_id: string, userData: any) {
+    return this.request('/users', 'update', { user_id, ...userData });
+  },
+
+  async createUser(userData: any) {
+    return this.request('/users', 'create', userData);
+  },
+
+  // Rating methods
+  async getUserRating(user_id: string) {
+    const userData = await this.getUser(user_id);
+    return {
+      averageRating: userData.rating || 5.0,
+      totalRatings: userData.total_ratings || 0
+    };
+  },
+
+  async submitRenterRating(renter_id: string, rating: number) {
+    // Get current rating data
+    const userData = await this.getUser(renter_id);
+    const currentRating = userData.rating || 5.0;
+    const currentTotal = userData.total_ratings || 0;
+    
+    // Calculate new average
+    const newTotal = currentTotal + 1;
+    const newAverage = ((currentRating * currentTotal) + rating) / newTotal;
+    
+    // Update user with new rating
+    return this.updateUser(renter_id, {
+      rating: newAverage,
+      total_ratings: newTotal
+    });
   },
 
   // Utility

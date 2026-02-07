@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ArrowLeft, HelpCircle, RotateCcw, CreditCard, Paperclip, X, Send } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -6,6 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { useAuth } from "@/contexts/AuthContext";
 import {
   Select,
   SelectContent,
@@ -35,19 +36,25 @@ const quickLinks = [
 const ContactSupport = () => {
   const navigate = useNavigate();
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  // Mock user data (would come from auth context in real app)
-  const mockUser = {
-    name: "John Doe",
-    email: "john.doe@example.com",
-  };
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
-    name: mockUser.name,
-    email: mockUser.email,
+    name: user?.name || "",
+    email: user?.email || "",
     subject: "",
     message: "",
   });
+
+  // Update form when user loads
+  useEffect(() => {
+    if (user) {
+      setFormData(prev => ({
+        ...prev,
+        name: user.name || "",
+        email: user.email || ""
+      }));
+    }
+  }, [user]);
 
   const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -12,20 +12,11 @@ import { categoryMetadata } from "@/utils/gameMapper";
 import { useGames } from "@/hooks/useGames";
 import { useGameFilters } from "@/hooks/useGameFilters";
 import { useGameSheet } from "@/hooks/useGameSheet";
-import {
-  strategyGames,
-  familyGames,
-  twoPlayerGames,
-  partyGames,
-  beginnerGames,
-  coopGames,
-  recommendedGames,
-} from "@/data/games";
 
 const Index = () => {
   const navigate = useNavigate();
   const { switchRole, isLoggedIn } = useAuth();
-  const { rentals, handleRentalAction } = useRentals();
+  const { rentals, handleRentalAction, isLoading: rentalsLoading } = useRentals();
   
   // Custom hooks for games, filtering, and sheet
   const { allGames, gamesByCategory, isLoading, useFallbackData } = useGames();
@@ -62,6 +53,7 @@ const Index = () => {
         <ActiveRentalTray 
           rentals={rentals} 
           onRentalAction={handleRentalAction}
+          isLoading={rentalsLoading}
         />
       )}
 
@@ -85,21 +77,11 @@ const Index = () => {
             onGameClick={handleGameClick}
           />
         ) : useFallbackData ? (
-          // Show fallback carousels with hardcoded data
-          <>
-            <GameCarousel title="🎯 Strategy" description="Think ahead and outmaneuver your opponents" games={strategyGames} categoryId="strategy" onGameClick={handleGameClick} />
-            <GameCarousel title="👨‍👩‍👧‍👦 Family Favourites" description="Fun for all ages, perfect for game nights" games={familyGames} categoryId="family" onGameClick={handleGameClick} />
-            <GameCarousel title="🎲 2-Player Hits" description="Head-to-head competition for two" games={twoPlayerGames} categoryId="two-player" onGameClick={handleGameClick} />
-            <GameCarousel title="🎉 Party Games" description="Laugh and compete with friends" games={partyGames} categoryId="party" onGameClick={handleGameClick} />
-            <GameCarousel title="🌱 Beginner-Friendly" description="Easy to learn, quick to play" games={beginnerGames} categoryId="beginner" onGameClick={handleGameClick} />
-            <GameCarousel title="🤝 Cooperative Games" description="Work together to win" games={coopGames} categoryId="coop" onGameClick={handleGameClick} />
-
-            {/* Divider */}
-            <div className="h-px bg-gradient-to-r from-transparent via-border to-transparent mx-5" />
-
-            {/* Vertical Recommended List */}
-            <VerticalGameList title="✨ Recommended for You" games={recommendedGames} onGameClick={handleGameClick} />
-          </>
+          // Show error message when data fails to load
+          <div className="flex flex-col items-center justify-center py-20 px-6 text-center">
+            <p className="text-lg text-muted-foreground mb-2">Unable to load games</p>
+            <p className="text-sm text-muted-foreground">Please check your connection and try again.</p>
+          </div>
         ) : (
           // Show carousels from backend data
           <>
@@ -129,11 +111,11 @@ const Index = () => {
                 games={(() => {
                   const seen = new Set<string>();
                   return allGames.filter(game => {
-                    const key = game.title.toLowerCase().trim();
-                    if (seen.has(key)) return false;
+                    const key = game.name?.toLowerCase().trim() || '';
+                    if (!key || seen.has(key)) return false;
                     seen.add(key);
                     return true;
-                  }).slice(0, 10);
+                  });
                 })()} 
                 onGameClick={handleGameClick} 
               />

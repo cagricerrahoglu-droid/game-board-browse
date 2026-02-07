@@ -17,18 +17,20 @@ import {
   getRentalsByRole, 
   countActionRequired, 
   hasUrgentRentals 
-} from "@/data/mockRentals";
+} from "@/utils/rentalHelpers";
 
 interface ActiveRentalTrayProps {
   rentals: ActiveRental[];
   onRentalAction?: (rental: ActiveRental, action: string) => void;
   highlightedRentalId?: string;
+  isLoading?: boolean;
 }
 
 const ActiveRentalTray = ({ 
   rentals, 
   onRentalAction,
-  highlightedRentalId 
+  highlightedRentalId,
+  isLoading = false
 }: ActiveRentalTrayProps) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,8 +49,8 @@ const ActiveRentalTray = ({
   const actionCount = countActionRequired(activeRentals);
   const hasUrgent = hasUrgentRentals(activeRentals);
 
-  // Don't render if no active rentals
-  if (totalActive === 0) {
+  // Don't render if loading or no active rentals
+  if (isLoading || totalActive === 0) {
     return null;
   }
 

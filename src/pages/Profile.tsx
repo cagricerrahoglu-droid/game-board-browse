@@ -58,7 +58,7 @@ const defaultAvatars = avatarCategories.flatMap(cat => cat.avatars);
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { logout, selectedRole, switchRole } = useAuth();
+  const { logout, selectedRole, switchRole, user: authUser, updateUserProfile } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -66,8 +66,8 @@ const Profile = () => {
   };
   
   const [notifications, setNotifications] = useState({
-    push: true,
-    email: true,
+    push: authUser?.preferences?.notifications?.push ?? true,
+    email: authUser?.preferences?.notifications?.email ?? true,
   });
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -93,18 +93,53 @@ const Profile = () => {
   const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [editedUser, setEditedUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
+    name: authUser?.name || "",
+    email: authUser?.email || "",
   });
 
+  // Initialize user state from authUser
+  const [user, setUser] = useState({
+    name: authUser?.name || "",
+    email: authUser?.email || "",
+    avatar: authUser?.avatar || pawnToken,
+  });
 
-  const handleAvatarSelect = (avatarUrl: string) => {
+  // Update local user state when authUser changes
+  useEffect(() => {
+    if (authUser) {
+      setUser({
+        name: authUser.name || "",
+        email: authUser.email,
+        avatar: authUser.avatar || pawnToken,
+      });
+      setEditedUser({
+        name: authUser.name || "",
+        email: authUser.email,
+      });
+      setNotifications({
+        push: authUser.preferences?.notifications?.push ?? true,
+        email: authUser.preferences?.notifications?.email ?? true,
+      });
+    }
+  }, [authUser]);
+
+
+  const handleAvatarSelect = async (avatarUrl: string) => {
     setUser(prev => ({ ...prev, avatar: avatarUrl }));
     setIsAvatarModalOpen(false);
-    toast.success("Avatar updated successfully");
+    
+    try {
+      if (authUser) {
+        await updateUserProfile({ avatar: avatarUrl });
+        toast.success("Avatar updated successfully");
+      }
+    } catch (error) {
+      console.error('Failed to update avatar:', error);
+      toast.error("Failed to save avatar");
+    }
   };
 
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       if (file.size > 5 * 1024 * 1024) {
@@ -112,24 +147,45 @@ const Profile = () => {
         return;
       }
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = async (e) => {
         const result = e.target?.result as string;
         setUser(prev => ({ ...prev, avatar: result }));
         setIsAvatarModalOpen(false);
-        toast.success("Profile picture updated successfully");
+        
+        try {
+          if (authUser) {
+            await updateUserProfile({ avatar: result });
+            toast.success("Profile picture updated successfully");
+          }
+        } catch (error) {
+          console.error('Failed to update avatar:', error);
+          toast.error("Failed to save profile picture");
+        }
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleSaveProfile = () => {
+  const handleSaveProfile = async () => {
     if (!editedUser.name.trim() || !editedUser.email.trim()) {
       toast.error("Please fill in all fields");
       return;
     }
-    setUser(prev => ({ ...prev, name: editedUser.name, email: editedUser.email }));
-    setIsEditProfileOpen(false);
-    toast.success("Profile updated successfully");
+    
+    try {
+      if (authUser) {
+        await updateUserProfile({ 
+          name: editedUser.name,
+          email: editedUser.email
+        });
+        setUser(prev => ({ ...prev, name: editedUser.name, email: editedUser.email }));
+        setIsEditProfileOpen(false);
+        toast.success("Profile updated successfully");
+      }
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+      toast.error("Failed to save profile");
+    }
   };
 
   const handleAddPaymentMethod = () => {
@@ -198,6 +254,26 @@ const Profile = () => {
     return parts.length ? parts.join(" ") : value;
   };
 
+  // Save notification preferences to backend
+  const handleNotificationChange = async (field: 'push' | 'email', checked: boolean) => {
+    const newNotifications = { ...notifications, [field]: checked };
+    setNotifications(newNotifications);
+    
+    try {
+      if (authUser) {
+        await updateUserProfile({
+          preferences: {
+            ...authUser.preferences,
+            notifications: newNotifications
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Failed to update notification preferences:', error);
+      toast.error("Failed to save notification preferences");
+    }
+  };
+
   const formatExpiry = (value: string) => {
     const v = value.replace(/\s+/g, "").replace(/[^0-9]/gi, "");
     if (v.length >= 2) {
@@ -205,13 +281,6 @@ const Profile = () => {
     }
     return v;
   };
-
-  // Mock user data
-  const [user, setUser] = useState({
-    name: "John Doe",
-    email: "john.doe@example.com",
-    avatar: pawnToken,
-  });
 
   // Rentals state - fetch from database
   const [currentRentals, setCurrentRentals] = useState<any[]>([]);
@@ -350,7 +419,7 @@ const Profile = () => {
                 <Avatar className="h-20 w-20">
                   <AvatarImage src={user.avatar || undefined} />
                   <AvatarFallback className="bg-primary/20 text-primary text-2xl font-semibold">
-                    {user.name.split(' ').map(n => n[0]).join('')}
+                    {user.name ? user.name.split(' ').map(n => n[0]).join('').toUpperCase() : user.email?.[0]?.toUpperCase() || '?'}
                   </AvatarFallback>
                 </Avatar>
                 <button 
@@ -361,7 +430,7 @@ const Profile = () => {
                 </button>
               </div>
               <div>
-                <h2 className="text-xl font-semibold text-foreground">{user.name}</h2>
+                <h2 className="text-xl font-semibold text-foreground">{user.name || user.email?.split('@')[0] || 'User'}</h2>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
               </div>
               <button
@@ -420,80 +489,99 @@ const Profile = () => {
         )}
 
         {/* Your Renter Rating */}
-        {isRatingVisible && (
-          <Card className="bg-card border-border">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-base font-semibold flex items-center gap-2">
-                Your Renter Rating
-                <span className="text-xs font-normal text-muted-foreground">(Private)</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Star Rating Display */}
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1">
+        <Card className="bg-card border-border">
+          <CardHeader className="pb-3">
+            <CardTitle className="text-base font-semibold flex items-center gap-2">
+              Your Renter Rating
+              <span className="text-xs font-normal text-muted-foreground">(Private)</span>
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {renterRating.totalRatings < 3 ? (
+              <div className="text-center py-6">
+                <div className="flex items-center justify-center gap-1 mb-3">
                   {[1, 2, 3, 4, 5].map((value) => (
                     <Star
                       key={value}
-                      className={cn(
-                        "h-6 w-6",
-                        renterRating.averageRating >= value
-                          ? "fill-[hsl(var(--star))] text-[hsl(var(--star))]"
-                          : renterRating.averageRating >= value - 0.5
-                          ? "fill-[hsl(var(--star))]/50 text-[hsl(var(--star))]"
-                          : "text-muted-foreground/30"
-                      )}
+                      className="h-6 w-6 text-muted-foreground/30"
                     />
                   ))}
                 </div>
-                <span className="text-2xl font-bold text-foreground">
-                  {renterRating.averageRating.toFixed(1)}
-                </span>
-              </div>
-
-              <p className="text-sm text-muted-foreground">
-                Based on feedback from lenders after game returns.
-              </p>
-
-              {/* Adaptive Message */}
-              <div className={cn(
-                "p-3 rounded-lg",
-                ratingMessage.tone === "high" && "bg-emerald-500/10 border border-emerald-500/20",
-                ratingMessage.tone === "medium" && "bg-amber-500/10 border border-amber-500/20",
-                ratingMessage.tone === "low" && "bg-muted border border-border"
-              )}>
-                <div className="flex items-start gap-2">
-                  <Info className={cn(
-                    "h-4 w-4 mt-0.5 flex-shrink-0",
-                    ratingMessage.tone === "high" && "text-emerald-500",
-                    ratingMessage.tone === "medium" && "text-amber-500",
-                    ratingMessage.tone === "low" && "text-muted-foreground"
-                  )} />
-                  <div>
-                    <p className={cn(
-                      "text-sm font-medium mb-1",
-                      ratingMessage.tone === "high" && "text-emerald-600 dark:text-emerald-400",
-                      ratingMessage.tone === "medium" && "text-amber-600 dark:text-amber-400",
-                      ratingMessage.tone === "low" && "text-foreground"
-                    )}>
-                      {ratingMessage.title}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      {ratingMessage.message}
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Educational Copy */}
-              <div className="pt-2 border-t border-border">
+                <p className="text-sm text-muted-foreground mb-2">
+                  No ratings yet
+                </p>
                 <p className="text-xs text-muted-foreground">
-                  Lenders rate how games are returned — including condition, care, and timeliness.
+                  Complete at least 3 rentals to receive a rating from lenders
                 </p>
               </div>
-            </CardContent>
-          </Card>
-        )}
+            ) : (
+              <>
+                {/* Star Rating Display */}
+                <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-1">
+                    {[1, 2, 3, 4, 5].map((value) => (
+                      <Star
+                        key={value}
+                        className={cn(
+                          "h-6 w-6",
+                          renterRating.averageRating >= value
+                            ? "fill-[hsl(var(--star))] text-[hsl(var(--star))]"
+                            : renterRating.averageRating >= value - 0.5
+                            ? "fill-[hsl(var(--star))]/50 text-[hsl(var(--star))]"
+                            : "text-muted-foreground/30"
+                        )}
+                      />
+                    ))}
+                  </div>
+                  <span className="text-2xl font-bold text-foreground">
+                    {renterRating.averageRating.toFixed(1)}
+                  </span>
+                </div>
+
+                <p className="text-sm text-muted-foreground">
+                  Based on {renterRating.totalRatings} rating{renterRating.totalRatings !== 1 ? 's' : ''} from lenders.
+                </p>
+
+                {/* Adaptive Message */}
+                <div className={cn(
+                  "p-3 rounded-lg",
+                  ratingMessage.tone === "high" && "bg-emerald-500/10 border border-emerald-500/20",
+                  ratingMessage.tone === "medium" && "bg-amber-500/10 border border-amber-500/20",
+                  ratingMessage.tone === "low" && "bg-muted border border-border"
+                )}>
+                  <div className="flex items-start gap-2">
+                    <Info className={cn(
+                      "h-4 w-4 mt-0.5 flex-shrink-0",
+                      ratingMessage.tone === "high" && "text-emerald-500",
+                      ratingMessage.tone === "medium" && "text-amber-500",
+                      ratingMessage.tone === "low" && "text-muted-foreground"
+                    )} />
+                    <div>
+                      <p className={cn(
+                        "text-sm font-medium mb-1",
+                        ratingMessage.tone === "high" && "text-emerald-600 dark:text-emerald-400",
+                        ratingMessage.tone === "medium" && "text-amber-600 dark:text-amber-400",
+                        ratingMessage.tone === "low" && "text-foreground"
+                      )}>
+                        {ratingMessage.title}
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        {ratingMessage.message}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Educational Copy */}
+                <div className="pt-2 border-t border-border">
+                  <p className="text-xs text-muted-foreground">
+                    Lenders rate how games are returned — including condition, care, and timeliness.
+                  </p>
+                </div>
+              </>
+            )}
+          </CardContent>
+        </Card>
 
         {/* Rental Activity */}
         <Card className="bg-card border-border">
@@ -614,14 +702,14 @@ const Profile = () => {
               label="Push Notifications" 
               showSwitch 
               switchChecked={notifications.push} 
-              onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, push: checked }))}
+              onSwitchChange={(checked) => handleNotificationChange('push', checked)}
             />
             <SettingsRow 
               icon={Bell} 
               label="Email Notifications" 
               showSwitch 
               switchChecked={notifications.email} 
-              onSwitchChange={(checked) => setNotifications(prev => ({ ...prev, email: checked }))}
+              onSwitchChange={(checked) => handleNotificationChange('email', checked)}
             />
             <Separator className="my-3" />
             <SettingsRow icon={FileText} label="Rental Policy" />

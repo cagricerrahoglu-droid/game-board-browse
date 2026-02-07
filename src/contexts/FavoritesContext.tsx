@@ -1,13 +1,6 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { GameCardProps } from "@/components/GameCard";
-import {
-  strategyGames,
-  familyGames,
-  twoPlayerGames,
-  partyGames,
-  beginnerGames,
-  coopGames,
-} from "@/data/gamesData";
+import { API } from "@/services/api";
 
 interface FavoritesContextType {
   favorites: string[];
@@ -18,29 +11,43 @@ interface FavoritesContextType {
 
 const FavoritesContext = createContext<FavoritesContextType | undefined>(undefined);
 
-const allGames: GameCardProps[] = [
-  ...strategyGames,
-  ...familyGames,
-  ...twoPlayerGames,
-  ...partyGames,
-  ...beginnerGames,
-  ...coopGames,
-];
-
-// Remove duplicates by id
-const uniqueGames = allGames.filter(
-  (game, index, self) => index === self.findIndex((g) => g.id === game.id)
-);
-
 export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const [favorites, setFavorites] = useState<string[]>(() => {
     const stored = localStorage.getItem("favorites");
     return stored ? JSON.parse(stored) : [];
   });
+  const [catalogGames, setCatalogGames] = useState<GameCardProps[]>([]);
 
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
+
+  useEffect(() => {
+    const fetchCatalogGames = async () => {
+      try {
+        const games = await API.listCatalogGames();
+        const mappedGames: GameCardProps[] = games.map((game) => ({
+          id: game.catalog_game_id,
+          catalogGameId: game.catalog_game_id,
+          name: game.name,
+          imageUrl: game.image_url || "/placeholder.svg",
+          minPlayers: game.min_players || 1,
+          maxPlayers: game.max_players || 4,
+          playTime: game.play_time_minutes,
+          difficulty: game.complexity || 2.5,
+          description: game.description || "",
+          categories: game.categories || [],
+          yearPublished: game.year_published,
+        }));
+        setCatalogGames(mappedGames);
+      } catch (error) {
+        console.error("Failed to fetch catalog games for favorites:", error);
+        setCatalogGames([]);
+      }
+    };
+
+    fetchCatalogGames();
+  }, []);
 
   const toggleFavorite = (id: string) => {
     setFavorites((prev) =>
@@ -51,7 +58,7 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
   const isFavorite = (id: string) => favorites.includes(id);
 
   const getFavoriteGames = () =>
-    uniqueGames.filter((game) => favorites.includes(game.id));
+    catalogGames.filter((game) => favorites.includes(game.id));
 
   return (
     <FavoritesContext.Provider

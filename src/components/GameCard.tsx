@@ -4,7 +4,9 @@ import { cn, formatDuration } from "@/lib/utils";
 
 export interface GameCardProps {
   id: string;
-  title: string;
+  catalogGameId?: string; // Reference to the catalog game
+  title?: string; // Optional for backward compatibility
+  name?: string; // Some components use name instead of title
   imageUrl: string;
   players: string;
   duration: string;
@@ -16,6 +18,12 @@ export interface GameCardProps {
   isFavorite?: boolean;
   onFavoriteToggle?: (id: string) => void;
   onClick?: () => void;
+  // Additional optional fields
+  minPlayers?: number;
+  maxPlayers?: number;
+  playTime?: number;
+  categories?: string[];
+  yearPublished?: number;
 }
 
 const difficultyConfig = {
@@ -33,6 +41,7 @@ const availabilityConfig = {
 const GameCard = ({
   id,
   title,
+  name,
   imageUrl,
   players,
   duration,
@@ -47,6 +56,9 @@ const GameCard = ({
 }: GameCardProps) => {
   const StatusIcon = availabilityConfig[availability].icon;
   const [isHovered, setIsHovered] = useState(false);
+  
+  // Use title or name, whichever is available
+  const displayTitle = title || name || 'Unknown Game';
 
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -71,14 +83,14 @@ const GameCard = ({
       <div className="relative w-full aspect-square overflow-hidden bg-muted">
         <img
           src={imageUrl}
-          alt={title}
+          alt={displayTitle}
           className={cn(
             "w-full h-full object-cover object-top transition-transform duration-500",
             "group-hover:scale-105"
           )}
           onError={(e) => {
             const target = e.target as HTMLImageElement;
-            target.src = `https://placehold.co/300x400/f5f0e8/e85d4c?text=${encodeURIComponent(title)}`;
+            target.src = `https://placehold.co/300x400/f5f0e8/e85d4c?text=${encodeURIComponent(displayTitle)}`;
           }}
         />
         {/* Gradient overlay for better badge visibility */}
@@ -119,7 +131,7 @@ const GameCard = ({
       <div className="flex flex-col gap-2 p-3.5">
         {/* Title */}
         <h3 className="font-display font-semibold text-sm text-foreground line-clamp-1 leading-snug">
-          {title}
+          {displayTitle}
         </h3>
 
         {/* Description */}

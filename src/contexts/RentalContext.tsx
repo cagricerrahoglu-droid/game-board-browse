@@ -1,33 +1,96 @@
 // Rental context provider - manages rental state and actions
-import { createContext, useContext, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, ReactNode, useEffect } from "react";
 import { ActiveRental, RentalState } from "@/types/rental";
-import { mockRentals as initialMockRentals } from "@/data/mockRentals";
 import { useToast } from "@/hooks/use-toast";
 import { useRentalDialogs } from "@/hooks/useRentalDialogs";
 import { useRentalActions } from "@/hooks/useRentalActions";
 import { RentalDialogManager } from "@/components/RentalDialogManager";
+import { API } from "@/services/api";
+import { mapBackendRentalsToFrontendAsync, mapFrontendStateToBackendStatus } from "@/utils/rentalMapper";
 
 interface RentalContextType {
   rentals: ActiveRental[];
   updateRentalState: (rentalId: string, newState: RentalState, updates?: Partial<ActiveRental>) => void;
   handleRentalAction: (rental: ActiveRental, action: string) => void;
   removeRental: (rentalId: string) => void;
+  isLoading: boolean;
+  refetchRentals: () => Promise<void>;
 }
 
 const RentalContext = createContext<RentalContextType | undefined>(undefined);
 
 export function RentalProvider({ children }: { children: ReactNode }) {
-  const [rentals, setRentals] = useState<ActiveRental[]>(initialMockRentals);
+  const [rentals, setRentals] = useState<ActiveRental[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [useFallback, setUseFallback] = useState(false);
   const { toast } = useToast();
   
   // Use extracted dialog state management
   const dialogs = useRentalDialogs();
 
-  const updateRentalState = useCallback((
+  // Fetch rentals from backend
+  const fetchRentals = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const currentUserId = API.getCurrentUserId();
+      
+      if (!currentUserId || !API.isAuthenticated()) {
+        // Not logged in - use empty array
+        setRentals([]);
+        setUseFallback(false);
+        setIsLoading(false);
+        return;
+      }
+
+      // Fetch both renter and lender rentals in parallel
+      const [renterRentals, lenderRentals] = await Promise.all([
+        API.getRentalsByRenter(currentUserId).catch(() => []),
+        API.getRentalsByLender(currentUserId).catch(() => [])
+      ]);
+
+      // Combine and deduplicate by rental_id
+      const allBackendRentals = [
+        ...(Array.isArray(renterRentals) ? renterRentals : []),
+        ...(Array.isArray(lenderRentals) ? lenderRentals : [])
+      ];
+
+      // Deduplicate rentals by rental_id to avoid duplicate keys
+      const uniqueRentals = Array.from(
+        new Map(allBackendRentals.map(rental => [rental.rental_id, rental])).values()
+      );
+
+      // Use async mapper to enrich with game images and user names
+      const mappedRentals = await mapBackendRentalsToFrontendAsync(uniqueRentals, currentUserId);
+      
+      setRentals(mappedRentals);
+      setUseFallback(false);
+      
+    } catch (error) {
+      console.error('Failed to fetch rentals:', error);
+      // Set empty array on error
+      setRentals([]);
+      setUseFallback(true);
+      toast({
+        title: "Error loading rentals",
+        description: "Could not load your rentals. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [toast]);
+
+  // Fetch rentals on mount and when auth changes
+  useEffect(() => {
+    fetchRentals();
+  }, [fetchRentals]);
+
+  const updateRentalState = useCallback(async (
     rentalId: string, 
     newState: RentalState, 
     updates?: Partial<ActiveRental>
   ) => {
+    // Optimistically update UI
     setRentals(prev => prev.map(rental => 
       rental.id === rentalId 
         ? { 
@@ -39,11 +102,50 @@ export function RentalProvider({ children }: { children: ReactNode }) {
           } 
         : rental
     ));
-  }, []);
 
-  const removeRental = useCallback((rentalId: string) => {
+    // Sync to backend if not using fallback
+    if (!useFallback) {
+      try {
+        const backendStatus = mapFrontendStateToBackendStatus(newState);
+        await API.updateRental(rentalId, { status: backendStatus });
+      } catch (error) {
+        console.error('Failed to update rental in backend:', error);
+        // Revert optimistic update on error
+        toast({
+          title: "Update failed",
+          description: "Failed to sync rental state. Changes may not persist.",
+          variant: "destructive"
+        });
+        // Refetch to get correct state
+        fetchRentals();
+      }
+    }
+  }, [useFallback, toast, fetchRentals]);
+
+  const removeRental = useCallback(async (rentalId: string) => {
+    // Optimistically remove from UI
     setRentals(prev => prev.filter(rental => rental.id !== rentalId));
-  }, []);
+
+    // Delete from backend if not using fallback
+    if (!useFallback) {
+      try {
+        await API.deleteRental(rentalId);
+      } catch (error) {
+        console.error('Failed to delete rental from backend:', error);
+        toast({
+          title: "Delete failed",
+          description: "Failed to remove rental. It may reappear on refresh.",
+          variant: "destructive"
+        });
+        // Refetch to get correct state
+        fetchRentals();
+      }
+    }
+  }, [useFallback, toast, fetchRentals]);
+
+  const refetchRentals = useCallback(async () => {
+    await fetchRentals();
+  }, [fetchRentals]);
 
   // Use extracted action handlers
   const actions = useRentalActions({ updateRentalState });
@@ -116,7 +218,14 @@ export function RentalProvider({ children }: { children: ReactNode }) {
   }, [dialogs, actions, toast]);
 
   return (
-    <RentalContext.Provider value={{ rentals, updateRentalState, handleRentalAction, removeRental }}>
+    <RentalContext.Provider value={{ 
+      rentals, 
+      updateRentalState, 
+      handleRentalAction, 
+      removeRental,
+      isLoading,
+      refetchRentals
+    }}>
       {children}
       
       <RentalDialogManager

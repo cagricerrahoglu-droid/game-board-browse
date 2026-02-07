@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { GameCardProps } from "@/components/GameCard";
 import { useBasket } from "@/contexts/BasketContext";
 import { useFavorites } from "@/contexts/FavoritesContext";
+import { useGameAvailability } from "@/hooks/useGameAvailability";
 import { toast } from "@/hooks/use-toast";
 import {
   Drawer,
@@ -38,18 +39,43 @@ const availabilityConfig = {
 const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => {
   const { addToBasket, items } = useBasket();
   const { toggleFavorite, isFavorite } = useFavorites();
+  
+  // Get the catalogGameId from the game object
+  const catalogGameId = game?.catalogGameId || game?.id;
+  
+  // Check real-time availability from the games table
+  const { available, availableCount, isLoading: checkingAvailability } = useGameAvailability(open ? catalogGameId : null);
 
   if (!game) return null;
 
-  const StatusIcon = availabilityConfig[game.availability].icon;
+  // Use title or name, whichever is available
+  const displayTitle = game.title || game.name || 'Unknown Game';
+
+  // Determine the actual availability status based on the real-time check
+  const actualAvailability = checkingAvailability 
+    ? "limited" 
+    : available 
+      ? availableCount > 3 ? "available" : "limited"
+      : "unavailable";
+
+  const StatusIcon = availabilityConfig[actualAvailability].icon;
   const isInBasket = items.some((item) => item.id === game.id);
   const favorite = isFavorite(game.id);
 
   const handleAddToBasket = () => {
+    if (!available) {
+      toast({
+        title: "Game not available",
+        description: "This game is currently not available for rent.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
     addToBasket(game);
     toast({
       title: "Added to basket!",
-      description: `${game.title} - Monthly rental`,
+      description: `${displayTitle} - Monthly rental`,
     });
     onOpenChange(false);
   };
@@ -58,7 +84,7 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
     toggleFavorite(game.id);
     toast({
       title: favorite ? "Removed from favourites" : "Added to favourites",
-      description: game.title,
+      description: displayTitle,
     });
   };
 
@@ -69,11 +95,11 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
         <div className="relative w-full h-32 overflow-hidden">
           <img
             src={game.imageUrl}
-            alt={game.title}
+            alt={displayTitle}
             className="w-full h-full object-cover"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
-              target.src = `https://placehold.co/400x300/f5f0e8/e85d4c?text=${encodeURIComponent(game.title)}`;
+              target.src = `https://placehold.co/400x300/f5f0e8/e85d4c?text=${encodeURIComponent(displayTitle)}`;
             }}
           />
           {/* Gradient overlay */}
@@ -89,11 +115,15 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
             className={cn(
               "absolute top-3 left-3 flex items-center gap-1 px-2 py-1 rounded-full",
               "text-xs font-semibold backdrop-blur-sm",
-              availabilityConfig[game.availability].color
+              availabilityConfig[actualAvailability].color
             )}
           >
             <StatusIcon className="w-3 h-3" />
-            <span>{availabilityConfig[game.availability].label}</span>
+            <span>
+              {checkingAvailability 
+                ? "Checking..." 
+                : availabilityConfig[actualAvailability].label}
+            </span>
           </div>
         </div>
 
@@ -102,7 +132,7 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
           {/* Title & Favorite */}
           <div className="flex items-start justify-between gap-2 pt-2">
             <h2 className="font-display text-xl font-bold text-foreground leading-tight">
-              {game.title}
+              {displayTitle}
             </h2>
             <button
               onClick={handleFavoriteToggle}
@@ -195,14 +225,28 @@ const GameDetailSheet = ({ game, open, onOpenChange }: GameDetailSheetProps) => 
           {/* CTA */}
           <Button
             onClick={handleAddToBasket}
-            disabled={isInBasket || game.availability === "unavailable"}
+            disabled={isInBasket || !available || checkingAvailability}
             className={cn(
               "w-full h-12 text-sm font-bold rounded-xl",
-              game.availability === "unavailable" && "bg-muted-foreground text-white hover:bg-muted-foreground cursor-not-allowed"
+              (!available && !checkingAvailability) && "bg-muted-foreground text-white hover:bg-muted-foreground cursor-not-allowed"
             )}
           >
-            {isInBasket ? "Already in basket" : game.availability === "unavailable" ? "Unavailable" : "Add to basket"}
+            {checkingAvailability 
+              ? "Checking availability..." 
+              : isInBasket 
+                ? "Already in basket" 
+                : !available 
+                  ? `Unavailable (${availableCount} copies available)` 
+                  : availableCount === 1
+                    ? "Add to basket (Last copy!)"
+                    : `Add to basket (${availableCount} available)`}
           </Button>
+          
+          {!available && !checkingAvailability && (
+            <p className="text-xs text-muted-foreground text-center -mt-2">
+              This game is currently not available for rent. Check back later!
+            </p>
+          )}
         </div>
       </DrawerContent>
     </Drawer>

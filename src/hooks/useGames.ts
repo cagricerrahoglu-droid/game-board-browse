@@ -1,55 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
-import { mapBackendGameToFrontendWithCategory, groupGamesByBackendCategory } from "@/utils/gameMapper";
-import {
-  strategyGames,
-  familyGames,
-  twoPlayerGames,
-  partyGames,
-  beginnerGames,
-  coopGames,
-} from "@/data/gamesData";
-
-// IDs for demo availability states
-const availableHardcodedIds = new Set([
-  'catan', 'ticket-to-ride', 'azul', 'splendor', '7-wonders-duel', 
-  'patchwork', 'codenames', 'wavelength', 'carcassonne', 'love-letter', 
-  'pandemic', 'the-crew'
-]);
-const limitedHardcodedIds = new Set([
-  'wingspan', 'kingdomino', 'jaipur', 'just-one', 
-  'exploding-kittens', 'spirit-island', 'clue', 'risk'
-]);
-
-// All hardcoded games combined
-const allHardcodedGames = [
-  ...strategyGames,
-  ...familyGames,
-  ...twoPlayerGames,
-  ...partyGames,
-  ...beginnerGames,
-  ...coopGames,
-];
-
-// Determine category from hardcoded game arrays
-function getCategoryForGame(title: string): string {
-  const name = title.toLowerCase();
-  if (strategyGames.some(g => g.title.toLowerCase() === name)) return "Strategy";
-  if (familyGames.some(g => g.title.toLowerCase() === name)) return "Family";
-  if (twoPlayerGames.some(g => g.title.toLowerCase() === name)) return "2-Player";
-  if (partyGames.some(g => g.title.toLowerCase() === name)) return "Party";
-  if (coopGames.some(g => g.title.toLowerCase() === name)) return "Cooperative";
-  if (beginnerGames.some(g => g.title.toLowerCase() === name)) return "Beginner";
-  return "Other";
-}
-
-// Determine availability for hardcoded games
-function getAvailabilityForGame(id: string): "available" | "limited" | "unavailable" {
-  if (availableHardcodedIds.has(id)) return "available";
-  if (limitedHardcodedIds.has(id)) return "limited";
-  return "unavailable";
-}
 
 export interface UseGamesResult {
   allGames: GameCardProps[];
@@ -69,35 +20,45 @@ export function useGames(): UseGamesResult {
 
   const fetchGames = useCallback(async () => {
     try {
-      const response = await API.listGames();
-      const games = Array.isArray(response) ? response : [];
+      setIsLoading(true);
+      // Fetch from catalog API
+      const catalogGames = await API.listCatalogGames();
       
-      // Map backend games to frontend format with categories
-      const backendMappedGames = games.map(mapBackendGameToFrontendWithCategory);
+      // Map catalog games to frontend GameCardProps format
+      const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => ({
+        id: catalogGame.catalog_game_id,
+        catalogGameId: catalogGame.catalog_game_id,
+        name: catalogGame.name,
+        title: catalogGame.name, // Add title for GameCard compatibility
+        imageUrl: catalogGame.image_url || '/placeholder.svg',
+        minPlayers: catalogGame.min_players || 1,
+        maxPlayers: catalogGame.max_players || 4,
+        players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`, // Format as string
+        playTime: catalogGame.play_time_minutes,
+        duration: catalogGame.play_time_minutes ? `${catalogGame.play_time_minutes} min` : '60 min', // Format as string
+        difficulty: catalogGame.complexity <= 2 ? 'Easy' : catalogGame.complexity <= 3.5 ? 'Medium' : 'Hard',
+        description: catalogGame.description || "",
+        categories: catalogGame.categories || [],
+        yearPublished: catalogGame.year_published,
+        rating: catalogGame.avg_rating || 0,
+        availability: 'available' as const,
+        monthlyPrice: 0, // Catalog games don't have pricing
+      }));
       
-      // Create a Set of backend game titles for lookup
-      const backendGameTitles = new Set(
-        backendMappedGames.map(game => game.title.toLowerCase().trim())
-      );
+      // Group games by category
+      const grouped: Record<string, GameCardProps[]> = {};
       
-      // Start with all backend games
-      const mergedGames = [...backendMappedGames];
-      
-      // Add hardcoded games ONLY if they don't exist in backend
-      allHardcodedGames.forEach(hardcodedGame => {
-        if (!backendGameTitles.has(hardcodedGame.title.toLowerCase().trim())) {
-          mergedGames.push({
-            ...hardcodedGame,
-            availability: getAvailabilityForGame(hardcodedGame.id),
-            category: getCategoryForGame(hardcodedGame.title),
-          });
-        }
+      backendMappedGames.forEach((game) => {
+        const categories = game.categories || [];
+        categories.forEach((category: string) => {
+          if (!grouped[category]) {
+            grouped[category] = [];
+          }
+          grouped[category].push(game);
+        });
       });
       
-      const gamesWithCategories = mergedGames as (GameCardProps & { category: string })[];
-      const grouped = groupGamesByBackendCategory(gamesWithCategories);
-      
-      setBackendGames(mergedGames);
+      setBackendGames(backendMappedGames);
       setGamesByCategory(grouped);
       setIsLoading(false);
       setError(null);
@@ -122,16 +83,7 @@ export function useGames(): UseGamesResult {
     return () => clearInterval(interval);
   }, [fetchGames]);
 
-  // Fallback games (deduplicated hardcoded data)
-  const fallbackGames = useMemo(() => {
-    const gamesMap = new Map<string, GameCardProps>();
-    allHardcodedGames.forEach((game) => {
-      gamesMap.set(game.id, game);
-    });
-    return Array.from(gamesMap.values());
-  }, []);
-
-  const allGames = useFallbackData ? fallbackGames : backendGames;
+  const allGames = useFallbackData ? [] : backendGames;
 
   return {
     allGames,
