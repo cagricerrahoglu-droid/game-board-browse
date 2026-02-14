@@ -1,3 +1,3 @@
-// Re-export all game categories from the modular structure
-// This maintains backward compatibility with existing imports
-export * from "./games/index";
+// Game data is now fetched from the backend API via useGames hook.
+// This file is kept for backward compatibility but exports nothing.
+export {};
