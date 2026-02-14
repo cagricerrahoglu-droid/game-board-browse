@@ -67,7 +67,7 @@ const CarouselGames = () => {
     setSheetOpen(true);
   };
 
-  if (!category) {
+  if (!categoryId) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <p className="text-muted-foreground">Category not found</p>
@@ -87,7 +87,7 @@ const CarouselGames = () => {
             <ChevronLeft className="w-6 h-6 text-foreground" />
           </button>
           <h1 className="font-display font-bold text-lg text-foreground">
-            {category.title}
+            {title}
           </h1>
         </div>
       </header>

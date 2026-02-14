@@ -117,8 +117,8 @@ const ContactSupport = () => {
 
     // Reset form
     setFormData({
-      name: mockUser.name,
-      email: mockUser.email,
+      name: user?.name || "",
+      email: user?.email || "",
       subject: "",
       message: "",
     });

@@ -5,7 +5,8 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDuration(duration: string): string {
+export function formatDuration(duration: string | undefined): string {
+  if (!duration) return "N/A";
   // Extract number from duration string (e.g., "180 min" -> 180)
   const match = duration.match(/(\d+)/);
   if (match) {
