@@ -24,6 +24,7 @@ export interface GameCardProps {
   playTime?: number;
   categories?: string[];
   yearPublished?: number;
+  avg_online_sale_price?: number;
 }
 
 const difficultyConfig = {

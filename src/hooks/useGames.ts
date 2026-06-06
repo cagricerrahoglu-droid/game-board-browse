@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
+import { calculateGamePricing } from "@/data/gamePricingStrategy";
 
 export interface UseGamesResult {
   allGames: GameCardProps[];
@@ -25,25 +26,40 @@ export function useGames(): UseGamesResult {
       const catalogGames = await API.listCatalogGames();
       
       // Map catalog games to frontend GameCardProps format
-      const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => ({
-        id: catalogGame.catalog_game_id,
-        catalogGameId: catalogGame.catalog_game_id,
-        name: catalogGame.name,
-        title: catalogGame.name, // Add title for GameCard compatibility
-        imageUrl: catalogGame.image_url || '/placeholder.svg',
-        minPlayers: catalogGame.min_players || 1,
-        maxPlayers: catalogGame.max_players || 4,
-        players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`, // Format as string
-        playTime: catalogGame.play_time_minutes,
-        duration: catalogGame.play_time_minutes ? `${catalogGame.play_time_minutes} min` : '60 min', // Format as string
-        difficulty: catalogGame.complexity <= 2 ? 'Easy' : catalogGame.complexity <= 3.5 ? 'Medium' : 'Hard',
-        description: catalogGame.description || "",
-        categories: catalogGame.categories || [],
-        yearPublished: catalogGame.year_published,
-        rating: catalogGame.avg_rating || 0,
-        availability: 'available' as const,
-        monthlyPrice: 0, // Catalog games don't have pricing
-      }));
+      const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => {
+        // Calculate pricing based on avg_online_sale_price if available
+        let monthlyPrice = 0;
+        if (catalogGame.avg_online_sale_price) {
+          const pricing = calculateGamePricing(
+            catalogGame.catalog_game_id,
+            catalogGame.name,
+            catalogGame.avg_online_sale_price
+          );
+          monthlyPrice = pricing.monthly_rental_price;
+        }
+
+        return {
+          id: catalogGame.catalog_game_id,
+          catalogGameId: catalogGame.catalog_game_id,
+          name: catalogGame.name,
+          title: catalogGame.name, // Add title for GameCard compatibility
+          imageUrl: catalogGame.image_url || '/placeholder.svg',
+          minPlayers: catalogGame.min_players || 1,
+          maxPlayers: catalogGame.max_players || 4,
+          players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`, // Format as string
+          playTime: catalogGame.play_time_minutes,
+          duration: catalogGame.play_time_minutes ? `${catalogGame.play_time_minutes} min` : '60 min', // Format as string
+          difficulty: catalogGame.complexity <= 2 ? 'Easy' : catalogGame.complexity <= 3.5 ? 'Medium' : 'Hard',
+          description: catalogGame.description || "",
+          categories: catalogGame.categories || [],
+          yearPublished: catalogGame.year_published,
+          rating: catalogGame.avg_rating || 0,
+          availability: 'available' as const,
+          monthlyPrice,
+          // Store pricing details for later use
+          avg_online_sale_price: catalogGame.avg_online_sale_price,
+        };
+      });
       
       // Group games by category
       const grouped: Record<string, GameCardProps[]> = {};

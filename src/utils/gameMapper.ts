@@ -1,4 +1,5 @@
 import { GameCardProps } from "@/components/GameCard";
+import { calculateGamePricing } from "@/data/gamePricingStrategy";
 
 // Game image mapping - maps game names to their image URLs
 const gameImageMap: Record<string, string> = {
@@ -64,14 +65,6 @@ const conditionToDifficulty = (condition?: string): "Easy" | "Medium" | "Hard" =
   return "Hard";
 };
 
-// Mock pricing based on game playtime
-const calculateMockPrice = (playtimeMinutes?: number): number => {
-  if (!playtimeMinutes || playtimeMinutes < 30) return 4.99;
-  if (playtimeMinutes < 60) return 6.99;
-  if (playtimeMinutes < 120) return 8.99;
-  return 10.99;
-};
-
 // Backend game interface
 interface BackendGame {
   game_id: string;
@@ -87,6 +80,7 @@ interface BackendGame {
   image_url?: string;
   created_at?: string;
   updated_at?: string;
+  avg_online_sale_price?: number;
 }
 
 // Map backend game to frontend GameCardProps
@@ -100,6 +94,17 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     ? `${playtime}`
     : `${Math.floor(playtime / 60) * 60}-${Math.ceil(playtime / 60) * 60}`;
 
+  // Calculate pricing if avg_online_sale_price is provided
+  let monthlyPrice = 0;
+  if (backendGame.avg_online_sale_price) {
+    const pricing = calculateGamePricing(
+      backendGame.game_id,
+      backendGame.name,
+      backendGame.avg_online_sale_price
+    );
+    monthlyPrice = pricing.monthly_rental_price;
+  }
+
   return {
     id: backendGame.game_id,
     title: backendGame.name,
@@ -109,8 +114,9 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     difficulty: conditionToDifficulty(backendGame.condition),
     rating: 4.0 + Math.random() * 0.9, // Mock rating between 4.0-4.9
     availability: backendGame.available ? "available" : "unavailable",
-    monthlyPrice: calculateMockPrice(backendGame.estimated_playtime_minutes),
+    monthlyPrice,
     description: backendGame.description || `A fun board game for ${playersRange} players.`,
+    avg_online_sale_price: backendGame.avg_online_sale_price,
   };
 };
 
@@ -124,7 +130,7 @@ export const groupGamesByCategory = (games: GameCardProps[]): Record<string, Gam
     let category = "Other";
     
     // You can customize this logic based on your needs
-    const name = game.title.toLowerCase();
+    const name = game.title?.toLowerCase() || game.name?.toLowerCase() || "";
     
     if (name.includes("strategy") || ["catan", "wingspan", "terraforming mars", "7 wonders"].some(s => name.includes(s))) {
       category = "Strategy";
@@ -234,7 +240,7 @@ export const groupGamesByBackendCategory = (gamesWithCategories: Array<GameCardP
     }
     
     // Skip if we've already added a game with this ID or title in this category
-    const gameKey = game.id || game.title.toLowerCase().trim();
+    const gameKey = game.id || (game.title || game.name || "").toLowerCase().trim();
     if (seenByCategory[category].has(gameKey)) {
       return;
     }
