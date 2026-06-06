@@ -25,6 +25,13 @@ const HorizontalGameCard = ({
 }: GameCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  const difficultyKey = (["Easy", "Medium", "Hard"] as const).includes(
+    difficulty as "Easy" | "Medium" | "Hard"
+  )
+    ? (difficulty as "Easy" | "Medium" | "Hard")
+    : "Medium";
+  const diff = difficultyConfig[difficultyKey];
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onFavoriteToggle?.(id);
