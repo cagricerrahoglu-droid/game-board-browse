@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
-import { calculateGamePricing } from "@/data/gamePricingStrategy";
 import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
 
 export interface UseGamesResult {

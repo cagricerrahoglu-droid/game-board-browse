@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { API } from "@/services/api";
 import { useAuth } from "@/contexts/AuthContext";
 import { GameCardProps } from "@/components/GameCard";
+import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
 
 // Price multipliers based on condition
 const conditionMultipliers = {
@@ -52,7 +53,8 @@ const AddGame = () => {
           title: game.name,
           description: game.description,
           imageUrl: game.image_url || '/placeholder.svg',
-          monthlyPrice: game.min_retail_price_gbp || 0,
+          monthlyPrice: calculateMonthlyRentalPrice(game),
+          avg_online_sale_price: getSalePrice(game) ?? undefined,
           rating: game.avg_rating || 0,
           players: `${game.min_players || 1}-${game.max_players || 4}`,
           duration: game.play_time_minutes ? `${game.play_time_minutes}` : '60',

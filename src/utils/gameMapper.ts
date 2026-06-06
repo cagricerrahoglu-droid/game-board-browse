@@ -1,5 +1,4 @@
 import { GameCardProps } from "@/components/GameCard";
-import { calculateGamePricing } from "@/data/gamePricingStrategy";
 import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
 
 // Game image mapping - maps game names to their image URLs
