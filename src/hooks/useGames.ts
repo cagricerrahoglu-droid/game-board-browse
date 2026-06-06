@@ -27,25 +27,15 @@ export function useGames(): UseGamesResult {
       
       // Map catalog games to frontend GameCardProps format
       const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => {
-        // Prefer backend-provided rental price; fall back to calculating from sale price.
+        // Monthly rental price = 12% of avg_online_sale_price, rounded up.
+        // Fall back to min_retail_price_gbp / min_retail_price when sale price absent.
+        const salePrice =
+          catalogGame.avg_online_sale_price ??
+          catalogGame.min_retail_price_gbp ??
+          catalogGame.min_retail_price;
         let monthlyPrice = 0;
-        if (typeof catalogGame.rental_price === 'number') {
-          monthlyPrice = catalogGame.rental_price;
-        } else if (typeof catalogGame.renter_price === 'number') {
-          monthlyPrice = catalogGame.renter_price;
-        } else if (typeof catalogGame.monthly_rental_price === 'number') {
-          monthlyPrice = catalogGame.monthly_rental_price;
-        } else {
-          const salePrice =
-            catalogGame.avg_online_sale_price ?? catalogGame.min_retail_price;
-          if (salePrice) {
-            const pricing = calculateGamePricing(
-              catalogGame.catalog_game_id,
-              catalogGame.name,
-              salePrice
-            );
-            monthlyPrice = pricing.monthly_rental_price;
-          }
+        if (typeof salePrice === 'number' && salePrice > 0) {
+          monthlyPrice = Math.ceil(salePrice * 0.12);
         }
 
         // Duration may arrive as a number (minutes) or string ("60").
