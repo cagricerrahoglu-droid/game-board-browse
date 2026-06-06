@@ -27,16 +27,36 @@ export function useGames(): UseGamesResult {
       
       // Map catalog games to frontend GameCardProps format
       const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => {
-        // Calculate pricing based on avg_online_sale_price if available
+        // Prefer backend-provided rental price; fall back to calculating from sale price.
         let monthlyPrice = 0;
-        if (catalogGame.avg_online_sale_price) {
-          const pricing = calculateGamePricing(
-            catalogGame.catalog_game_id,
-            catalogGame.name,
-            catalogGame.avg_online_sale_price
-          );
-          monthlyPrice = pricing.monthly_rental_price;
+        if (typeof catalogGame.rental_price === 'number') {
+          monthlyPrice = catalogGame.rental_price;
+        } else if (typeof catalogGame.renter_price === 'number') {
+          monthlyPrice = catalogGame.renter_price;
+        } else if (typeof catalogGame.monthly_rental_price === 'number') {
+          monthlyPrice = catalogGame.monthly_rental_price;
+        } else {
+          const salePrice =
+            catalogGame.avg_online_sale_price ?? catalogGame.min_retail_price;
+          if (salePrice) {
+            const pricing = calculateGamePricing(
+              catalogGame.catalog_game_id,
+              catalogGame.name,
+              salePrice
+            );
+            monthlyPrice = pricing.monthly_rental_price;
+          }
         }
+
+        // Duration may arrive as a number (minutes) or string ("60").
+        const rawDuration =
+          catalogGame.play_time_minutes ?? catalogGame.duration;
+        const durationStr = rawDuration
+          ? `${rawDuration}${String(rawDuration).match(/[a-z]/i) ? '' : ' min'}`
+          : '60 min';
+
+        const complexity =
+          catalogGame.complexity ?? catalogGame.complexity_rating ?? 2;
 
         return {
           id: catalogGame.catalog_game_id,
@@ -46,20 +66,21 @@ export function useGames(): UseGamesResult {
           imageUrl: catalogGame.image_url || '/placeholder.svg',
           minPlayers: catalogGame.min_players || 1,
           maxPlayers: catalogGame.max_players || 4,
-          players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`, // Format as string
-          playTime: catalogGame.play_time_minutes,
-          duration: catalogGame.play_time_minutes ? `${catalogGame.play_time_minutes} min` : '60 min', // Format as string
-          difficulty: catalogGame.complexity <= 2 ? 'Easy' : catalogGame.complexity <= 3.5 ? 'Medium' : 'Hard',
+          players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`,
+          playTime: catalogGame.play_time_minutes ?? (Number(catalogGame.duration) || undefined),
+          duration: durationStr,
+          difficulty: complexity <= 2 ? 'Easy' : complexity <= 3.5 ? 'Medium' : 'Hard',
           description: catalogGame.description || "",
           categories: catalogGame.categories || [],
           yearPublished: catalogGame.year_published,
           rating: catalogGame.avg_rating || 0,
           availability: 'available' as const,
           monthlyPrice,
-          // Store pricing details for later use
-          avg_online_sale_price: catalogGame.avg_online_sale_price,
+          avg_online_sale_price:
+            catalogGame.avg_online_sale_price ?? catalogGame.min_retail_price,
         };
       });
+
       
       // Group games by category
       const grouped: Record<string, GameCardProps[]> = {};
