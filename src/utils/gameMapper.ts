@@ -1,5 +1,6 @@
 import { GameCardProps } from "@/components/GameCard";
 import { calculateGamePricing } from "@/data/gamePricingStrategy";
+import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
 
 // Game image mapping - maps game names to their image URLs
 const gameImageMap: Record<string, string> = {
@@ -81,6 +82,8 @@ interface BackendGame {
   created_at?: string;
   updated_at?: string;
   avg_online_sale_price?: number;
+  min_retail_price_gbp?: number;
+  min_retail_price?: number;
 }
 
 // Map backend game to frontend GameCardProps
@@ -94,11 +97,7 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     ? `${playtime}`
     : `${Math.floor(playtime / 60) * 60}-${Math.ceil(playtime / 60) * 60}`;
 
-  // Calculate monthly rental as 24% of avg_online_sale_price, rounded up
-  let monthlyPrice = 0;
-  if (backendGame.avg_online_sale_price && backendGame.avg_online_sale_price > 0) {
-    monthlyPrice = Math.ceil(backendGame.avg_online_sale_price * 0.24);
-  }
+  const monthlyPrice = calculateMonthlyRentalPrice(backendGame);
 
 
   return {
@@ -112,7 +111,7 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     availability: backendGame.available ? "available" : "unavailable",
     monthlyPrice,
     description: backendGame.description || `A fun board game for ${playersRange} players.`,
-    avg_online_sale_price: backendGame.avg_online_sale_price,
+    avg_online_sale_price: getSalePrice(backendGame) ?? undefined,
   };
 };
 
