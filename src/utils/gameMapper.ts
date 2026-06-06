@@ -1,5 +1,5 @@
 import { GameCardProps } from "@/components/GameCard";
-import { calculateGamePricing } from "@/data/gamePricingStrategy";
+import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
 
 // Game image mapping - maps game names to their image URLs
 const gameImageMap: Record<string, string> = {
@@ -67,52 +67,64 @@ const conditionToDifficulty = (condition?: string): "Easy" | "Medium" | "Hard" =
 
 // Backend game interface
 interface BackendGame {
-  game_id: string;
+  game_id?: string;
+  catalog_game_id?: string;
   name: string;
   description?: string;
   category?: string;
-  owner_id: string;
-  min_players: number;
-  max_players: number;
-  estimated_playtime_minutes: number;
+  categories?: string[];
+  owner_id?: string;
+  min_players?: number;
+  max_players?: number;
+  estimated_playtime_minutes?: number;
+  play_time_minutes?: number;
+  duration?: string | number;
   condition?: string;
-  available: boolean;
+  available?: boolean;
   image_url?: string;
+  avg_rating?: number;
+  complexity_rating?: number;
   created_at?: string;
   updated_at?: string;
   avg_online_sale_price?: number;
+  min_retail_price_gbp?: number;
+  min_retail_price?: number;
 }
 
 // Map backend game to frontend GameCardProps
 export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProps => {
-  const playersRange = backendGame.min_players === backendGame.max_players
-    ? `${backendGame.min_players}`
-    : `${backendGame.min_players}-${backendGame.max_players}`;
+  const minPlayers = backendGame.min_players ?? 1;
+  const maxPlayers = backendGame.max_players ?? 4;
+  const playersRange = minPlayers === maxPlayers
+    ? `${minPlayers}`
+    : `${minPlayers}-${maxPlayers}`;
 
-  const playtime = backendGame.estimated_playtime_minutes;
-  const durationRange = playtime < 60
-    ? `${playtime}`
-    : `${Math.floor(playtime / 60) * 60}-${Math.ceil(playtime / 60) * 60}`;
+  const rawPlaytime = backendGame.estimated_playtime_minutes ?? backendGame.play_time_minutes ?? backendGame.duration;
+  const playtime = typeof rawPlaytime === "string" ? Number(rawPlaytime) : rawPlaytime;
+  const durationRange = typeof playtime === "number" && Number.isFinite(playtime)
+    ? playtime < 60
+      ? `${playtime}`
+      : `${Math.floor(playtime / 60) * 60}-${Math.ceil(playtime / 60) * 60}`
+    : `${rawPlaytime || 60}`;
 
-  // Calculate monthly rental as 24% of avg_online_sale_price, rounded up
-  let monthlyPrice = 0;
-  if (backendGame.avg_online_sale_price && backendGame.avg_online_sale_price > 0) {
-    monthlyPrice = Math.ceil(backendGame.avg_online_sale_price * 0.24);
-  }
+  const monthlyPrice = calculateMonthlyRentalPrice(backendGame);
+  const complexity = backendGame.complexity_rating ?? 2;
 
 
   return {
-    id: backendGame.game_id,
+    id: backendGame.game_id || backendGame.catalog_game_id || backendGame.name,
+    catalogGameId: backendGame.catalog_game_id,
     title: backendGame.name,
     imageUrl: backendGame.image_url || getGameImage(backendGame.name),
     players: playersRange,
     duration: durationRange,
-    difficulty: conditionToDifficulty(backendGame.condition),
-    rating: 4.0 + Math.random() * 0.9, // Mock rating between 4.0-4.9
-    availability: backendGame.available ? "available" : "unavailable",
+    difficulty: backendGame.condition ? conditionToDifficulty(backendGame.condition) : complexity <= 2 ? "Easy" : complexity <= 3 ? "Medium" : "Hard",
+    rating: backendGame.avg_rating ?? 0,
+    availability: backendGame.available === false ? "unavailable" : "available",
     monthlyPrice,
     description: backendGame.description || `A fun board game for ${playersRange} players.`,
-    avg_online_sale_price: backendGame.avg_online_sale_price,
+    categories: backendGame.categories || (backendGame.category ? [backendGame.category] : []),
+    avg_online_sale_price: getSalePrice(backendGame) ?? undefined,
   };
 };
 
