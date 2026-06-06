@@ -67,7 +67,7 @@ export function useGames(): UseGamesResult {
           minPlayers: catalogGame.min_players || 1,
           maxPlayers: catalogGame.max_players || 4,
           players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`,
-          playTime: catalogGame.play_time_minutes ?? Number(catalogGame.duration) || undefined,
+          playTime: catalogGame.play_time_minutes ?? (Number(catalogGame.duration) || undefined),
           duration: durationStr,
           difficulty: complexity <= 2 ? 'Easy' : complexity <= 3.5 ? 'Medium' : 'Hard',
           description: catalogGame.description || "",
