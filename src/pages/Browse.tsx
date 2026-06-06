@@ -27,8 +27,8 @@ const Browse = () => {
         setIsLoading(true);
         setError(null);
         
-        const response = await API.listGames();
-        
+        const response = isLoggedIn ? await API.listGames() : await API.listCatalogGames();
+
         // Handle both response formats
         const games = Array.isArray(response) ? response : ((response as any).games || []);
         
@@ -47,8 +47,17 @@ const Browse = () => {
         setAllGames(uniqueGames);
       } catch (err: any) {
         console.error("Error loading games:", err);
-        setError("Failed to load games from database");
-        setAllGames([]);
+
+        try {
+          const catalogGames = await API.listCatalogGames();
+          const formattedGames = catalogGames.map((game: any) => mapBackendGameToFrontend(game));
+          setAllGames(formattedGames);
+          setError(null);
+        } catch (catalogErr) {
+          console.error("Error loading catalog games:", catalogErr);
+          setError("Failed to load games");
+          setAllGames([]);
+        }
       } finally {
         setIsLoading(false);
       }
