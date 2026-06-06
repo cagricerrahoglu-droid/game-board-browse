@@ -25,6 +25,13 @@ const HorizontalGameCard = ({
 }: GameCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
 
+  const difficultyKey = (["Easy", "Medium", "Hard"] as const).includes(
+    difficulty as "Easy" | "Medium" | "Hard"
+  )
+    ? (difficulty as "Easy" | "Medium" | "Hard")
+    : "Medium";
+  const diff = difficultyConfig[difficultyKey];
+
   const handleFavoriteClick = (e: React.MouseEvent) => {
     e.stopPropagation();
     onFavoriteToggle?.(id);
@@ -108,16 +115,14 @@ const HorizontalGameCard = ({
           {/* Difficulty & Rating */}
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <Gauge className={cn("w-3.5 h-3.5", difficultyConfig[difficulty].color)} />
+              <Gauge className={cn("w-3.5 h-3.5", diff.color)} />
               <div className="flex gap-0.5">
                 {[1, 2, 3].map((bar) => (
                   <div
                     key={bar}
                     className={cn(
                       "w-1.5 h-3 rounded-full transition-colors",
-                      bar <= difficultyConfig[difficulty].bars
-                        ? difficultyConfig[difficulty].bgColor
-                        : "bg-border"
+                      bar <= diff.bars ? diff.bgColor : "bg-border"
                     )}
                   />
                 ))}
@@ -125,7 +130,7 @@ const HorizontalGameCard = ({
             </div>
             <div className="flex items-center gap-1 bg-star/10 px-1.5 py-0.5 rounded-full">
               <Star className="w-3.5 h-3.5 fill-star text-star" />
-              <span className="text-xs font-bold text-foreground">{rating.toFixed(1)}</span>
+              <span className="text-xs font-bold text-foreground">{(rating ?? 0).toFixed(1)}</span>
             </div>
           </div>
         </div>
@@ -133,7 +138,7 @@ const HorizontalGameCard = ({
         {/* Price */}
         <div className="pt-1">
           <span className="text-primary font-bold text-sm">
-            £{monthlyPrice.toFixed(2)}
+            £{(monthlyPrice ?? 0).toFixed(2)}
             <span className="text-muted-foreground font-medium text-xs ml-0.5">/mo</span>
           </span>
         </div>
