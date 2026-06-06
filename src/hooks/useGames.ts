@@ -27,7 +27,7 @@ export function useGames(): UseGamesResult {
       
       // Map catalog games to frontend GameCardProps format
       const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => {
-        // Monthly rental price = 12% of avg_online_sale_price, rounded up.
+        // Monthly rental price = 24% of avg_online_sale_price, rounded up.
         // Fall back to min_retail_price_gbp / min_retail_price when sale price absent.
         const salePrice =
           catalogGame.avg_online_sale_price ??
@@ -35,7 +35,7 @@ export function useGames(): UseGamesResult {
           catalogGame.min_retail_price;
         let monthlyPrice = 0;
         if (typeof salePrice === 'number' && salePrice > 0) {
-          monthlyPrice = Math.ceil(salePrice * 0.12);
+          monthlyPrice = Math.ceil(salePrice * 0.24);
         }
 
         // Duration may arrive as a number (minutes) or string ("60").
