@@ -94,16 +94,12 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     ? `${playtime}`
     : `${Math.floor(playtime / 60) * 60}-${Math.ceil(playtime / 60) * 60}`;
 
-  // Calculate pricing if avg_online_sale_price is provided
+  // Calculate monthly rental as 24% of avg_online_sale_price, rounded up
   let monthlyPrice = 0;
-  if (backendGame.avg_online_sale_price) {
-    const pricing = calculateGamePricing(
-      backendGame.game_id,
-      backendGame.name,
-      backendGame.avg_online_sale_price
-    );
-    monthlyPrice = pricing.monthly_rental_price;
+  if (backendGame.avg_online_sale_price && backendGame.avg_online_sale_price > 0) {
+    monthlyPrice = Math.ceil(backendGame.avg_online_sale_price * 0.24);
   }
+
 
   return {
     id: backendGame.game_id,
