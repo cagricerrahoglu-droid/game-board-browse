@@ -1,5 +1,12 @@
 import { GameCardProps } from "@/components/GameCard";
 import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
+import battleshipAsset from "@/assets/battleship.jpg.asset.json";
+
+// Overrides for games whose backend image_url is broken (403/400).
+// Keys are lowercased game names.
+const imageOverrides: Record<string, string> = {
+  "battleship": battleshipAsset.url,
+};
 
 // Game image mapping - maps game names to their image URLs
 const gameImageMap: Record<string, string> = {
@@ -115,7 +122,7 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     id: backendGame.game_id || backendGame.catalog_game_id || backendGame.name,
     catalogGameId: backendGame.catalog_game_id,
     title: backendGame.name,
-    imageUrl: backendGame.image_url || getGameImage(backendGame.name),
+    imageUrl: imageOverrides[backendGame.name.toLowerCase().trim()] || backendGame.image_url || getGameImage(backendGame.name),
     players: playersRange,
     duration: durationRange,
     difficulty: backendGame.condition ? conditionToDifficulty(backendGame.condition) : complexity <= 2 ? "Easy" : complexity <= 3 ? "Medium" : "Hard",
