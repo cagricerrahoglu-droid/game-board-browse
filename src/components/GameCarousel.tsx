@@ -19,7 +19,7 @@ const GameCarousel = ({ title, description, games, className, categoryId, onGame
 
   const handleSeeAll = () => {
     if (categoryId) {
-      navigate(`/games/${categoryId}`);
+      navigate(`/games/${encodeURIComponent(categoryId)}`);
     }
   };
 
