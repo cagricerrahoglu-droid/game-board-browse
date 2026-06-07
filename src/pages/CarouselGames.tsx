@@ -34,20 +34,8 @@ const CarouselGames = () => {
         setIsLoading(true);
         const catalogGames = await API.listCatalogGamesByCategory(categoryId);
         
-        // Map to frontend format
-        const mappedGames: GameCardProps[] = catalogGames.map((game) => ({
-          id: game.catalog_game_id,
-          catalogGameId: game.catalog_game_id,
-          name: game.name,
-          imageUrl: game.image_url || "/placeholder.svg",
-          minPlayers: game.min_players || 1,
-          maxPlayers: game.max_players || 4,
-          playTime: game.play_time_minutes,
-          difficulty: game.complexity || 2.5,
-          description: game.description || "",
-          categories: game.categories || [],
-          yearPublished: game.year_published,
-        }));
+        // Map to frontend format using shared mapper (includes monthlyPrice)
+        const mappedGames: GameCardProps[] = catalogGames.map((game: any) => mapBackendGameToFrontend(game));
         
         setGames(mappedGames);
       } catch (error) {
