@@ -5,6 +5,7 @@ import { API } from "@/services/api";
 import VerticalGameList from "@/components/VerticalGameList";
 import GameDetailSheet from "@/components/GameDetailSheet";
 import { GameCardProps } from "@/components/GameCard";
+import { mapBackendGameToFrontend } from "@/utils/gameMapper";
 
 const categoryTitles: Record<string, string> = {
   "Strategy": "🎯 Strategy",
