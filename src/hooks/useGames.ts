@@ -26,40 +26,10 @@ export function useGames(): UseGamesResult {
       const catalogGames = await API.listCatalogGames();
       
       // Map catalog games to frontend GameCardProps format
-      const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) => {
-        const monthlyPrice = calculateMonthlyRentalPrice(catalogGame);
-
-        // Duration may arrive as a number (minutes) or string ("60").
-        const rawDuration =
-          catalogGame.play_time_minutes ?? catalogGame.duration;
-        const durationStr = rawDuration
-          ? `${rawDuration}${String(rawDuration).match(/[a-z]/i) ? '' : ' min'}`
-          : '60 min';
-
-        const complexity =
-          catalogGame.complexity ?? catalogGame.complexity_rating ?? 2;
-
-        return {
-          id: catalogGame.catalog_game_id,
-          catalogGameId: catalogGame.catalog_game_id,
-          name: catalogGame.name,
-          title: catalogGame.name, // Add title for GameCard compatibility
-          imageUrl: catalogGame.image_url || '/placeholder.svg',
-          minPlayers: catalogGame.min_players || 1,
-          maxPlayers: catalogGame.max_players || 4,
-          players: `${catalogGame.min_players || 1}-${catalogGame.max_players || 4}`,
-          playTime: catalogGame.play_time_minutes ?? (Number(catalogGame.duration) || undefined),
-          duration: durationStr,
-          difficulty: complexity <= 2 ? 'Easy' : complexity <= 3.5 ? 'Medium' : 'Hard',
-          description: catalogGame.description || "",
-          categories: catalogGame.categories || [],
-          yearPublished: catalogGame.year_published,
-          rating: catalogGame.avg_rating || 0,
-          availability: 'available' as const,
-          monthlyPrice,
-          avg_online_sale_price: getSalePrice(catalogGame) ?? undefined,
-        };
-      });
+      // (centralised mapper handles price calc + image overrides)
+      const backendMappedGames: GameCardProps[] = catalogGames.map((catalogGame: any) =>
+        mapBackendGameToFrontend(catalogGame)
+      );
 
       
       // Group games by category
