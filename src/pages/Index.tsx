@@ -93,7 +93,7 @@ const Index = () => {
                   title={categoryInfo.title}
                   description={categoryInfo.description}
                   games={games}
-                  categoryId={category.toLowerCase().replace(/\s+/g, '-')}
+                  categoryId={category}
                   onGameClick={handleGameClick}
                 />
               );
