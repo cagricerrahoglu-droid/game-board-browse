@@ -122,7 +122,7 @@ export const mapBackendGameToFrontend = (backendGame: BackendGame): GameCardProp
     id: backendGame.game_id || backendGame.catalog_game_id || backendGame.name,
     catalogGameId: backendGame.catalog_game_id,
     title: backendGame.name,
-    imageUrl: backendGame.image_url || getGameImage(backendGame.name),
+    imageUrl: imageOverrides[backendGame.name.toLowerCase().trim()] || backendGame.image_url || getGameImage(backendGame.name),
     players: playersRange,
     duration: durationRange,
     difficulty: backendGame.condition ? conditionToDifficulty(backendGame.condition) : complexity <= 2 ? "Easy" : complexity <= 3 ? "Medium" : "Hard",
