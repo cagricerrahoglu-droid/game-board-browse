@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { GameCardProps } from "@/components/GameCard";
 import { API } from "@/services/api";
+import { mapBackendGameToFrontend } from "@/utils/gameMapper";
 
 interface FavoritesContextType {
   favorites: string[];
