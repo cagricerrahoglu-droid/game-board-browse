@@ -27,19 +27,7 @@ export const FavoritesProvider = ({ children }: { children: ReactNode }) => {
     const fetchCatalogGames = async () => {
       try {
         const games = await API.listCatalogGames();
-        const mappedGames: GameCardProps[] = games.map((game) => ({
-          id: game.catalog_game_id,
-          catalogGameId: game.catalog_game_id,
-          name: game.name,
-          imageUrl: game.image_url || "/placeholder.svg",
-          minPlayers: game.min_players || 1,
-          maxPlayers: game.max_players || 4,
-          playTime: game.play_time_minutes,
-          difficulty: game.complexity || 2.5,
-          description: game.description || "",
-          categories: game.categories || [],
-          yearPublished: game.year_published,
-        }));
+        const mappedGames: GameCardProps[] = games.map((game: any) => mapBackendGameToFrontend(game));
         setCatalogGames(mappedGames);
       } catch (error) {
         console.error("Failed to fetch catalog games for favorites:", error);
