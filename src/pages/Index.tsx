@@ -111,7 +111,7 @@ const Index = () => {
                 games={(() => {
                   const seen = new Set<string>();
                   return allGames.filter(game => {
-                    const key = game.name?.toLowerCase().trim() || '';
+                    const key = (game.title || game.name || game.id || '').toLowerCase().trim();
                     if (!key || seen.has(key)) return false;
                     seen.add(key);
                     return true;
