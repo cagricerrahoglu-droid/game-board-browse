@@ -2,12 +2,14 @@ import { GameCardProps } from "@/components/GameCard";
 import { calculateMonthlyRentalPrice, getSalePrice } from "@/utils/pricing";
 import battleshipAsset from "@/assets/battleship.jpg.asset.json";
 import craniumAsset from "@/assets/cranium.jpg.asset.json";
+import othelloAsset from "@/assets/othello.png.asset.json";
 
 // Overrides for games whose backend image_url is broken (403/400).
 // Keys are lowercased game names.
 const imageOverrides: Record<string, string> = {
   "battleship": battleshipAsset.url,
   "cranium": craniumAsset.url,
+  "othello": othelloAsset.url,
 };
 
 // Game image mapping - maps game names to their image URLs
