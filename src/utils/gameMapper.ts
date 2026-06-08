@@ -4,6 +4,7 @@ import battleshipAsset from "@/assets/battleship.jpg.asset.json";
 import craniumAsset from "@/assets/cranium.jpg.asset.json";
 import othelloAsset from "@/assets/othello.png.asset.json";
 import trivialPursuitAsset from "@/assets/trivial-pursuit.png.asset.json";
+import theCrewAsset from "@/assets/the-crew.png.asset.json";
 
 // Overrides for games whose backend image_url is broken (403/400).
 // Keys are lowercased game names.
@@ -12,6 +13,8 @@ const imageOverrides: Record<string, string> = {
   "cranium": craniumAsset.url,
   "othello": othelloAsset.url,
   "trivial pursuit": trivialPursuitAsset.url,
+  "the crew": theCrewAsset.url,
+  "the crew: the quest for planet nine": theCrewAsset.url,
 };
 
 // Game image mapping - maps game names to their image URLs
