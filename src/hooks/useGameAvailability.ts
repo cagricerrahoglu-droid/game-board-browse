@@ -8,15 +8,29 @@ export interface GameAvailability {
   error: string | null;
 }
 
+// Testing override: treat all catalog games as available so renters can browse
+// and rent without needing real listed inventory in the backend.
+const FORCE_ALL_AVAILABLE = true;
+
 export function useGameAvailability(catalogGameId: string | null | undefined): GameAvailability {
   const [availability, setAvailability] = useState<GameAvailability>({
-    available: false,
-    availableCount: 0,
-    isLoading: true,
+    available: FORCE_ALL_AVAILABLE,
+    availableCount: FORCE_ALL_AVAILABLE ? 1 : 0,
+    isLoading: !FORCE_ALL_AVAILABLE,
     error: null,
   });
 
   useEffect(() => {
+    if (FORCE_ALL_AVAILABLE) {
+      setAvailability({
+        available: true,
+        availableCount: 1,
+        isLoading: false,
+        error: null,
+      });
+      return;
+    }
+
     if (!catalogGameId) {
       setAvailability({
         available: false,
